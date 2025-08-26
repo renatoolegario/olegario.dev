@@ -43,8 +43,8 @@ export default function Component() {
       ctx.fillStyle = "white"
       ctx.save()
 
-      const normalText = "olegario.dev"
-      const fontSize = isMobile ? 48 : 96 // Reverted to original font size and removed subtitle
+      const normalText = "Olegário.Dev"
+      const fontSize = isMobile ? 36 : 72
       ctx.font = `bold ${fontSize}px Arial, sans-serif`
       ctx.textAlign = "center"
       ctx.textBaseline = "middle"
@@ -222,10 +222,6 @@ export default function Component() {
         className="w-full h-full absolute top-0 left-0 touch-none"
         aria-label="Interactive particle effect with olegario.dev"
       />
-      <div className="absolute bottom-8 text-center text-white/70 z-10">
-        <p className="text-lg font-medium mb-2">Efeito de partículas interativo com texto</p>
-        <p className="text-sm">Mova o mouse para interagir</p>
-      </div>
     </div>
   )
 }
