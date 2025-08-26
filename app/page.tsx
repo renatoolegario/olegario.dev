@@ -114,11 +114,6 @@ export default function Page() {
         <ParticlesHero />
       </section>
 
-      {/* Desenvolvedor Full Stack Section */}
-      <section className="py-12 px-6 text-center -mt-24">
-        <h2 className="text-3xl font-bold text-cyan-400">Desenvolvedor Full Stack</h2>
-      </section>
-
       {/* About Section */}
       <section id="about" className="py-20 px-6 max-w-4xl mx-auto">
         <h2 className="text-4xl font-bold mb-8 text-center">Sobre Mim</h2>
@@ -164,26 +159,28 @@ export default function Page() {
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl font-bold mb-12 text-center">Bibliotecas e utilitários</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <a
-              href="https://docs.mapbox.com/mapbox-gl-js/api/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-gray-800 rounded-lg p-6 hover:bg-gray-700 transition-colors duration-300 block"
-            >
+            <div className="bg-gray-800 rounded-lg p-6">
               <h3 className="text-xl font-bold mb-3">Mapas</h3>
-              <p className="text-gray-300 mb-4">Mapbox GL: Uma biblioteca de renderização de mapas do lado do cliente.</p>
-              <span className="bg-cyan-600 text-xs px-2 py-1 rounded">mapbox-gl</span>
-            </a>
-            <a
-              href="https://turfjs.org/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-gray-800 rounded-lg p-6 hover:bg-gray-700 transition-colors duration-300 block"
-            >
-              <h3 className="text-xl font-bold mb-3">Mapas</h3>
-              <p className="text-gray-300 mb-4">Turf.js: Análise geoespacial avançada para navegadores e Node.js.</p>
-              <span className="bg-cyan-600 text-xs px-2 py-1 rounded">turf</span>
-            </a>
+              <p className="text-gray-300 mb-4">Bibliotecas de Mapas</p>
+              <div className="flex flex-wrap gap-2">
+                <a
+                  href="https://docs.mapbox.com/mapbox-gl-js/api/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-cyan-600 text-xs px-2 py-1 rounded hover:bg-cyan-700"
+                >
+                  mapbox-gl
+                </a>
+                <a
+                  href="https://turfjs.org/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-cyan-600 text-xs px-2 py-1 rounded hover:bg-cyan-700"
+                >
+                  turf
+                </a>
+              </div>
+            </div>
             <a
               href="https://resend.com/emails"
               target="_blank"
@@ -252,7 +249,7 @@ export default function Page() {
                 <span className="font-semibold">E-mail:</span> multiplas.fr@gmail.com
               </p>
               <p className="text-lg">
-                <span className="font-semibold">CNPJ:</span> 37.398.466/0001-05
+                <span className="font-semibold">CNPJ:</span> 37398466000105
               </p>
             </div>
           </div>
@@ -262,8 +259,7 @@ export default function Page() {
       {/* Footer */}
       <footer className="bg-gray-900 border-t border-gray-800 py-12 px-6">
         <div className="max-w-6xl mx-auto text-center text-gray-400">
-          <p className="mb-4">Desde 2012</p>
-          <p>&copy; 2024 - 2025 Olegário.Dev. Todos os direitos reservados.</p>
+          <p>Desde 2012 até 2025</p>
         </div>
       </footer>
     </div>

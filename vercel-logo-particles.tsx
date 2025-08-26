@@ -44,15 +44,21 @@ export default function Component() {
       ctx.save()
 
       const normalText = "Olegário.Dev"
+      const subtitleText = "Desenvolvedor Full Stack"
       const fontSize = isMobile ? 36 : 72
+      const subtitleFontSize = isMobile ? 18 : 24
       ctx.font = `bold ${fontSize}px Arial, sans-serif`
       ctx.textAlign = "center"
       ctx.textBaseline = "middle"
+      ctx.letterSpacing = "-2px"
 
       const x = canvas.width / 2
       const y = canvas.height / 2
 
       ctx.fillText(normalText, x, y)
+
+      ctx.font = `${subtitleFontSize}px Arial, sans-serif`
+      ctx.fillText(subtitleText, x, y + fontSize / 2 + subtitleFontSize / 2)
 
       ctx.restore()
 
