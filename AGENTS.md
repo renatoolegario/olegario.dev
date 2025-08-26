@@ -16,6 +16,8 @@ CryptoJS — criptografia e segurança.
 
 GitHub — versionamento e colaboração.
 
+Não vamos utilizar TypeScript, tudo deve ser feito em JavaScript jsx
+
 📂 Estrutura de Pastas
 Configuração
 // jsconfig.json
