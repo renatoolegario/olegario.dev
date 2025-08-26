@@ -1,7 +1,25 @@
 "use client"
 
 import ParticlesHero from "../vercel-logo-particles"
-import { Phone, Mail, Github, Linkedin, Instagram, Twitter, Menu, X } from "lucide-react"
+import {
+  Phone,
+  Mail,
+  Github,
+  Linkedin,
+  Instagram,
+  Twitter,
+  Menu,
+  X,
+  Code,
+  Database,
+  Server,
+  Puzzle,
+  Bot,
+  BrainCircuit,
+  Briefcase,
+  Rocket,
+  Palette,
+} from "lucide-react"
 import { useState } from "react"
 
 export default function Page() {
@@ -97,7 +115,7 @@ export default function Page() {
       </section>
 
       {/* Desenvolvedor Full Stack Section */}
-      <section className="py-12 px-6 text-center">
+      <section className="py-12 px-6 text-center -mt-24">
         <h2 className="text-3xl font-bold text-cyan-400">Desenvolvedor Full Stack</h2>
       </section>
 
@@ -116,23 +134,23 @@ export default function Page() {
           <h2 className="text-4xl font-bold mb-12 text-center">Tecnologias</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
             {[
-              { name: "PHP", color: "bg-purple-600" },
-              { name: "React", color: "bg-blue-500" },
-              { name: "Next.js", color: "bg-gray-800" },
-              { name: "MySQL", color: "bg-orange-500" },
-              { name: "PostgreSQL", color: "bg-blue-600" },
-              { name: "VPS", color: "bg-green-600" },
-              { name: "Extensões Web", color: "bg-red-600" },
-              { name: "Automações", color: "bg-yellow-600" },
-              { name: "N8N", color: "bg-indigo-600" },
-              { name: "Consultoria", color: "bg-teal-600" },
-              { name: "IA", color: "bg-pink-600" },
+              { name: "PHP", icon: Code, color: "text-purple-400" },
+              { name: "React", icon: Rocket, color: "text-blue-400" },
+              { name: "Next.js", icon: Rocket, color: "text-white" },
+              { name: "MySQL", icon: Database, color: "text-orange-400" },
+              { name: "PostgreSQL", icon: Database, color: "text-blue-400" },
+              { name: "VPS", icon: Server, color: "text-green-400" },
+              { name: "Extensões Web", icon: Puzzle, color: "text-red-400" },
+              { name: "Automações", icon: Bot, color: "text-yellow-400" },
+              { name: "N8N", icon: Bot, color: "text-indigo-400" },
+              { name: "Consultoria", icon: Briefcase, color: "text-teal-400" },
+              { name: "IA", icon: BrainCircuit, color: "text-pink-400" },
             ].map((tech) => (
               <div key={tech.name} className="text-center group">
                 <div
-                  className={`${tech.color} w-20 h-20 rounded-lg mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}
+                  className={`bg-gray-800 w-24 h-24 rounded-lg mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}
                 >
-                  <span className="text-2xl font-bold">{tech.name.charAt(0)}</span>
+                  <tech.icon className={`${tech.color} w-12 h-12`} />
                 </div>
                 <h3 className="font-semibold text-sm">{tech.name}</h3>
               </div>
@@ -141,40 +159,41 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Portfolio Section */}
+      {/* Libraries and Utilities Section */}
       <section id="portfolio" className="py-20 px-6">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl font-bold mb-12 text-center">Portfólio</h2>
+          <h2 className="text-4xl font-bold mb-12 text-center">Bibliotecas e utilitários</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                title: "E-commerce Platform",
-                description: "Plataforma completa de e-commerce com React e PHP",
-                tech: ["React", "PHP", "MySQL"],
-              },
-              {
-                title: "Dashboard Analytics",
-                description: "Dashboard interativo para análise de dados",
-                tech: ["Next.js", "PostgreSQL"],
-              },
-              {
-                title: "API RESTful",
-                description: "API robusta para aplicações mobile e web",
-                tech: ["PHP", "MySQL", "VPS"],
-              },
-            ].map((project, index) => (
-              <div key={index} className="bg-gray-800 rounded-lg p-6 hover:bg-gray-700 transition-colors duration-300">
-                <h3 className="text-xl font-bold mb-3">{project.title}</h3>
-                <p className="text-gray-300 mb-4">{project.description}</p>
-                <div className="flex flex-wrap gap-2">
-                  {project.tech.map((t) => (
-                    <span key={t} className="bg-cyan-600 text-xs px-2 py-1 rounded">
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ))}
+            <a
+              href="https://docs.mapbox.com/mapbox-gl-js/api/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-gray-800 rounded-lg p-6 hover:bg-gray-700 transition-colors duration-300 block"
+            >
+              <h3 className="text-xl font-bold mb-3">Mapas</h3>
+              <p className="text-gray-300 mb-4">Mapbox GL: Uma biblioteca de renderização de mapas do lado do cliente.</p>
+              <span className="bg-cyan-600 text-xs px-2 py-1 rounded">mapbox-gl</span>
+            </a>
+            <a
+              href="https://turfjs.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-gray-800 rounded-lg p-6 hover:bg-gray-700 transition-colors duration-300 block"
+            >
+              <h3 className="text-xl font-bold mb-3">Mapas</h3>
+              <p className="text-gray-300 mb-4">Turf.js: Análise geoespacial avançada para navegadores e Node.js.</p>
+              <span className="bg-cyan-600 text-xs px-2 py-1 rounded">turf</span>
+            </a>
+            <a
+              href="https://resend.com/emails"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-gray-800 rounded-lg p-6 hover:bg-gray-700 transition-colors duration-300 block"
+            >
+              <h3 className="text-xl font-bold mb-3">E-mails</h3>
+              <p className="text-gray-300 mb-4">Resend: API de e-mail para desenvolvedores.</p>
+              <span className="bg-cyan-600 text-xs px-2 py-1 rounded">resend</span>
+            </a>
           </div>
         </div>
       </section>
@@ -185,14 +204,23 @@ export default function Page() {
           <h2 className="text-4xl font-bold mb-12">Redes Sociais</h2>
           <div className="flex justify-center space-x-8">
             {[
-              { icon: Github, name: "GitHub", href: "#" },
-              { icon: Linkedin, name: "LinkedIn", href: "#" },
-              { icon: Instagram, name: "Instagram", href: "#" },
-              { icon: Twitter, name: "Twitter", href: "#" },
+              {
+                icon: Github,
+                name: "GitHub",
+                href: "https://github.com/renatoolegario",
+              },
+              {
+                icon: Linkedin,
+                name: "LinkedIn",
+                href: "https://www.linkedin.com/in/renato-oleg%C3%A1rio-3b28a3147/",
+              },
+              { icon: Instagram, name: "Instagram", href: "https://www.instagram.com/olegario.dev/" },
             ].map((social) => (
               <a
                 key={social.name}
                 href={social.href}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="group flex flex-col items-center space-y-2 hover:text-cyan-400 transition-colors duration-300"
               >
                 <div className="bg-gray-800 p-4 rounded-full group-hover:bg-cyan-600 transition-colors duration-300">
@@ -209,49 +237,33 @@ export default function Page() {
       <section id="contact" className="py-20 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl font-bold mb-12">Fale Comigo</h2>
-          <div className="grid md:grid-cols-2 gap-8 max-w-2xl mx-auto">
+          <div className="flex flex-col items-center space-y-6">
             <a
-              href="tel:+5534999399036"
-              className="flex items-center justify-center space-x-3 bg-gray-800 p-6 rounded-lg hover:bg-cyan-600 transition-colors duration-300 group"
+              href="https://wa.me/5534992399036"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center space-x-4 bg-green-500 text-white px-8 py-4 rounded-lg hover:bg-green-600 transition-colors duration-300 group"
             >
               <Phone className="group-hover:animate-pulse" size={24} />
-              <span className="text-lg font-semibold">(34) 99939-9036</span>
+              <span className="text-lg font-semibold">WhatsApp</span>
             </a>
-            <a
-              href="mailto:contato@renatoolegario.dev"
-              className="flex items-center justify-center space-x-3 bg-gray-800 p-6 rounded-lg hover:bg-cyan-600 transition-colors duration-300 group"
-            >
-              <Mail className="group-hover:animate-pulse" size={24} />
-              <span className="text-lg font-semibold">Enviar E-mail</span>
-            </a>
+            <div className="text-center">
+              <p className="text-lg">
+                <span className="font-semibold">E-mail:</span> multiplas.fr@gmail.com
+              </p>
+              <p className="text-lg">
+                <span className="font-semibold">CNPJ:</span> 37.398.466/0001-05
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
       <footer className="bg-gray-900 border-t border-gray-800 py-12 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-3 gap-8 mb-8">
-            <div>
-              <h3 className="text-xl font-bold mb-4">Renato Olegário Dev</h3>
-              <p className="text-gray-400">Soluções digitais personalizadas para o seu negócio.</p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Contato</h4>
-              <p className="text-gray-400 mb-2">📞 (34) 99939-9036</p>
-              <p className="text-gray-400 mb-2">✉️ contato@renatoolegario.dev</p>
-              <p className="text-gray-400">📍 Uberlândia, MG</p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Empresa</h4>
-              <p className="text-gray-400 mb-2">RO Desenvolvimento LTDA</p>
-              <p className="text-gray-400 mb-2">CNPJ: 12.345.678/0001-90</p>
-              <p className="text-gray-400">Fundada em 2020</p>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 Renato Olegário Dev. Todos os direitos reservados.</p>
-          </div>
+        <div className="max-w-6xl mx-auto text-center text-gray-400">
+          <p className="mb-4">Desde 2012</p>
+          <p>&copy; 2024 - 2025 Olegário.Dev. Todos os direitos reservados.</p>
         </div>
       </footer>
     </div>
