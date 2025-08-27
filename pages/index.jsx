@@ -133,14 +133,24 @@ export default function Page() {
               <p className="text-gray-300 mb-4">Resend: API de e-mail para desenvolvedores.</p>
               <span className="bg-cyan-600 text-xs px-2 py-1 rounded">resend</span>
             </a>
+            <div className="bg-gray-800 rounded-lg p-6">
+              <h3 className="text-xl font-bold mb-3">Open Sources</h3>
+              <p className="text-gray-300 mb-4">Bibliotecas para automação de WhatsApp</p>
+              <div className="flex flex-wrap gap-2">
+                <a href="https://github.com/wppconnect-team/wa-js" target="_blank" rel="noopener noreferrer" className="bg-cyan-600 text-xs px-2 py-1 rounded hover:bg-cyan-700">
+                  wppconnect-team/wa-js
+                </a>
+                <a href="https://github.com/WhiskeySockets/Baileys" target="_blank" rel="noopener noreferrer" className="bg-cyan-600 text-xs px-2 py-1 rounded hover:bg-cyan-700">
+                  Whiskeysockets/Baileys
+                </a>
+                <a href="https://github.com/PERFLEX/Perfex-Api" target="_blank" rel="noopener noreferrer" className="bg-cyan-600 text-xs px-2 py-1 rounded hover:bg-cyan-700">
+                  perflex
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </section>
-
-      ## Open Sources
-- [wppconnect-team/wa-js](https://github.com/wppconnect-team/wa-js)
-- [Whiskeysockets/Baileys](https://github.com/WhiskeySockets/Baileys)
-- perflex
 
       {/* Social Media Section */}
       <section className="py-20 px-6 bg-gray-900">
