@@ -26,8 +26,7 @@ export default function Component() {
             ctx.fillStyle = "white";
             ctx.save();
             const normalText = "Olegário.Dev";
-            const subtitleText = "Desenvolvedor Full Stack";
-            const fontSize = isMobile ? 36 : 72;
+            const fontSize = isMobile ? 36 : 112;
             const subtitleFontSize = isMobile ? 18 : 24;
             ctx.font = `bold ${fontSize}px Arial, sans-serif`;
             ctx.textAlign = "center";
@@ -37,7 +36,7 @@ export default function Component() {
             const y = canvas.height / 2;
             ctx.fillText(normalText, x, y);
             ctx.font = `${subtitleFontSize}px Arial, sans-serif`;
-            ctx.fillText(subtitleText, x, y + fontSize / 2 + subtitleFontSize / 2);
+          
             ctx.restore();
             textImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -174,7 +173,16 @@ export default function Component() {
             cancelAnimationFrame(animationFrameId);
         };
     }, [isMobile]);
-    return (<div className="relative w-full h-screen flex flex-col items-center justify-center bg-black">
-      <canvas ref={canvasRef} className="w-full h-full absolute top-0 left-0 touch-none" aria-label="Interactive particle effect with olegario.dev"/>
-    </div>);
+    return (
+        <div 
+            className="relative w-full flex flex-col items-center justify-center bg-black"
+            style={{ height: "500px" }} // aqui você define a altura que quiser
+            >
+            <canvas
+                ref={canvasRef}
+                className="w-full  absolute top-0 left-0 touch-none"
+                aria-label="Interactive particle effect with olegario.dev"
+            />
+            </div>
+    );
 }

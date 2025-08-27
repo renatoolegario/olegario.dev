@@ -1,7 +1,8 @@
 "use client";
-import ParticlesHero from "../vercel-logo-particles";
+import ParticlesHero from "utils/vercel-logo-particles";
 import { Phone, Github, Linkedin, Instagram, Menu, X, Code, Database, Server, Puzzle, Bot, BrainCircuit, Briefcase, Rocket, } from "lucide-react";
 import { useState } from "react";
+
 export default function Page() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const toggleMenu = () => {
@@ -14,7 +15,8 @@ export default function Page() {
         }
         setIsMenuOpen(false);
     };
-    return (<div className="min-h-screen bg-black text-white">
+    return (
+    <div className="min-h-screen bg-black text-white">
       <nav className="fixed top-0 left-0 right-0 bg-black/90 backdrop-blur-sm border-b border-gray-800 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
@@ -134,6 +136,11 @@ export default function Page() {
           </div>
         </div>
       </section>
+
+      ## Open Sources
+- [wppconnect-team/wa-js](https://github.com/wppconnect-team/wa-js)
+- [Whiskeysockets/Baileys](https://github.com/WhiskeySockets/Baileys)
+- perflex
 
       {/* Social Media Section */}
       <section className="py-20 px-6 bg-gray-900">
