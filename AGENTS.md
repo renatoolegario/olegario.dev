@@ -16,7 +16,12 @@ CryptoJS — criptografia e segurança.
 
 GitHub — versionamento e colaboração.
 
-Não vamos utilizar TypeScript, tudo deve ser feito em JavaScript jsx
+Migrations (node-pg-migrate) — controle de versão e histórico de mudanças no banco.
+
+Jest — testes automatizados de unidade e integração.
+uuid - Para gerar hash uui4
+
+🔎 Observação: não vamos utilizar TypeScript, todo o projeto será feito em JavaScript/JSX.
 
 📂 Estrutura de Pastas
 Configuração
@@ -47,33 +52,34 @@ Descrição do que a página faz
 
 Resultado esperado
 
-/hooks/* → gerenciamento de estado com Zustand (armazenamento e consumo de dados).
+/hooks/ → gerenciamento de estado com Zustand (armazenamento e consumo de dados).
 
 /pages/app/ → páginas do aplicativo (interface principal).
 
 /pages/api/webhook/ → ponto de entrada público para requisições externas, redirecionando para /api/*.
 
-/public/ → arquivos estáticos (favicon, imagens, vídeos, etc).
+/api/v*/routes/* → todas as rotas possíveis da versão.
 
-/theme/ → constantes de layout, estilos globais e definição de temas.
+/api/v*/webhook/* → tratamento de requisições recebidas em /pages/api/webhook.
 
-/utils/ → funções auxiliares (tratamento de dados, helpers, etc).
 
-Estrutura da API
-
-/api/V*/routes/ → todas as rotas possíveis da versão.
-
-/api/V*/webhook/ → tratamento de requisições recebidas em /pages/api/webhook.
-
-/api/V*/db.js → conexão com o banco de dados (pool).
-
-/api/V*/utils.js → funções internas:
+/api/v*/utils.js* → funções internas da API:
 
 Criptografia e descriptografia
 
 Tratamento e formatação de dados
 
 Funções auxiliares da API
+
+/infra/migrations/ → arquivos de migrations para versionamento do banco (Knex/Postgres).
+/infra/database/database.js
+/infra/tests/ → testes automatizados com Jest.
+
+/public/ → arquivos estáticos (favicon, imagens, vídeos, etc).
+
+/theme/ → constantes de layout, estilos globais e definição de temas.
+
+/utils/ → funções auxiliares (tratamento de dados, helpers, etc).
 
 🌳 Exemplo de Estrutura
 /components
@@ -100,6 +106,8 @@ Funções auxiliares da API
       ├── db.js
       └── utils.js
 
+/migrations
+/tests
 /public
 /theme
 /utils
@@ -116,3 +124,6 @@ Utilizar utils apenas para funções puras e reutilizáveis.
 
 Separar claramente a entrypoint pública (/pages/api/webhook) do processamento real (/api/V*/webhook).
 
+Controlar evolução do banco com migrations (não alterar schema manualmente).
+
+Criar testes automatizados com Jest, cobrindo unidades críticas e integrações de API.
