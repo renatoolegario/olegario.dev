@@ -17,3 +17,8 @@ This page serves as the main landing page for users after they log in. It provid
 ## Expected Result
 
 The user should see a welcoming interface with clear navigation options.
+
+## Open Sources
+- [wppconnect-team/wa-js](https://github.com/wppconnect-team/wa-js)
+- [Whiskeysockets/Baileys](https://github.com/WhiskeySockets/Baileys)
+- perflex
