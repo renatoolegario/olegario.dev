@@ -65,7 +65,6 @@ export default function Page() {
     { name: "Extensões Web", icon: ExtensionIcon, color: "error.main" },
     { name: "Automações", icon: SmartToyIcon, color: "yellow.main" },
     { name: "N8N", icon: SmartToyIcon, color: "indigo.main" },
-    { name: "Consultoria", icon: BusinessCenterIcon, color: "teal.main" },
     { name: "IA", icon: PsychologyIcon, color: "secondary.main" },
   ];
 
@@ -105,7 +104,7 @@ export default function Page() {
               component="div"
               sx={{ flexGrow: 1, fontWeight: "bold", color: "primary.main" }}
             >
-              olegario.dev
+              Olegário.Dev
             </Typography>
             <Box sx={{ display: { xs: "none", md: "flex" }, gap: 4 }}>
               {navLinks.map((link) => (
@@ -149,6 +148,10 @@ export default function Page() {
 
       <Box component="section" id="home" sx={{ position: "relative" }}>
         <ParticlesHero />
+        <Box>
+          
+
+        </Box>
       </Box>
 
       <Box component="section" id="about" sx={{ py: 10, px: 3 }}>
