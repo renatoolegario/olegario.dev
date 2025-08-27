@@ -29,13 +29,13 @@ Configuração
 
 Diretórios principais
 
-/components/atomic → componentes básicos reutilizáveis (botões, inputs, ícones).
+/components/atomic → componentes básicos reutilizáveis (botões, inputs, ícones), cada componente tera sua pasta, e dentro dela o arquivo exportavel jsx e um arquivo de CSS especifico para ele, toda formatação extra de css externo será feita em um arquivo .css e importada no jsx
 
-/components/molecules → combinações simples de componentes (form fields, cards).
+/components/molecules → combinações simples de componentes (form fields, cards).cada componente tera sua pasta, e dentro dela o arquivo exportavel jsx e um arquivo de CSS especifico para ele, toda formatação extra de css externo será feita em um arquivo .css e importada no jsx
 
-/components/organisms → blocos funcionais maiores (listas, tabelas, modais).
+/components/organisms → blocos funcionais maiores (listas, tabelas, modais).cada componente tera sua pasta, e dentro dela o arquivo exportavel jsx e um arquivo de CSS especifico para ele, toda formatação extra de css externo será feita em um arquivo .css e importada no jsx
 
-/components/template → layouts de página ou estruturas de tela.
+/components/template → layouts de página ou estruturas de tela.cada componente tera sua pasta, e dentro dela o arquivo exportavel jsx e um arquivo de CSS especifico para ele, toda formatação extra de css externo será feita em um arquivo .css e importada no jsx
 
 /docs/*.md → documentação específica de cada página:
 
