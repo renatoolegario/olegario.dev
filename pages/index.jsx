@@ -203,7 +203,7 @@ export default function Page() {
       <Box component="section" id="portfolio" sx={{ py: 10, px: 3 }}>
         <Container maxWidth="lg">
           <Typography variant="h2" component="h2" sx={{ fontWeight: "bold", mb: 6, textAlign: "center" }}>
-            Bibliotecas e utilitários
+            Bibliotecas e utilitárioss
           </Typography>
           <Grid container spacing={4}>
             <Grid item xs={12} md={6} lg={4}>
