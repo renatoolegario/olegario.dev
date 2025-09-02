@@ -2,10 +2,13 @@ import React from 'react';
 import Head from 'next/head';
 import ThemeProvider from '../components/template/theme-provider';
 import '../theme/globals.css';
+import createEmotionCache from '../utils/createEmotionCache';
 
-function MyApp({ Component, pageProps }) {
+const clientSideEmotionCache = createEmotionCache();
+
+function MyApp({ Component, pageProps, emotionCache = clientSideEmotionCache }) {
   return (
-    <ThemeProvider>
+    <ThemeProvider emotionCache={emotionCache}>
       <Head>
         {/* Basic SEO */}
         <title>Olegário.Dev – Desenvolvedor Full Stack</title>
