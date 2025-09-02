@@ -1,6 +1,6 @@
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
-import '../theme/globals.css';
+
 export const metadata = {
     title: 'v0 App',
     description: 'Created with v0',
