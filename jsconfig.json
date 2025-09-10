@@ -1,8 +1,7 @@
+// Definindo a pasta raiz, para evitar na parte de importação utilizar "../../../" <-- para ficar mais organizado.
 {
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "api/*": ["pages/api/*"]
+
+    "compilerOptions": {
+        "baseUrl": "."
     }
-  }
 }

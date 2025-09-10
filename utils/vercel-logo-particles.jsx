@@ -1,21 +1,21 @@
 "use client";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 export default function Component() {
     const canvasRef = useRef(null);
     const mousePositionRef = useRef({ x: 0, y: 0 });
     const isTouchingRef = useRef(false);
-    const [isMobile, setIsMobile] = useState(false);
     useEffect(() => {
         const canvas = canvasRef.current;
-        if (!canvas)
-            return;
+        if (!canvas) return;
         const ctx = canvas.getContext("2d");
-        if (!ctx)
-            return;
+        if (!ctx) return;
+
+        let isMobile = window.innerWidth < 768;
+
         const updateCanvasSize = () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            setIsMobile(window.innerWidth < 768);
+            isMobile = window.innerWidth < 768;
         };
         updateCanvasSize();
         let particles = [];
@@ -172,7 +172,7 @@ export default function Component() {
             canvas.removeEventListener("touchend", handleTouchEnd);
             cancelAnimationFrame(animationFrameId);
         };
-    }, [isMobile]);
+    }, []);
     return (
         <div 
             className="relative w-full flex flex-col items-center justify-center bg-black"
