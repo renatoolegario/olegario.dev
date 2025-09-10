@@ -1,30 +1,15 @@
 import React from 'react';
 import Head from 'next/head';
-import ThemeProvider from '../components/template/theme-provider';
-import '../theme/globals.css';
-import createEmotionCache from '../utils/createEmotionCache';
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import theme from 'theme/theme';
 
-const clientSideEmotionCache = createEmotionCache();
-
-function MyApp({ Component, pageProps, emotionCache = clientSideEmotionCache }) {
+function MyApp({ Component, pageProps }) {
   return (
-    <ThemeProvider emotionCache={emotionCache}>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
       <Head>
-        {/* Basic SEO */}
-        <title>Olegário.Dev – Desenvolvedor Full Stack</title>
-        <meta name="keywords" content="Desenvolvedor, Full Stack, Next.js, React, PHP, WhatsApp, N8N, Automação, Mapbox" />
-        <meta name="authors" content="Renato Olegário" />
-
-        {/* Open Graph */}
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="pt_BR" />
-        <meta property="og:url" content="https://olegario.dev" />
-        <meta property="og:site_name" content="Olegário.Dev" />
-
-        {/* Twitter */}
-        <meta name="twitter:card" content="summary_large_image" />
-
-        {/* Favicon */}
+        <title>Olegário.Dev</title>
         <link rel="icon" href="/favicon/favicon.ico" type="image/x-icon" />
         <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
         <link rel="icon" type="image/png" sizes="192x192" href="/favicon/android-chrome-192x192.png" />
@@ -39,4 +24,3 @@ function MyApp({ Component, pageProps, emotionCache = clientSideEmotionCache }) 
 }
 
 export default MyApp;
-
