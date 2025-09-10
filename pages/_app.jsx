@@ -1,18 +1,15 @@
-import Head from "next/head";
+import React from 'react';
+import Head from 'next/head';
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import theme from 'theme/theme';
 
-export default function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps }) {
   return (
-    // Remova o ThemeProvider e o CssBaseline
-    <>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
       <Head>
-        {/* Metadados gerais */}
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-        <meta name="description" content="Olegário.Dev - Soluções em automação e análise de ROI para otimização de processos de cobrança" />
-        <meta name="author" content="Olegário.Dev" />
         <title>Olegário.Dev</title>
-
-        {/* Favicons e Webmanifest */}
         <link rel="icon" href="/favicon/favicon.ico" type="image/x-icon" />
         <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
         <link rel="icon" type="image/png" sizes="192x192" href="/favicon/android-chrome-192x192.png" />
@@ -22,6 +19,8 @@ export default function MyApp({ Component, pageProps }) {
         <link rel="manifest" href="/favicon/site.webmanifest" />
       </Head>
       <Component {...pageProps} />
-    </>
+    </ThemeProvider>
   );
 }
+
+export default MyApp;
