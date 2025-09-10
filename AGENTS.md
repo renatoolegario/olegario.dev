@@ -1,22 +1,17 @@
 📌 Tecnologias e Frameworks
 
 Next.js — framework principal para o front-end e rotas.
-
 React — biblioteca base para componentes.
-
 @mui — biblioteca de UI (Material UI).
-
 Zustand — gerenciamento de estado global.
-
 Serverless (Vercel) — backend e rotas sem servidor.
-
 Blob Storage (Vercel) — armazenamento de arquivos.
-
 CryptoJS — criptografia e segurança.
-
 GitHub — versionamento e colaboração.
-
-Não vamos utilizar TypeScript, tudo deve ser feito em JavaScript jsx
+Migrations (node-pg-migrate) — controle de versão e histórico de mudanças no banco.
+Jest — testes automatizados de unidade e integração.
+uuid - Para gerar hash uui4
+🔎 Observação: não vamos utilizar TypeScript, todo o projeto será feito em JavaScript/JSX.
 
 📂 Estrutura de Pastas
 Configuração
@@ -29,51 +24,31 @@ Configuração
 
 Diretórios principais
 
-/components/atomic → componentes básicos reutilizáveis (botões, inputs, ícones), cada componente tera sua pasta, e dentro dela o arquivo exportavel jsx e um arquivo de CSS especifico para ele, toda formatação extra de css externo será feita em um arquivo .css e importada no jsx
-
-/components/molecules → combinações simples de componentes (form fields, cards).cada componente tera sua pasta, e dentro dela o arquivo exportavel jsx e um arquivo de CSS especifico para ele, toda formatação extra de css externo será feita em um arquivo .css e importada no jsx
-
-/components/organisms → blocos funcionais maiores (listas, tabelas, modais).cada componente tera sua pasta, e dentro dela o arquivo exportavel jsx e um arquivo de CSS especifico para ele, toda formatação extra de css externo será feita em um arquivo .css e importada no jsx
-
-/components/template → layouts de página ou estruturas de tela.cada componente tera sua pasta, e dentro dela o arquivo exportavel jsx e um arquivo de CSS especifico para ele, toda formatação extra de css externo será feita em um arquivo .css e importada no jsx
-
+/components/atomic → componentes básicos reutilizáveis (botões, inputs, ícones).
+/components/molecules → combinações simples de componentes (form fields, cards).
+/components/organisms → blocos funcionais maiores (listas, tabelas, modais).
+/components/template → layouts de página ou estruturas de tela.
 /docs/*.md → documentação específica de cada página:
+-Props utilizadas
+-Funções internas
+-Descrição do que a página faz
+-Resultado esperado
 
-Props utilizadas
-
-Funções internas
-
-Descrição do que a página faz
-
-Resultado esperado
-
-/hooks/* → gerenciamento de estado com Zustand (armazenamento e consumo de dados).
-
+/hooks/ → gerenciamento de estado com Zustand (armazenamento e consumo de dados).
 /pages/app/ → páginas do aplicativo (interface principal).
-
 /pages/api/webhook/ → ponto de entrada público para requisições externas, redirecionando para /api/*.
-
+/api/v*/routes/* → todas as rotas possíveis da versão.
+/api/v*/webhook/* → tratamento de requisições recebidas em /pages/api/webhook.
+/api/v*/utils.js* → funções internas da API:
+-Criptografia e descriptografia
+-Tratamento e formatação de dados
+-Funções auxiliares da API
+/infra/database/migrations/ → arquivos de migrations para versionamento do banco (node-pg-migrate).
+/infra/database/database.js
+/infra/tests/ → testes automatizados com Jest.
 /public/ → arquivos estáticos (favicon, imagens, vídeos, etc).
-
 /theme/ → constantes de layout, estilos globais e definição de temas.
-
 /utils/ → funções auxiliares (tratamento de dados, helpers, etc).
-
-Estrutura da API
-
-/api/V*/routes/ → todas as rotas possíveis da versão.
-
-/api/V*/webhook/ → tratamento de requisições recebidas em /pages/api/webhook.
-
-/api/V*/db.js → conexão com o banco de dados (pool).
-
-/api/V*/utils.js → funções internas:
-
-Criptografia e descriptografia
-
-Tratamento e formatação de dados
-
-Funções auxiliares da API
 
 🌳 Exemplo de Estrutura
 /components
@@ -89,6 +64,8 @@ Funções auxiliares da API
   └── useUserStore.js
 
 /pages
+  ├── index.js
+  ├── _app.js
   ├── app
   └── api
       └── webhook
@@ -96,23 +73,22 @@ Funções auxiliares da API
 /api
   └── V1
       ├── routes
-      ├── webhook
-      ├── db.js
+      └── index.js <-- Orquestrador
       └── utils.js
 
-/public
-/theme
-/utils
+/infra/database/
+/infra/database/migrations/ <-- versionamento do bd
+/infra/tests/ <-- Testes automatizados via JEST 
+/public <-- Arquivos publicos e Favicons
+/theme <-- arquivo CSS Glboal
+/utils <--  Funções Gerais 
 
 ✅ Boas Práticas
 
 Documentar cada página em /docs para facilitar onboardings.
-
-Manter versionamento de rotas da API em /api/V*.
-
+Manter versionamento de rotas da API em /api/v*.
 Centralizar estado global em Zustand via /hooks.
-
 Utilizar utils apenas para funções puras e reutilizáveis.
-
-Separar claramente a entrypoint pública (/pages/api/webhook) do processamento real (/api/V*/webhook).
-
+Separar claramente a entrypoint pública (/pages/api/webhook) do processamento real (/api/v*/index).
+Controlar evolução do banco com migrations (não alterar schema manualmente).
+Criar testes automatizados com Jest, cobrindo unidades críticas e integrações de API.
