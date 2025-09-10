@@ -1,13 +1,13 @@
 "use client";
 import Head from 'next/head';
 import Script from 'next/script';
-import { useEffect, useState } from 'react';
 
 export default function Aserpa() {
-  const [chartReady, setChartReady] = useState(false);
-
-  useEffect(() => {
-    if (!chartReady || !window.Chart) return;
+  const initializeCharts = () => {
+    if (typeof window.Chart === 'undefined') {
+      console.error('Chart.js is not loaded.');
+      return;
+    }
 
     // Gráfico composição de custos atuais
     const currentCtx = document.getElementById('currentCostsChart').getContext('2d');
@@ -61,7 +61,7 @@ export default function Aserpa() {
         scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } }
       }
     });
-  }, [chartReady]);
+  };
 
   return (
     <>
@@ -72,7 +72,7 @@ export default function Aserpa() {
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet" />
       </Head>
-      <Script src="https://cdn.jsdelivr.net/npm/chart.js" onLoad={() => setChartReady(true)} />
+      <Script src="https://cdn.jsdelivr.net/npm/chart.js" onLoad={initializeCharts} />
 
       <div className="bg-gray-50 text-gray-800" style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.92rem' }}>
         <div className="container mx-auto p-4 md:p-8">
