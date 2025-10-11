@@ -176,7 +176,7 @@ export default function Component() {
     return (
         <div 
             className="relative w-full flex flex-col items-center justify-center bg-black"
-            style={{ height: "500px" }} // aqui você define a altura que quiser
+            style={{ height: "300px" }} // aqui você define a altura que quiser
             >
             <canvas
                 ref={canvasRef}
