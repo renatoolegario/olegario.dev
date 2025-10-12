@@ -9,7 +9,7 @@ const particleOptions = {
     // Make a particle for this pixel if blue > 50 (range 0-255)
     return pixel.b > 50;
   },
-  color: ({ x, y, image }) => "rgba(255,255,255,0.64)", //#02d5fa
+  color: ({ x, y, image }) => "#1eb9d1", //
   radius: () => Math.random() * 1.5 + 0.5,
   mass: () => 40,
   friction: () => 0.15,
@@ -27,9 +27,9 @@ const Logo = () => {
     <Box component="section" id="home" sx={{ position: "relative" }}>
       <ParticleImage
         src={"/Olegário.Dev-removebg-preview.png"}
-        scale={0.75}
-        entropy={15}
-        maxParticles={500}
+        scale={1}
+        entropy={1}
+        maxParticles={1500}
         mouseMoveForce={motionForce}
         touchMoveForce={motionForce}
         particleOptions={particleOptions}
