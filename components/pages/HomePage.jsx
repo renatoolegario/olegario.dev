@@ -13,7 +13,9 @@ export default function HomePage() {
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "background.default", color: "text.primary" }}>
       <Header />
-      <HeroSection />
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+        <HeroSection />
+      </Box>
       <AboutSection />
       <TechnologiesSection />
       <PortfolioSection />
