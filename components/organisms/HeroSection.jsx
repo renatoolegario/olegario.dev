@@ -27,9 +27,9 @@ const Logo = () => {
     <Box component="section" id="home" sx={{ position: "relative" }}>
       <ParticleImage
         src={"/Olegário.Dev-removebg-preview.png"}
-        scale={1}
-        entropy={1}
-        maxParticles={1500}
+        scale={0.75}
+        entropy={5}
+        maxParticles={5000}
         mouseMoveForce={motionForce}
         touchMoveForce={motionForce}
         particleOptions={particleOptions}
