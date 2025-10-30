@@ -10,6 +10,12 @@ import {
 } from "@mui/material";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
+import MailOutlineIcon from "@mui/icons-material/MailOutline";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import YouTubeIcon from "@mui/icons-material/YouTube";
+import GitHubIcon from "@mui/icons-material/GitHub";
 
 const accentColor = "#7dd3fc";
 
@@ -58,13 +64,42 @@ export default function HomePage() {
       "Jules",
     ];
 
-    const contactInfo = [
-      "Telefone: (34) 99239-9036",
-      "E-mail: multiplas.fr@gmail.com",
-      "Instagram",
-      "LinkedIn",
-      "YouTube",
-      "GitHub",
+    const contactMethods = [
+      {
+        key: "phone",
+        icon: PhoneIphoneIcon,
+        value: "(34) 99239-9036",
+        href: "tel:+5534992399036",
+      },
+      {
+        key: "email",
+        icon: MailOutlineIcon,
+        value: "multiplas.fr@gmail.com",
+        href: "mailto:multiplas.fr@gmail.com",
+      },
+      {
+        key: "instagram",
+        icon: InstagramIcon,
+        value: "Instagram",
+      },
+      {
+        key: "linkedin",
+        icon: LinkedInIcon,
+        value: "LinkedIn",
+      },
+      {
+        key: "youtube",
+        icon: YouTubeIcon,
+        value: "YouTube",
+      },
+      {
+        key: "github",
+        icon: GitHubIcon,
+        value: "GitHub",
+      },
+    ];
+
+    const companyDetails = [
       "CNPJ: 37.398.466/0001-05",
       "Multiplasfr Sistema de Cobrança e Informática LTDA",
     ];
@@ -183,8 +218,46 @@ export default function HomePage() {
               Estamos prontos para discutir novos desafios, parcerias e
               consultorias especializadas.
             </Typography>
+            <Stack direction="row" flexWrap="wrap" gap={1.2}>
+              {contactMethods.map(({ key, icon: Icon, value, href }) => (
+                <Box
+                  key={key}
+                  component={href ? "a" : "div"}
+                  href={href}
+                  target={href?.startsWith("http") ? "_blank" : undefined}
+                  rel={href?.startsWith("http") ? "noopener noreferrer" : undefined}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    color: "rgba(255,255,255,0.85)",
+                    borderRadius: 2,
+                    px: 1.5,
+                    py: 1,
+                    textDecoration: "none",
+                    transition: "transform 0.25s ease, background-color 0.25s ease",
+                    "&:hover": {
+                      bgcolor: accentColor,
+                      color: "#0f172a",
+                      transform: "scale(1.02)",
+                    },
+                  }}
+                >
+                  <Icon sx={{ fontSize: "1.4rem" }} />
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "inherit",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
+                    {value}
+                  </Typography>
+                </Box>
+              ))}
+            </Stack>
             <Stack spacing={0.8}>
-              {contactInfo.map((item) => (
+              {companyDetails.map((item) => (
                 <Box
                   key={item}
                   sx={{
