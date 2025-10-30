@@ -47,6 +47,7 @@ Cada módulo opera sob um subdomínio dedicado, com roteamento inteligente via `
 | **Banco auxiliar**       | PostgreSQL via Docker (dados não sensíveis)            |
 | **N8N**                  | Docker em servidor dedicado (48GB RAM / 14 CPUs)       |
 | **Gerenciamento de Domínio** | Cloudflare (DNS, SSL, proteção)                    |
+| **Proxy Reverso**        | Nginx (roteamento avançado e cache em servidor dedicado) |
 
 ---
 
@@ -56,6 +57,7 @@ Cada módulo opera sob um subdomínio dedicado, com roteamento inteligente via `
 - Dependendo do produto, é redirecionado automaticamente para o submódulo correspondente.
 - Todos os submódulos compartilham autenticação centralizada e se comunicam via API ou N8N.
 - N8N atua como orquestrador para automações, webhooks e integrações externas.
+- Nginx centraliza o balanceamento entre serviços, garantindo cache estático e regras de segurança adicionais.
 
 ---
 
@@ -113,6 +115,15 @@ Cada módulo opera sob um subdomínio dedicado, com roteamento inteligente via `
 - [ ] Configurar domínio `n8n.uaistack.com.br` com NGINX + SSL
 - [ ] Ativar autenticação básica (`N8N_BASIC_AUTH_*`)
 - [ ] Criar os primeiros fluxos (testes, webhooks, ping de status)
+
+---
+
+### 🔹 NGINX (Proxy Reverso & Cache)
+- [ ] Provisionar servidor (ou container) com Nginx atualizado
+- [ ] Configurar blocos de servidor para cada subdomínio crítico (`uaistack.com.br`, `academy`, `zap`, `delivery`, `n8n`)
+- [ ] Implementar regras de cache para assets estáticos e compressão gzip/brotli
+- [ ] Ativar redirecionamentos HTTPS e headers de segurança (HSTS, CSP, etc.)
+- [ ] Integrar monitoramento de logs e métricas para análise de tráfego
 
 ---
 
