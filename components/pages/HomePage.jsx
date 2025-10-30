@@ -72,6 +72,7 @@ export default function HomePage() {
       "MySQL",
       "PostgreSQL",
       "BlobStorage",
+      "Docker",
       "VPS",
       "Extensões Web",
       "IA (Gemini / ChatGPT)",
