@@ -3,12 +3,15 @@
 import { useMemo, useState } from "react";
 import {
   Box,
+  Fade,
   IconButton,
   Stack,
   Typography,
 } from "@mui/material";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+
+const accentColor = "#7dd3fc";
 
 const badgeSx = {
   px: 1.5,
@@ -20,6 +23,13 @@ const badgeSx = {
   letterSpacing: "0.08em",
   textTransform: "uppercase",
   color: "rgba(255,255,255,0.92)",
+  transition: "transform 0.25s ease, background-color 0.25s ease",
+  cursor: "default",
+  "&:hover": {
+    bgcolor: accentColor,
+    color: "#0f172a",
+    transform: "scale(1.05)",
+  },
 };
 
 export default function HomePage() {
@@ -76,6 +86,7 @@ export default function HomePage() {
             sx={{
               color: "rgba(255,255,255,0.92)",
               lineHeight: 1.6,
+              textAlign: "justify",
             }}
           >
             Cada projeto nasce com o objetivo de entregar mais com menos no menor
@@ -91,7 +102,11 @@ export default function HomePage() {
           <Stack spacing={1.5}>
             <Typography
               variant="body2"
-              sx={{ color: "rgba(255,255,255,0.8)", lineHeight: 1.6 }}
+              sx={{
+                color: "rgba(255,255,255,0.8)",
+                lineHeight: 1.6,
+                textAlign: "justify",
+              }}
             >
               Construímos soluções sob medida utilizando uma base moderna e
               flexível que garante performance, escalabilidade e integrações
@@ -114,7 +129,11 @@ export default function HomePage() {
           <Stack spacing={1.5}>
             <Typography
               variant="body2"
-              sx={{ color: "rgba(255,255,255,0.8)", lineHeight: 1.6 }}
+              sx={{
+                color: "rgba(255,255,255,0.8)",
+                lineHeight: 1.6,
+                textAlign: "justify",
+              }}
             >
               Integramos bibliotecas e serviços especializados para acelerar a
               entrega e manter a qualidade em cada etapa do ciclo de vida dos
@@ -139,6 +158,7 @@ export default function HomePage() {
             sx={{
               color: "rgba(255,255,255,0.9)",
               lineHeight: 1.6,
+              textAlign: "justify",
             }}
           >
             Nosso foco é transformar a visão do cliente em realidade de forma
@@ -154,20 +174,43 @@ export default function HomePage() {
           <Stack spacing={1.2}>
             <Typography
               variant="body2"
-              sx={{ color: "rgba(255,255,255,0.8)", lineHeight: 1.6 }}
+              sx={{
+                color: "rgba(255,255,255,0.8)",
+                lineHeight: 1.6,
+                textAlign: "justify",
+              }}
             >
               Estamos prontos para discutir novos desafios, parcerias e
               consultorias especializadas.
             </Typography>
             <Stack spacing={0.8}>
               {contactInfo.map((item) => (
-                <Typography
+                <Box
                   key={item}
-                  variant="body2"
-                  sx={{ color: "rgba(255,255,255,0.85)", letterSpacing: "0.05em" }}
+                  sx={{
+                    color: "rgba(255,255,255,0.85)",
+                    borderRadius: 2,
+                    px: 1.5,
+                    py: 1,
+                    transition: "transform 0.25s ease, background-color 0.25s ease",
+                    "&:hover": {
+                      bgcolor: accentColor,
+                      color: "#0f172a",
+                      transform: "scale(1.02)",
+                    },
+                  }}
                 >
-                  {item}
-                </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "inherit",
+                      letterSpacing: "0.05em",
+                      textAlign: "justify",
+                    }}
+                  >
+                    {item}
+                  </Typography>
+                </Box>
               ))}
             </Stack>
           </Stack>
@@ -180,20 +223,43 @@ export default function HomePage() {
           <Stack spacing={1.5}>
             <Typography
               variant="body2"
-              sx={{ color: "rgba(255,255,255,0.8)", lineHeight: 1.6 }}
+              sx={{
+                color: "rgba(255,255,255,0.8)",
+                lineHeight: 1.6,
+                textAlign: "justify",
+              }}
             >
               Soluções digitais criadas para diferentes segmentos, todas com foco
               em resultados reais e expansão contínua.
             </Typography>
             <Stack spacing={0.8}>
               {projects.map((item) => (
-                <Typography
+                <Box
                   key={item}
-                  variant="body2"
-                  sx={{ color: "rgba(255,255,255,0.88)", letterSpacing: "0.05em" }}
+                  sx={{
+                    color: "rgba(255,255,255,0.88)",
+                    borderRadius: 2,
+                    px: 1.5,
+                    py: 1,
+                    transition: "transform 0.25s ease, background-color 0.25s ease",
+                    "&:hover": {
+                      bgcolor: accentColor,
+                      color: "#0f172a",
+                      transform: "scale(1.02)",
+                    },
+                  }}
                 >
-                  {item}
-                </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "inherit",
+                      letterSpacing: "0.05em",
+                      textAlign: "justify",
+                    }}
+                  >
+                    {item}
+                  </Typography>
+                </Box>
               ))}
             </Stack>
             <Typography
@@ -246,18 +312,16 @@ export default function HomePage() {
           px: { xs: 3, md: 6 },
           py: { xs: 2, md: 3 },
           display: "flex",
-          justifyContent: "center",
+          justifyContent: "flex-end",
           alignItems: "center",
-          gap: { xs: 2, md: 3 },
           fontWeight: 600,
           textTransform: "uppercase",
           letterSpacing: "0.2em",
           fontSize: { xs: "0.65rem", md: "0.8rem" },
+          color: accentColor,
         }}
       >
         <Typography component="span">Olegário.Dev</Typography>
-        <Typography component="span">Transformando ideias em produtos</Typography>
-        <Typography component="span">Soluções completas ponta a ponta</Typography>
       </Box>
 
       <Box
@@ -270,85 +334,99 @@ export default function HomePage() {
           pb: { xs: 4, md: 8 },
         }}
       >
-        <Stack spacing={2.5} alignItems="flex-end">
-          {hasPrevious && (
-            <IconButton
-              onClick={handlePrevious}
-              sx={{
-                bgcolor: "rgba(15,23,42,0.6)",
-                color: "#ffffff",
-                border: "1px solid rgba(255,255,255,0.35)",
-                "&:hover": {
-                  bgcolor: "rgba(15,23,42,0.8)",
-                },
-              }}
-            >
-              <KeyboardArrowUpIcon fontSize="large" />
-            </IconButton>
-          )}
-
-          <Box
+        <Stack
+          spacing={2.5}
+          alignItems="flex-end"
+          sx={{
+            height: { xs: "auto", md: 520 },
+            justifyContent: { xs: "center", md: "space-between" },
+          }}
+        >
+          <IconButton
+            onClick={handlePrevious}
+            disabled={!hasPrevious}
             sx={{
-              width: { xs: "100%", sm: 420, md: 480 },
-              maxWidth: 520,
-              bgcolor: "rgba(15,23,42,0.72)",
-              border: "1px solid rgba(255,255,255,0.18)",
-              borderRadius: 4,
-              p: { xs: 3, md: 4 },
-              backdropFilter: "blur(6px)",
-              display: "flex",
-              flexDirection: "column",
-              gap: { xs: 1.5, md: 2 },
-              boxShadow: "0 20px 45px rgba(8,15,35,0.45)",
+              bgcolor: "rgba(15,23,42,0.6)",
+              color: "#ffffff",
+              border: "1px solid rgba(255,255,255,0.35)",
+              visibility: hasPrevious ? "visible" : "hidden",
+              "&:hover": {
+                bgcolor: "rgba(15,23,42,0.8)",
+              },
             }}
           >
-            <Typography
-              variant="h3"
-              component="h1"
-              sx={{
-                fontSize: { xs: "1.5rem", md: "2.4rem" },
-                lineHeight: 1.2,
-                textAlign: "right",
-                letterSpacing: "0.03em",
-              }}
-            >
-              {activeSection.title}
-            </Typography>
+            <KeyboardArrowUpIcon fontSize="large" />
+          </IconButton>
 
-            <Typography
-              variant="subtitle1"
-              component="h2"
-              sx={{
-                textAlign: "right",
-                textTransform: "uppercase",
-                letterSpacing: "0.3em",
-                fontSize: { xs: "0.7rem", md: "0.85rem" },
-                color: "rgba(255,255,255,0.65)",
-              }}
-            >
-              {activeSection.subtitle}
-            </Typography>
+          <Box
+            key={activeIndex}
+            sx={{ width: "100%", maxWidth: 520 }}
+          >
+            <Fade in timeout={400}>
+              <Box
+                sx={{
+                  width: "100%",
+                  bgcolor: "rgba(15,23,42,0.72)",
+                  border: "1px solid rgba(255,255,255,0.18)",
+                  borderRadius: 4,
+                  p: { xs: 3, md: 4 },
+                  backdropFilter: "blur(6px)",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: { xs: 1.5, md: 2 },
+                  boxShadow: "0 20px 45px rgba(8,15,35,0.45)",
+                  transition: "transform 0.3s ease",
+                }}
+              >
+                <Typography
+                  variant="h3"
+                  component="h1"
+                  sx={{
+                    fontSize: { xs: "1.5rem", md: "2.4rem" },
+                    lineHeight: 1.2,
+                    textAlign: "right",
+                    letterSpacing: "0.03em",
+                  }}
+                >
+                  {activeSection.title}
+                </Typography>
 
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              {activeSection.body}
-            </Box>
+                <Typography
+                  variant="subtitle1"
+                  component="h2"
+                  sx={{
+                    textAlign: "right",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.3em",
+                    fontSize: { xs: "0.7rem", md: "0.85rem" },
+                    color: "rgba(255,255,255,0.65)",
+                  }}
+                >
+                  {activeSection.subtitle}
+                </Typography>
+
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                  {activeSection.body}
+                </Box>
+              </Box>
+            </Fade>
           </Box>
 
-          {hasNext && (
-            <IconButton
-              onClick={handleNext}
-              sx={{
-                bgcolor: "rgba(15,23,42,0.6)",
-                color: "#ffffff",
-                border: "1px solid rgba(255,255,255,0.35)",
-                "&:hover": {
-                  bgcolor: "rgba(15,23,42,0.8)",
-                },
-              }}
-            >
-              <KeyboardArrowDownIcon fontSize="large" />
-            </IconButton>
-          )}
+          <IconButton
+            onClick={handleNext}
+            disabled={!hasNext}
+            sx={{
+              bgcolor: "rgba(15,23,42,0.6)",
+              color: "#ffffff",
+              border: "1px solid rgba(255,255,255,0.35)",
+              visibility: hasNext ? "visible" : "hidden",
+              "&:hover": {
+                bgcolor: "rgba(15,23,42,0.8)",
+              },
+            }}
+          >
+            <KeyboardArrowDownIcon fontSize="large" />
+          </IconButton>
         </Stack>
       </Box>
     </Box>
