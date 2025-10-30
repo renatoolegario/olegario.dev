@@ -18,6 +18,16 @@ function MyApp({ Component, pageProps }) {
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
         <link rel="manifest" href="/favicon/site.webmanifest" />
       </Head>
+      <style jsx global>{`
+        html, body, #__next {
+          height: 100%;
+        }
+        body {
+          margin: 0;
+          overflow: hidden;
+          background-color: #000;
+        }
+      `}</style>
       <Component {...pageProps} />
     </ThemeProvider>
   );
