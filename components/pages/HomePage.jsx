@@ -395,15 +395,43 @@ export default function HomePage() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          fontWeight: 600,
-          textTransform: "uppercase",
-          letterSpacing: "0.2em",
-          fontSize: { xs: "0.65rem", md: "0.8rem" },
-          color: accentColor,
           textAlign: "center",
         }}
       >
-        <Typography component="span">Olegário.Dev</Typography>
+        <Typography
+          component="span"
+          sx={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: { xs: 1, md: 1.5 },
+            fontWeight: 800,
+            letterSpacing: { xs: "0.08em", md: "0.12em" },
+            fontSize: { xs: "0.75rem", md: "0.95rem" },
+            textTransform: "none",
+            color: "#ffffff",
+          }}
+        >
+          <Box component="span" sx={{ color: "#ffffff" }}>
+            Olegário
+          </Box>
+          <Box
+            component="span"
+            sx={{
+              px: { xs: 1, md: 1.5 },
+              py: { xs: 0.35, md: 0.45 },
+              borderRadius: "999px",
+              backgroundColor: "#1e40af",
+              color: "#ffffff",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontWeight: 800,
+              letterSpacing: "inherit",
+            }}
+          >
+            .Dev
+          </Box>
+        </Typography>
       </Box>
 
       <Box
