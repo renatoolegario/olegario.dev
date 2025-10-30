@@ -312,13 +312,14 @@ export default function HomePage() {
           px: { xs: 3, md: 6 },
           py: { xs: 2, md: 3 },
           display: "flex",
-          justifyContent: "flex-end",
+          justifyContent: "center",
           alignItems: "center",
           fontWeight: 600,
           textTransform: "uppercase",
           letterSpacing: "0.2em",
           fontSize: { xs: "0.65rem", md: "0.8rem" },
           color: accentColor,
+          textAlign: "center",
         }}
       >
         <Typography component="span">Olegário.Dev</Typography>
@@ -328,7 +329,7 @@ export default function HomePage() {
         sx={{
           flex: 1,
           display: "flex",
-          justifyContent: "flex-end",
+          justifyContent: "center",
           alignItems: "center",
           px: { xs: 3, sm: 6, md: 10 },
           pb: { xs: 4, md: 8 },
@@ -336,7 +337,7 @@ export default function HomePage() {
       >
         <Stack
           spacing={2.5}
-          alignItems="flex-end"
+          alignItems="center"
           sx={{
             height: { xs: "auto", md: 520 },
             justifyContent: { xs: "center", md: "space-between" },
@@ -360,7 +361,7 @@ export default function HomePage() {
 
           <Box
             key={activeIndex}
-            sx={{ width: "100%", maxWidth: 520 }}
+            sx={{ width: "100%", maxWidth: { xs: 520, md: 680 } }}
           >
             <Fade in timeout={400}>
               <Box
@@ -384,7 +385,7 @@ export default function HomePage() {
                   sx={{
                     fontSize: { xs: "1.5rem", md: "2.4rem" },
                     lineHeight: 1.2,
-                    textAlign: "right",
+                    textAlign: "center",
                     letterSpacing: "0.03em",
                   }}
                 >
@@ -395,7 +396,7 @@ export default function HomePage() {
                   variant="subtitle1"
                   component="h2"
                   sx={{
-                    textAlign: "right",
+                    textAlign: "center",
                     textTransform: "uppercase",
                     letterSpacing: "0.3em",
                     fontSize: { xs: "0.7rem", md: "0.85rem" },
