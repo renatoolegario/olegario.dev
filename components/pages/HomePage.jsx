@@ -53,6 +53,9 @@ export default function HomePage() {
       "Vercel",
       "Neon",
       "Checkouts (Asaas / Kirvano)",
+      "Migrations",
+      "REST API",
+      "GitHub",
     ];
 
     const frameworks = [
@@ -62,6 +65,11 @@ export default function HomePage() {
       "Crypto",
       "Codex",
       "Jules",
+      "node-pg-migrate",
+      "MUI",
+      "Zustand",
+      "ESLint",
+      "Prettier",
     ];
 
     const contactMethods = [
