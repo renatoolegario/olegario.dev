@@ -99,6 +99,10 @@ export default function HomePage() {
       "Zustand",
       "ESLint",
       "Prettier",
+      "wa-js",
+      "whaticket",
+      "whiskey baileys",
+      "ticketz",
     ];
 
     const contactMethods = [
