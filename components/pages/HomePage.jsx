@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Fade,
@@ -16,6 +16,7 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import GitHubIcon from "@mui/icons-material/GitHub";
+import { keyframes } from "@mui/system";
 
 const accentColor = "#7dd3fc";
 
@@ -38,7 +39,36 @@ const badgeSx = {
   },
 };
 
+const devBackgrounds = [
+  "linear-gradient(135deg, rgba(125, 211, 252, 0.95), rgba(56, 189, 248, 0.6))",
+  "linear-gradient(135deg, rgba(129, 140, 248, 0.9), rgba(14, 165, 233, 0.65))",
+  "linear-gradient(135deg, rgba(236, 72, 153, 0.85), rgba(14, 116, 144, 0.7))",
+  "linear-gradient(135deg, rgba(45, 212, 191, 0.9), rgba(99, 102, 241, 0.7))",
+];
+
+const shimmerAnimation = keyframes`
+  0% { transform: translateX(-120%); }
+  50% { transform: translateX(60%); }
+  100% { transform: translateX(120%); }
+`;
+
+const glowPulse = keyframes`
+  0% { opacity: 0.35; box-shadow: 0 0 18px rgba(125, 211, 252, 0.45); }
+  50% { opacity: 0.7; box-shadow: 0 0 28px rgba(56, 189, 248, 0.65); }
+  100% { opacity: 0.35; box-shadow: 0 0 18px rgba(125, 211, 252, 0.45); }
+`;
+
 export default function HomePage() {
+  const [devBackgroundIndex, setDevBackgroundIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDevBackgroundIndex((index) => (index + 1) % devBackgrounds.length);
+    }, 3200);
+
+    return () => clearInterval(interval);
+  }, []);
+
   const sections = useMemo(() => {
     const technologies = [
       "PHP",
@@ -407,33 +437,55 @@ export default function HomePage() {
           sx={{
             display: "inline-flex",
             alignItems: "center",
-            gap: { xs: 1, md: 1.5 },
+            gap: { xs: 0.75, md: 1 },
             fontWeight: 800,
             letterSpacing: { xs: "0.08em", md: "0.12em" },
-            fontSize: { xs: "0.75rem", md: "0.95rem" },
+            fontSize: { xs: "0.78rem", md: "1rem" },
             textTransform: "none",
             color: "#ffffff",
           }}
         >
-          <Box component="span" sx={{ color: "#ffffff" }}>
-            Olegário
-          </Box>
           <Box
             component="span"
             sx={{
-              px: { xs: 1, md: 1.5 },
-              py: { xs: 0.35, md: 0.45 },
-              borderRadius: "999px",
-              backgroundColor: "#1e40af",
-              color: "#ffffff",
               display: "inline-flex",
               alignItems: "center",
-              justifyContent: "center",
-              fontWeight: 800,
-              letterSpacing: "inherit",
+              gap: { xs: 0.35, md: 0.45 },
             }}
           >
-            .Dev
+            <Box component="span" sx={{ color: "#f8fafc" }}>
+              Olegário
+            </Box>
+            <Box
+              component="span"
+              sx={{
+                position: "relative",
+                px: { xs: 1, md: 1.4 },
+                py: { xs: 0.35, md: 0.45 },
+                borderRadius: "999px",
+                color: "#0f172a",
+                fontWeight: 800,
+                letterSpacing: "inherit",
+                textTransform: "lowercase",
+                textShadow: "0 2px 10px rgba(15,23,42,0.35)",
+                overflow: "hidden",
+                bgcolor: "rgba(125,211,252,0.95)",
+                transition: "background 0.6s ease",
+                backgroundImage: devBackgrounds[devBackgroundIndex],
+                backgroundSize: "220% 220%",
+                animation: `${glowPulse} 4.5s ease-in-out infinite`,
+                "&::before": {
+                  content: '""',
+                  position: "absolute",
+                  inset: "-40%",
+                  background: "linear-gradient(120deg, rgba(255,255,255,0), rgba(255,255,255,0.5), rgba(255,255,255,0))",
+                  animation: `${shimmerAnimation} 3.2s ease-in-out infinite`,
+                  mixBlendMode: "screen",
+                },
+              }}
+            >
+              .dev
+            </Box>
           </Box>
         </Typography>
       </Box>
