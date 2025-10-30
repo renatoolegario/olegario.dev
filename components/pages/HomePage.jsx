@@ -56,6 +56,10 @@ export default function HomePage() {
       "Migrations",
       "REST API",
       "GitHub",
+      "Facebook",
+      "API WhatsApp Oficial",
+      "Google Cloud",
+      "Cloudflare",
     ];
 
     const frameworks = [
