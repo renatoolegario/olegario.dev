@@ -425,7 +425,8 @@ export default function HomePage() {
         component="nav"
         sx={{
           px: { xs: 3, md: 6 },
-          py: { xs: 2, md: 3 },
+          pt: { xs: 4, md: 6 },
+          pb: { xs: 1.5, md: 2 },
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
