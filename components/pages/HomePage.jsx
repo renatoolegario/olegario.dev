@@ -1,13 +1,8 @@
 "use client";
-
+import SplitText from "components/SplitText";
+import FuzzyText from "components/FuzzyText";
 import { useEffect, useMemo, useState } from "react";
-import {
-  Box,
-  Fade,
-  IconButton,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Fade, IconButton, Stack, Typography } from "@mui/material";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
@@ -166,9 +161,9 @@ export default function HomePage() {
               textAlign: "justify",
             }}
           >
-            Cada projeto nasce com o objetivo de entregar mais com menos no menor
-            tempo possível. Unimos estratégia, tecnologia e execução enxuta para
-            transformar desafios em resultados mensuráveis.
+            Cada projeto nasce com o objetivo de entregar mais com menos no
+            menor tempo possível. Unimos estratégia, tecnologia e execução
+            enxuta para transformar desafios em resultados mensuráveis.
           </Typography>
         ),
       },
@@ -239,8 +234,8 @@ export default function HomePage() {
             }}
           >
             Nosso foco é transformar a visão do cliente em realidade de forma
-            pragmática, combinando automação, inteligência e design funcional para
-            acelerar operações e gerar valor imediato.
+            pragmática, combinando automação, inteligência e design funcional
+            para acelerar operações e gerar valor imediato.
           </Typography>
         ),
       },
@@ -267,7 +262,9 @@ export default function HomePage() {
                   component={href ? "a" : "div"}
                   href={href}
                   target={href?.startsWith("http") ? "_blank" : undefined}
-                  rel={href?.startsWith("http") ? "noopener noreferrer" : undefined}
+                  rel={
+                    href?.startsWith("http") ? "noopener noreferrer" : undefined
+                  }
                   sx={{
                     display: "flex",
                     alignItems: "center",
@@ -277,7 +274,8 @@ export default function HomePage() {
                     px: 1.5,
                     py: 1,
                     textDecoration: "none",
-                    transition: "transform 0.25s ease, background-color 0.25s ease",
+                    transition:
+                      "transform 0.25s ease, background-color 0.25s ease",
                     "&:hover": {
                       bgcolor: accentColor,
                       color: "#0f172a",
@@ -307,7 +305,8 @@ export default function HomePage() {
                     borderRadius: 2,
                     px: 1.5,
                     py: 1,
-                    transition: "transform 0.25s ease, background-color 0.25s ease",
+                    transition:
+                      "transform 0.25s ease, background-color 0.25s ease",
                     "&:hover": {
                       bgcolor: accentColor,
                       color: "#0f172a",
@@ -344,8 +343,8 @@ export default function HomePage() {
                 textAlign: "justify",
               }}
             >
-              Soluções digitais criadas para diferentes segmentos, todas com foco
-              em resultados reais e expansão contínua.
+              Soluções digitais criadas para diferentes segmentos, todas com
+              foco em resultados reais e expansão contínua.
             </Typography>
             <Stack spacing={0.8}>
               {projects.map((item) => (
@@ -356,7 +355,8 @@ export default function HomePage() {
                     borderRadius: 2,
                     px: 1.5,
                     py: 1,
-                    transition: "transform 0.25s ease, background-color 0.25s ease",
+                    transition:
+                      "transform 0.25s ease, background-color 0.25s ease",
                     "&:hover": {
                       bgcolor: accentColor,
                       color: "#0f172a",
@@ -381,8 +381,8 @@ export default function HomePage() {
               variant="caption"
               sx={{ color: "rgba(255,255,255,0.6)", letterSpacing: "0.1em" }}
             >
-              Novos projetos podem ser adicionados facilmente conforme o portfólio
-              evolui.
+              Novos projetos podem ser adicionados facilmente conforme o
+              portfólio evolui.
             </Typography>
           </Stack>
         ),
@@ -432,62 +432,11 @@ export default function HomePage() {
           textAlign: "center",
         }}
       >
-        <Typography
-          component="span"
-          sx={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: { xs: 0.75, md: 1 },
-            fontWeight: 800,
-            letterSpacing: { xs: "0.08em", md: "0.12em" },
-            fontSize: { xs: "0.78rem", md: "1rem" },
-            textTransform: "none",
-            color: "#ffffff",
-          }}
-        >
-          <Box
-            component="span"
-            sx={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: { xs: 0.35, md: 0.45 },
-            }}
-          >
-            <Box component="span" sx={{ color: "#f8fafc" }}>
-              Olegário
-            </Box>
-            <Box
-              component="span"
-              sx={{
-                position: "relative",
-                px: { xs: 1, md: 1.4 },
-                py: { xs: 0.35, md: 0.45 },
-                borderRadius: "999px",
-                color: "#0f172a",
-                fontWeight: 800,
-                letterSpacing: "inherit",
-                textTransform: "lowercase",
-                textShadow: "0 2px 10px rgba(15,23,42,0.35)",
-                overflow: "hidden",
-                bgcolor: "rgba(125,211,252,0.95)",
-                transition: "background 0.6s ease",
-                backgroundImage: devBackgrounds[devBackgroundIndex],
-                backgroundSize: "220% 220%",
-                animation: `${glowPulse} 4.5s ease-in-out infinite`,
-                "&::before": {
-                  content: '""',
-                  position: "absolute",
-                  inset: "-40%",
-                  background: "linear-gradient(120deg, rgba(255,255,255,0), rgba(255,255,255,0.5), rgba(255,255,255,0))",
-                  animation: `${shimmerAnimation} 3.2s ease-in-out infinite`,
-                  mixBlendMode: "screen",
-                },
-              }}
-            >
-              .dev
-            </Box>
-          </Box>
-        </Typography>
+        {/* <SplitText text="Olegário.Dev" delay={100} duration={0.6} /> */}
+
+        <FuzzyText baseIntensity={0.2} hoverIntensity={0.5} enableHover={true}>
+          Olegário.Dev
+        </FuzzyText>
       </Box>
 
       <Box
