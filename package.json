@@ -9,6 +9,7 @@
     "test:watch": "jest --runInBand --watch",
     "migration:create": "node-pg-migrate --migrations-dir infra/database/migrations create",
     "migration:up": "node-pg-migrate --migrations-dir infra/database/migrations --envPath .env up",
+    "migration:down": "node-pg-migrate --migrations-dir infra/database/migrations --envPath .env down",
     "lint": "next lint"
   },
   "dependencies": {
