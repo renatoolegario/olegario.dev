@@ -73,8 +73,28 @@ async function createMercadoPagoOrder({ encryptedEmail, modelType }) {
   });
 
   if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData?.message || "Erro ao criar pedido no Mercado Pago");
+    let errorText;
+    let errorData = null;
+
+    try {
+      errorText = await response.text();
+      errorData = JSON.parse(errorText);
+    } catch (parseError) {
+      errorData = errorText || null;
+    }
+
+    const errorMessage =
+      errorData?.message ||
+      errorData?.error ||
+      `Mercado Pago retornou o status ${response.status} (${response.statusText || "sem descrição"})`;
+
+    const error = new Error(`Erro ao criar pedido no Mercado Pago: ${errorMessage}`);
+
+    error.status = response.status;
+    error.statusText = response.statusText;
+    error.response = errorData;
+
+    throw error;
   }
 
   return response.json();
@@ -108,7 +128,19 @@ export default async function handler(req, res) {
       raw: orderResponse,
     });
   } catch (error) {
-    console.error("Erro ao criar ordem:", error);
-    return res.status(500).json({ message: error.message || "Erro interno ao gerar pedido" });
+    console.error("Erro ao criar ordem no Mercado Pago:", {
+      message: error?.message,
+      status: error?.status,
+      statusText: error?.statusText,
+      response: error?.response,
+    });
+
+    return res.status(500).json({
+      message: error.message || "Erro interno ao gerar pedido",
+      details: {
+        status: error?.status,
+        statusText: error?.statusText,
+      },
+    });
   }
 }
