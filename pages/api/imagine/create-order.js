@@ -151,6 +151,7 @@ export default async function handler(req, res) {
       details: {
         status: error?.status,
         statusText: error?.statusText,
+        response: error?.response || null,
       },
     });
   }
