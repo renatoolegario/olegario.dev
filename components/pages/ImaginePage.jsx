@@ -9,7 +9,9 @@ import {
   CardContent,
   CircularProgress,
   Divider,
+  Drawer,
   Grid,
+  IconButton,
   MenuItem,
   Select,
   Stack,
@@ -37,6 +39,7 @@ export default function ImaginePage() {
   const [statusMessage, setStatusMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [config, setConfig] = useState({ model: "", price: null });
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const isPaymentConfirmed = useMemo(() => {
     if (!orderStatus) return false;
@@ -135,6 +138,15 @@ export default function ImaginePage() {
     setSelectedFile(file);
     setPreviewUrl(url);
   }, [previewUrl]);
+
+  const handlePreviewOpen = useCallback(() => {
+    if (!previewUrl) return;
+    setIsPreviewOpen(true);
+  }, [previewUrl]);
+
+  const handlePreviewClose = useCallback(() => {
+    setIsPreviewOpen(false);
+  }, []);
 
   const handleSaveEmail = useCallback(async () => {
     setErrorMessage("");
@@ -267,18 +279,43 @@ export default function ImaginePage() {
 
           {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
 
-          <Grid container spacing={4} alignItems="stretch">
-            <Grid item xs={12} md={6}>
+          <Grid
+            container
+            spacing={4}
+            alignItems="stretch"
+            sx={{
+              flex: 1,
+              minHeight: { md: "60vh" },
+            }}
+          >
+            <Grid
+              item
+              xs={12}
+              md={6}
+              sx={{
+                display: "flex",
+              }}
+            >
               <Card
                 sx={{
                   height: "100%",
+                  width: "100%",
                   bgcolor: "rgba(15,23,42,0.65)",
                   border: "1px solid rgba(148,163,184,0.2)",
                   backdropFilter: "blur(8px)",
+                  maxHeight: { md: "calc(100vh - 220px)" },
                 }}
               >
-                <CardContent>
-                  <Stack spacing={3}>
+                <CardContent
+                  sx={{
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    overflow: "hidden",
+                    p: { xs: 3, md: 4 },
+                  }}
+                >
+                  <Stack spacing={3} sx={{ overflowY: "auto", pr: 1 }}>
                     <Box>
                       <Typography variant="subtitle2" gutterBottom>
                         Email de acesso
@@ -381,13 +418,20 @@ export default function ImaginePage() {
                             borderRadius: 2,
                             overflow: "hidden",
                             border: "1px solid rgba(148,163,184,0.3)",
+                            cursor: "pointer",
                           }}
+                          onClick={handlePreviewOpen}
                         >
                           <Box
                             component="img"
                             src={previewUrl}
                             alt="Pré-visualização"
-                            sx={{ width: "100%", display: "block" }}
+                            sx={{
+                              width: "100%",
+                              height: 200,
+                              objectFit: "cover",
+                              display: "block",
+                            }}
                           />
                         </Box>
                       ) : null}
@@ -397,17 +441,34 @@ export default function ImaginePage() {
               </Card>
             </Grid>
 
-            <Grid item xs={12} md={6}>
+            <Grid
+              item
+              xs={12}
+              md={6}
+              sx={{
+                display: "flex",
+              }}
+            >
               <Card
                 sx={{
                   height: "100%",
                   bgcolor: "rgba(15,23,42,0.8)",
                   border: "1px solid rgba(148,163,184,0.2)",
                   backdropFilter: "blur(10px)",
+                  width: "100%",
+                  maxHeight: { md: "calc(100vh - 220px)" },
                 }}
               >
-                <CardContent sx={{ height: "100%" }}>
-                  <Stack spacing={3} height="100%">
+                <CardContent
+                  sx={{
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    overflow: "hidden",
+                    p: { xs: 3, md: 4 },
+                  }}
+                >
+                  <Stack spacing={3} height="100%" sx={{ overflowY: "auto", pr: 1 }}>
                     <Box>
                       <Typography variant="h6" fontWeight={600} gutterBottom>
                         Pagamento e geração
@@ -483,6 +544,57 @@ export default function ImaginePage() {
           </Grid>
         </Stack>
       </Box>
+
+      <Drawer
+        anchor="left"
+        open={isPreviewOpen}
+        onClose={handlePreviewClose}
+        ModalProps={{ keepMounted: true }}
+        PaperProps={{
+          sx: {
+            width: { xs: "100%", sm: 480, md: 540 },
+            bgcolor: "rgba(2,6,23,0.95)",
+            color: "#f8fafc",
+          },
+        }}
+      >
+        <Box
+          sx={{
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            p: 3,
+            gap: 2,
+          }}
+        >
+          <Stack direction="row" justifyContent="flex-end">
+            <IconButton onClick={handlePreviewClose} sx={{ color: "#f8fafc" }}>
+              ✕
+            </IconButton>
+          </Stack>
+          <Box
+            sx={{
+              flex: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {previewUrl ? (
+              <Box
+                component="img"
+                src={previewUrl}
+                alt="Pré-visualização ampliada"
+                sx={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "contain",
+                }}
+              />
+            ) : null}
+          </Box>
+        </Box>
+      </Drawer>
     </Box>
   );
 }
