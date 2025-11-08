@@ -47,7 +47,7 @@ async function createMercadoPagoOrder({ encryptedEmail, modelType }) {
         quantity: 1,
         external_categories: [
           {
-            id: TYPE_INTEGRACTION || "digital_content",
+            id: TYPE_INTEGRACTION || "qr",
           },
         ],
       },
@@ -88,7 +88,9 @@ async function createMercadoPagoOrder({ encryptedEmail, modelType }) {
       errorData?.error ||
       `Mercado Pago retornou o status ${response.status} (${response.statusText || "sem descrição"})`;
 
-    const error = new Error(`Erro ao criar pedido no Mercado Pago: ${errorMessage}`);
+    const error = new Error(
+      `Erro ao criar pedido no Mercado Pago: ${errorMessage}`
+    );
 
     error.status = response.status;
     error.statusText = response.statusText;
@@ -113,10 +115,19 @@ export default async function handler(req, res) {
   }
 
   try {
-    const orderResponse = await createMercadoPagoOrder({ encryptedEmail, modelType });
+    const orderResponse = await createMercadoPagoOrder({
+      encryptedEmail,
+      modelType,
+    });
     const orderId = orderResponse?.id || orderResponse?.order?.id;
-    const qrData = orderResponse?.qr_data || orderResponse?.qr?.data || orderResponse?.point_of_interaction?.transaction_data?.qr_code;
-    const qrImage = orderResponse?.qr_image || orderResponse?.qr?.image || orderResponse?.point_of_interaction?.transaction_data?.qr_code_base64;
+    const qrData =
+      orderResponse?.qr_data ||
+      orderResponse?.qr?.data ||
+      orderResponse?.point_of_interaction?.transaction_data?.qr_code;
+    const qrImage =
+      orderResponse?.qr_image ||
+      orderResponse?.qr?.image ||
+      orderResponse?.point_of_interaction?.transaction_data?.qr_code_base64;
     const status = orderResponse?.status || orderResponse?.order_status;
 
     return res.status(200).json({
