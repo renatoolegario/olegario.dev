@@ -1,3 +1,5 @@
+import { normalizeMercadoPagoOrder } from "../../../utils/normalizeMercadoPagoOrder";
+
 export default async function handler(req, res) {
   if (req.method !== "GET") {
     res.setHeader("Allow", ["GET"]);
@@ -30,11 +32,18 @@ export default async function handler(req, res) {
     }
 
     const data = await response.json();
-    const status = data?.status || data?.order_status;
+    const normalizedOrder = normalizeMercadoPagoOrder(data);
 
     return res.status(200).json({
-      status,
-      raw: data,
+      orderId: normalizedOrder.id,
+      status: normalizedOrder.status,
+      statusDetail: normalizedOrder.statusDetail,
+      qrData: normalizedOrder.qrData,
+      qrImage: normalizedOrder.qrImage,
+      totalAmount: normalizedOrder.totalAmount,
+      externalReference: normalizedOrder.externalReference,
+      expirationTime: normalizedOrder.expirationTime,
+      order: normalizedOrder,
     });
   } catch (error) {
     console.error("Erro ao consultar status do pedido:", error);

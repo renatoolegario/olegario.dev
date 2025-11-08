@@ -23,6 +23,7 @@ import Cookies from "js-cookie";
 const EMAIL_STORAGE_KEY = "imagine_user_email";
 const EMAIL_TOKEN_STORAGE_KEY = "imagine_user_token";
 const POLLING_INTERVAL = 5000;
+const ORDER_REFERENCE_STORAGE_KEY = "imagine_order_reference";
 
 export default function ImaginePage() {
   const [email, setEmail] = useState("");
@@ -90,8 +91,12 @@ export default function ImaginePage() {
           }
           const data = await response.json();
           const status = data?.status || null;
+          const statusDetail = data?.statusDetail || "";
           if (status) {
             setOrderStatus(status);
+          }
+          if (statusDetail) {
+            setStatusMessage(statusDetail);
           }
         } catch (error) {
           console.error("Erro durante a checagem de status", error);
@@ -215,6 +220,25 @@ export default function ImaginePage() {
     setQrCodeUrl("");
 
     try {
+      const generateReference = () => {
+        if (typeof crypto !== "undefined" && crypto.randomUUID) {
+          return crypto.randomUUID();
+        }
+
+        return `imagine-${Date.now()}-${Math.random()
+          .toString(36)
+          .slice(2, 10)}`;
+      };
+
+      const newExternalReference = generateReference();
+
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem(
+          ORDER_REFERENCE_STORAGE_KEY,
+          newExternalReference
+        );
+      }
+
       const response = await fetch("/api/imagine/create-order", {
         method: "POST",
         headers: {
@@ -223,6 +247,7 @@ export default function ImaginePage() {
         body: JSON.stringify({
           encryptedEmail,
           modelType,
+          externalReference: newExternalReference,
         }),
       });
 
@@ -235,6 +260,14 @@ export default function ImaginePage() {
 
       setOrderId(data?.orderId || null);
       setOrderStatus(data?.status || null);
+      setStatusMessage(data?.statusDetail || "");
+
+      if (typeof window !== "undefined" && data?.externalReference) {
+        window.localStorage.setItem(
+          ORDER_REFERENCE_STORAGE_KEY,
+          data.externalReference
+        );
+      }
 
       if (data?.qrImage) {
         setQrCodeUrl(`data:image/png;base64,${data.qrImage}`);

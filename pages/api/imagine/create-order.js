@@ -1,6 +1,12 @@
 import { v4 as uuidv4 } from "uuid";
 
-async function createMercadoPagoOrder({ encryptedEmail, modelType }) {
+import { normalizeMercadoPagoOrder } from "../../../utils/normalizeMercadoPagoOrder";
+
+async function createMercadoPagoOrder({
+  encryptedEmail,
+  modelType,
+  externalReference,
+}) {
   const {
     ACCESS_TOKEN,
     PRICE,
@@ -9,39 +15,48 @@ async function createMercadoPagoOrder({ encryptedEmail, modelType }) {
     NUMBER_APLICATION,
     USER_ID,
     PUBLIC_KEY,
+    EXTERNAL_ID_CAIXA,
   } = process.env;
 
   if (!ACCESS_TOKEN) {
     throw new Error("ACCESS_TOKEN não configurado");
   }
 
-  const totalAmount = Number(PRICE || 0);
-  const description = `${MODEL || "Imagem"} - ${modelType}`;
-  const externalReference = `imagine-${Date.now()}`;
+  const parsedAmount = Number.parseFloat(PRICE);
+  const hasValidAmount = Number.isFinite(parsedAmount);
+  const numericAmount = hasValidAmount ? parsedAmount : 0;
+  const formattedAmount = hasValidAmount
+    ? parsedAmount.toFixed(2)
+    : numericAmount.toFixed(2);
+  const description = MODEL || "Imagine";
+  const fallbackExternalReference = `imagine-${Date.now()}`;
+  const normalizedExternalReference =
+    externalReference?.toString().trim() || fallbackExternalReference;
+  const qrExternalPosId = EXTERNAL_ID_CAIXA?.trim() || null;
   const idempotencyKey = uuidv4();
 
   const body = {
     type: "qr",
-    total_amount: totalAmount,
+    total_amount: formattedAmount,
     description,
-    external_reference: externalReference,
+    external_reference: normalizedExternalReference,
     config: {
       qr: {
-        external_pos_id: encryptedEmail,
-        mode: "static",
+        external_pos_id: qrExternalPosId || encryptedEmail,
+        mode: "dynamic",
       },
     },
     transactions: {
       payments: [
         {
-          amount: totalAmount,
+          amount: formattedAmount,
         },
       ],
     },
     items: [
       {
         title: MODEL || "Geração de imagem",
-        unit_price: totalAmount,
+        unit_price: numericAmount,
         unit_measure: "un",
         external_code: NUMBER_APLICATION || "IMAGINE_APP",
         quantity: 1,
@@ -59,6 +74,8 @@ async function createMercadoPagoOrder({ encryptedEmail, modelType }) {
       modelType,
       integration_type: TYPE_INTEGRACTION || null,
       number_aplication: NUMBER_APLICATION || null,
+      encrypted_email: encryptedEmail || null,
+      external_reference: normalizedExternalReference,
     },
   };
 
@@ -99,7 +116,13 @@ async function createMercadoPagoOrder({ encryptedEmail, modelType }) {
     throw error;
   }
 
-  return response.json();
+  const data = await response.json();
+
+  if (!data?.external_reference && normalizedExternalReference) {
+    data.external_reference = normalizedExternalReference;
+  }
+
+  return data;
 }
 
 export default async function handler(req, res) {
@@ -108,35 +131,36 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: "Método não permitido" });
   }
 
-  const { encryptedEmail, modelType } = req.body || {};
+  const { encryptedEmail, modelType, externalReference } = req.body || {};
 
   if (!encryptedEmail) {
     return res.status(400).json({ message: "Email criptografado obrigatório" });
+  }
+
+  if (!externalReference) {
+    return res.status(400).json({ message: "externalReference é obrigatório" });
   }
 
   try {
     const orderResponse = await createMercadoPagoOrder({
       encryptedEmail,
       modelType,
+      externalReference,
     });
-    const orderId = orderResponse?.id || orderResponse?.order?.id;
-    const qrData =
-      orderResponse?.qr_data ||
-      orderResponse?.qr?.data ||
-      orderResponse?.point_of_interaction?.transaction_data?.qr_code;
-    const qrImage =
-      orderResponse?.qr_image ||
-      orderResponse?.qr?.image ||
-      orderResponse?.point_of_interaction?.transaction_data?.qr_code_base64;
-    const status = orderResponse?.status || orderResponse?.order_status;
+    const normalizedOrder = normalizeMercadoPagoOrder(orderResponse);
+    const externalReferenceResponse =
+      normalizedOrder.externalReference || externalReference;
 
     return res.status(200).json({
-      orderId,
-      status,
-      qrData,
-      qrImage,
-      totalAmount: orderResponse?.total_amount,
-      raw: orderResponse,
+      orderId: normalizedOrder.id,
+      status: normalizedOrder.status,
+      statusDetail: normalizedOrder.statusDetail,
+      qrData: normalizedOrder.qrData,
+      qrImage: normalizedOrder.qrImage,
+      totalAmount: normalizedOrder.totalAmount,
+      externalReference: externalReferenceResponse,
+      expirationTime: normalizedOrder.expirationTime,
+      order: normalizedOrder,
     });
   } catch (error) {
     console.error("Erro ao criar ordem no Mercado Pago:", {
