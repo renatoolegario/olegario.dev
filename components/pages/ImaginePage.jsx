@@ -18,6 +18,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import Cookies from "js-cookie";
 
 const EMAIL_STORAGE_KEY = "imagine_user_email";
@@ -37,10 +38,36 @@ export default function ImaginePage() {
   const [orderId, setOrderId] = useState(null);
   const [orderStatus, setOrderStatus] = useState(null);
   const [qrCodeUrl, setQrCodeUrl] = useState("");
+  const [qrCodeData, setQrCodeData] = useState("");
   const [statusMessage, setStatusMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [config, setConfig] = useState({ model: "", price: null });
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [copyStatus, setCopyStatus] = useState(null);
+
+  const applyQrSources = useCallback((orderData) => {
+    if (!orderData) {
+      setQrCodeUrl("");
+      setQrCodeData("");
+      return;
+    }
+
+    const qrImage = orderData?.qrImage;
+    const qrDataValue = orderData?.qrData;
+
+    if (qrImage) {
+      setQrCodeUrl(`data:image/png;base64,${qrImage}`);
+    } else if (qrDataValue) {
+      const encodedData = encodeURIComponent(qrDataValue);
+      setQrCodeUrl(
+        `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodedData}`
+      );
+    } else {
+      setQrCodeUrl("");
+    }
+
+    setQrCodeData(qrDataValue || "");
+  }, []);
 
   const isPaymentConfirmed = useMemo(() => {
     if (!orderStatus) return false;
@@ -98,6 +125,7 @@ export default function ImaginePage() {
           if (statusDetail) {
             setStatusMessage(statusDetail);
           }
+          applyQrSources(data);
         } catch (error) {
           console.error("Erro durante a checagem de status", error);
         }
@@ -109,14 +137,28 @@ export default function ImaginePage() {
         clearInterval(intervalId);
       }
     };
-  }, [orderId, isPaymentConfirmed]);
+  }, [applyQrSources, isPaymentConfirmed, orderId]);
 
   useEffect(() => {
     if (isPaymentConfirmed) {
-      setQrCodeUrl("");
+      applyQrSources(null);
       setStatusMessage("Pagamento confirmado! EM CONSTRUÇÃO");
     }
-  }, [isPaymentConfirmed]);
+  }, [applyQrSources, isPaymentConfirmed]);
+
+  useEffect(() => {
+    if (!copyStatus?.message) {
+      return undefined;
+    }
+
+    const timeoutId = setTimeout(() => {
+      setCopyStatus(null);
+    }, 4000);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [copyStatus]);
 
   useEffect(() => {
     return () => {
@@ -217,7 +259,8 @@ export default function ImaginePage() {
     setOrderId(null);
     setOrderStatus(null);
     setStatusMessage("");
-    setQrCodeUrl("");
+    applyQrSources(null);
+    setCopyStatus(null);
 
     try {
       const generateReference = () => {
@@ -269,23 +312,55 @@ export default function ImaginePage() {
         );
       }
 
-      if (data?.qrImage) {
-        setQrCodeUrl(`data:image/png;base64,${data.qrImage}`);
-      } else if (data?.qrData) {
-        const encodedData = encodeURIComponent(data.qrData);
-        setQrCodeUrl(
-          `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodedData}`
-        );
-      } else {
-        setQrCodeUrl("");
-      }
+      applyQrSources(data);
     } catch (error) {
       console.error(error);
       setErrorMessage(error.message || "Erro inesperado ao gerar pedido");
     } finally {
       setIsGenerating(false);
     }
-  }, [emailSaved, encryptedEmail, modelType, selectedFile]);
+  }, [applyQrSources, emailSaved, encryptedEmail, modelType, selectedFile]);
+
+  const handleCopyQrData = useCallback(async () => {
+    if (!qrCodeData) {
+      return;
+    }
+
+    try {
+      const canUseClipboard =
+        typeof navigator !== "undefined" &&
+        navigator.clipboard &&
+        typeof navigator.clipboard.writeText === "function";
+
+      if (canUseClipboard) {
+        await navigator.clipboard.writeText(qrCodeData);
+      } else if (typeof document !== "undefined") {
+        const textArea = document.createElement("textarea");
+        textArea.value = qrCodeData;
+        textArea.style.position = "fixed";
+        textArea.style.opacity = "0";
+        textArea.style.pointerEvents = "none";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+      } else {
+        throw new Error("Clipboard API indisponível");
+      }
+
+      setCopyStatus({
+        message: "Código PIX copiado para a área de transferência.",
+        severity: "success",
+      });
+    } catch (error) {
+      console.error("Erro ao copiar código PIX", error);
+      setCopyStatus({
+        message: "Não foi possível copiar o código PIX. Copie manualmente.",
+        severity: "error",
+      });
+    }
+  }, [qrCodeData]);
 
   return (
     <Box
@@ -527,25 +602,87 @@ export default function ImaginePage() {
                       </Alert>
                     ) : null}
 
-                    {qrCodeUrl ? (
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          p: 3,
-                          borderRadius: 2,
-                          bgcolor: "rgba(2,6,23,0.85)",
-                          border: "1px dashed rgba(125,211,252,0.45)",
-                        }}
+                    {qrCodeUrl || qrCodeData ? (
+                      <Stack
+                        direction={{ xs: "column", md: "row" }}
+                        spacing={3}
+                        alignItems={{ xs: "stretch", md: "center" }}
                       >
-                        <Box
-                          component="img"
-                          src={qrCodeUrl}
-                          alt="QR Code para pagamento"
-                          sx={{ width: 240, height: 240 }}
-                        />
-                      </Box>
+                        {qrCodeUrl ? (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              p: 3,
+                              borderRadius: 2,
+                              bgcolor: "rgba(2,6,23,0.85)",
+                              border: "1px dashed rgba(125,211,252,0.45)",
+                              minWidth: { md: 260 },
+                            }}
+                          >
+                            <Box
+                              component="img"
+                              src={qrCodeUrl}
+                              alt="QR Code para pagamento"
+                              sx={{ width: 240, height: 240 }}
+                            />
+                          </Box>
+                        ) : null}
+
+                        {qrCodeData ? (
+                          <Stack spacing={1.5} flex={1}>
+                            <Typography variant="subtitle2" color="rgba(148,163,184,0.9)">
+                              Código PIX (copia e cola)
+                            </Typography>
+                            <TextField
+                              value={qrCodeData}
+                              multiline
+                              minRows={4}
+                              InputProps={{
+                                readOnly: true,
+                              }}
+                              sx={{
+                                width: "100%",
+                                bgcolor: "rgba(15,23,42,0.6)",
+                                borderRadius: 2,
+                                "& .MuiOutlinedInput-root": {
+                                  color: "#f8fafc",
+                                  "& fieldset": {
+                                    borderColor: "rgba(148,163,184,0.3)",
+                                  },
+                                  "&:hover fieldset": {
+                                    borderColor: "#7dd3fc",
+                                  },
+                                  "&.Mui-focused fieldset": {
+                                    borderColor: "#38bdf8",
+                                  },
+                                },
+                              }}
+                            />
+                            <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
+                              <Button
+                                variant="outlined"
+                                startIcon={<ContentCopyIcon />}
+                                onClick={handleCopyQrData}
+                                sx={{
+                                  color: "#f8fafc",
+                                  borderColor: "rgba(125,211,252,0.45)",
+                                  "&:hover": {
+                                    borderColor: "#7dd3fc",
+                                    bgcolor: "rgba(125,211,252,0.08)",
+                                  },
+                                }}
+                              >
+                                Copiar código PIX
+                              </Button>
+                            </Stack>
+                            {copyStatus?.message ? (
+                              <Alert severity={copyStatus.severity}>{copyStatus.message}</Alert>
+                            ) : null}
+                          </Stack>
+                        ) : null}
+                      </Stack>
                     ) : null}
 
                     {statusMessage ? (
