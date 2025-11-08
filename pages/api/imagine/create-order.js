@@ -1,5 +1,4 @@
 import { v4 as uuidv4 } from "uuid";
-
 import { normalizeMercadoPagoOrder } from "../../../utils/normalizeMercadoPagoOrder";
 
 async function createMercadoPagoOrder({
@@ -7,77 +6,54 @@ async function createMercadoPagoOrder({
   modelType,
   externalReference,
 }) {
-  const {
-    ACCESS_TOKEN,
-    PRICE,
-    MODEL,
-    TYPE_INTEGRACTION,
-    NUMBER_APLICATION,
-    USER_ID,
-    PUBLIC_KEY,
-    EXTERNAL_ID_CAIXA,
-  } = process.env;
+  const { ACCESS_TOKEN, PRICE, MODEL, EXTERNAL_ID_CAIXA } = process.env;
 
   if (!ACCESS_TOKEN) {
     throw new Error("ACCESS_TOKEN não configurado");
   }
 
+  // amount como string com 2 casas
   const parsedAmount = Number.parseFloat(PRICE);
   const hasValidAmount = Number.isFinite(parsedAmount);
   const numericAmount = hasValidAmount ? parsedAmount : 0;
   const formattedAmount = hasValidAmount
     ? parsedAmount.toFixed(2)
     : numericAmount.toFixed(2);
+
   const description = MODEL || "Imagine";
   const fallbackExternalReference = `imagine-${Date.now()}`;
   const normalizedExternalReference =
     externalReference?.toString().trim() || fallbackExternalReference;
-  const qrExternalPosId = EXTERNAL_ID_CAIXA?.trim() || null;
+
+  // external_pos_id prioriza EXTERNAL_ID_CAIXA; se não houver, usa o encryptedEmail
+  const qrExternalPosId = (
+    EXTERNAL_ID_CAIXA?.trim() ||
+    encryptedEmail ||
+    ""
+  ).toString();
+
   const idempotencyKey = uuidv4();
 
+  // === Payload mínimo solicitado ===
   const body = {
     type: "qr",
-    total_amount: formattedAmount,
-    description,
+    description, // (usa MODEL se houver, senão "Imagine")
     external_reference: normalizedExternalReference,
     config: {
       qr: {
-        external_pos_id: qrExternalPosId || encryptedEmail,
+        external_pos_id: qrExternalPosId,
         mode: "dynamic",
       },
     },
     transactions: {
       payments: [
         {
-          amount: formattedAmount,
+          amount: formattedAmount, // string "4.99"
         },
       ],
     },
-    items: [
-      {
-        title: MODEL || "Geração de imagem",
-        unit_price: numericAmount,
-        unit_measure: "un",
-        external_code: NUMBER_APLICATION || "IMAGINE_APP",
-        quantity: 1,
-        external_categories: [
-          {
-            id: TYPE_INTEGRACTION || "qr",
-          },
-        ],
-      },
-    ],
-    metadata: {
-      user_id: USER_ID || null,
-      public_key: PUBLIC_KEY || null,
-      model: MODEL || null,
-      modelType,
-      integration_type: TYPE_INTEGRACTION || null,
-      number_aplication: NUMBER_APLICATION || null,
-      encrypted_email: encryptedEmail || null,
-      external_reference: normalizedExternalReference,
-    },
   };
+  // === fim do payload mínimo ===
 
   const response = await fetch("https://api.mercadopago.com/v1/orders", {
     method: "POST",
@@ -108,11 +84,9 @@ async function createMercadoPagoOrder({
     const error = new Error(
       `Erro ao criar pedido no Mercado Pago: ${errorMessage}`
     );
-
     error.status = response.status;
     error.statusText = response.statusText;
     error.response = errorData;
-
     throw error;
   }
 
@@ -147,6 +121,7 @@ export default async function handler(req, res) {
       modelType,
       externalReference,
     });
+
     const normalizedOrder = normalizeMercadoPagoOrder(orderResponse);
     const externalReferenceResponse =
       normalizedOrder.externalReference || externalReference;
