@@ -197,6 +197,25 @@ export default function ImaginePage() {
   }, [copyStatus]);
 
   useEffect(() => {
+    if (emailSaved) {
+      return;
+    }
+
+    setCurrentStep(1);
+    setOrderId(null);
+    setOrderStatus(null);
+    setStatusMessage("");
+    setQrCodeData("");
+    setQrCodeUrl("");
+    setCopyStatus(null);
+    applyQrSources(null);
+
+    if (typeof window !== "undefined") {
+      window.localStorage.removeItem(ORDER_REFERENCE_STORAGE_KEY);
+    }
+  }, [applyQrSources, emailSaved]);
+
+  useEffect(() => {
     return () => {
       if (previewUrl) {
         URL.revokeObjectURL(previewUrl);
@@ -204,10 +223,25 @@ export default function ImaginePage() {
     };
   }, [previewUrl]);
 
-  const handleEmailChange = useCallback((event) => {
-    setEmail(event.target.value);
-    setEmailError("");
-  }, []);
+  const handleEmailChange = useCallback(
+    (event) => {
+      const value = event.target.value;
+      setEmail(value);
+      setEmailError("");
+
+      if (emailSaved) {
+        setEmailSaved(false);
+        setEncryptedEmail("");
+
+        if (typeof window !== "undefined") {
+          window.localStorage.removeItem(EMAIL_TOKEN_STORAGE_KEY);
+        }
+
+        Cookies.remove(EMAIL_TOKEN_STORAGE_KEY);
+      }
+    },
+    [emailSaved]
+  );
 
   const handleFileChange = useCallback((event) => {
     const file = event.target.files?.[0];
@@ -497,384 +531,459 @@ export default function ImaginePage() {
 
           {activeTab === "new" ? (
             <Stack spacing={3}>
-              <Stepper
-                activeStep={currentStep - 1}
-                alternativeLabel
+              <Card
                 sx={{
-                  "& .MuiStepIcon-root": {
-                    color: "rgba(148,163,184,0.4)",
-                    "&.Mui-active": {
-                      color: "#38bdf8",
-                    },
-                    "&.Mui-completed": {
-                      color: "#22c55e",
-                    },
-                  },
-                  "& .MuiStepLabel-label": {
-                    color: "rgba(248,250,252,0.8) !important",
-                  },
+                  bgcolor: "rgba(15,23,42,0.65)",
+                  border: "1px solid rgba(148,163,184,0.2)",
+                  backdropFilter: "blur(8px)",
                 }}
               >
-                {steps.map((label, index) => (
-                  <Step key={label}>
-                    <StepLabel
-                      onClick={
-                        index === 0 && currentStep === 3 ? handleRestart : undefined
-                      }
-                      sx={{
-                        cursor:
-                          index === 0 && currentStep === 3 ? "pointer" : "default",
-                      }}
-                    >
-                      {label}
-                    </StepLabel>
-                  </Step>
-                ))}
-              </Stepper>
+                <CardContent sx={{ p: { xs: 3, md: 4 } }}>
+                  <Stack spacing={3}>
+                    <Box>
+                      <Typography variant="h6" fontWeight={600} gutterBottom>
+                        Email de acesso
+                      </Typography>
+                      <Typography variant="body2" color="rgba(226,232,240,0.75)">
+                        Informe o email para liberar a geração. Ele será utilizado no
+                        pagamento e no envio do resultado.
+                      </Typography>
+                    </Box>
 
-              {currentStep === 1 ? (
-                <Card
-                  sx={{
-                    bgcolor: "rgba(15,23,42,0.65)",
-                    border: "1px solid rgba(148,163,184,0.2)",
-                    backdropFilter: "blur(8px)",
-                  }}
-                >
-                  <CardContent sx={{ p: { xs: 3, md: 4 } }}>
-                    <Stack spacing={3}>
-                      <Box>
-                        <Typography variant="h6" fontWeight={600} gutterBottom>
-                          Configuração da nova geração
-                        </Typography>
-                        <Typography variant="body2" color="rgba(226,232,240,0.75)">
-                          Preencha o email, escolha o modelo e selecione a imagem de referência.
-                        </Typography>
-                      </Box>
-
-                      <Box>
-                        <Typography variant="subtitle2" gutterBottom>
-                          Email de acesso
-                        </Typography>
-                        <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                          <TextField
-                            fullWidth
-                            variant="outlined"
-                            label="Seu email"
-                            value={email}
-                            onChange={handleEmailChange}
-                            error={Boolean(emailError)}
-                            helperText={emailError || "Informe o email para liberar a geração"}
-                            InputLabelProps={{ style: { color: "#cbd5f5" } }}
-                            sx={{
-                              "& .MuiOutlinedInput-root": {
-                                color: "#f8fafc",
-                                "& fieldset": {
-                                  borderColor: "rgba(148,163,184,0.4)",
-                                },
-                                "&:hover fieldset": {
-                                  borderColor: "#7dd3fc",
-                                },
-                                "&.Mui-focused fieldset": {
-                                  borderColor: "#38bdf8",
-                                },
-                              },
-                              "& .MuiFormHelperText-root": {
-                                color: "rgba(148,163,184,0.8)",
-                              },
-                            }}
-                          />
-                          <Button
-                            variant="contained"
-                            onClick={handleSaveEmail}
-                            sx={{
-                              minWidth: 160,
-                              bgcolor: emailSaved ? "#22c55e" : "#0ea5e9",
-                              "&:hover": {
-                                bgcolor: emailSaved ? "#16a34a" : "#0284c7",
-                              },
-                            }}
-                          >
-                            {emailSaved ? "Email confirmado" : "Confirmar email"}
-                          </Button>
-                        </Stack>
-                      </Box>
-
-                      <Divider sx={{ borderColor: "rgba(148,163,184,0.2)" }} />
-
-                      <Box>
-                        <Typography variant="subtitle2" gutterBottom>
-                          Tipo de modelo
-                        </Typography>
-                        <Select
-                          fullWidth
-                          value={modelType}
-                          onChange={(event) => setModelType(event.target.value)}
-                          sx={{
+                    <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                      <TextField
+                        fullWidth
+                        variant="outlined"
+                        label="Seu email"
+                        value={email}
+                        onChange={handleEmailChange}
+                        error={Boolean(emailError)}
+                        helperText={
+                          emailError || "Informe o email para liberar a geração"
+                        }
+                        InputLabelProps={{ style: { color: "#cbd5f5" } }}
+                        sx={{
+                          "& .MuiOutlinedInput-root": {
                             color: "#f8fafc",
-                            "& .MuiOutlinedInput-notchedOutline": {
+                            "& fieldset": {
                               borderColor: "rgba(148,163,184,0.4)",
                             },
-                            "&:hover .MuiOutlinedInput-notchedOutline": {
+                            "&:hover fieldset": {
                               borderColor: "#7dd3fc",
                             },
-                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            "&.Mui-focused fieldset": {
                               borderColor: "#38bdf8",
                             },
+                          },
+                          "& .MuiFormHelperText-root": {
+                            color: "rgba(148,163,184,0.8)",
+                          },
+                        }}
+                      />
+                      <Button
+                        variant="contained"
+                        onClick={handleSaveEmail}
+                        sx={{
+                          minWidth: 160,
+                          bgcolor: emailSaved ? "#22c55e" : "#0ea5e9",
+                          "&:hover": {
+                            bgcolor: emailSaved ? "#16a34a" : "#0284c7",
+                          },
+                        }}
+                      >
+                        {emailSaved ? "Email confirmado" : "Confirmar email"}
+                      </Button>
+                    </Stack>
+                  </Stack>
+                </CardContent>
+              </Card>
+
+              <Box sx={{ position: "relative" }}>
+                <Stack
+                  spacing={3}
+                  sx={{
+                    pointerEvents: emailSaved ? "auto" : "none",
+                    opacity: emailSaved ? 1 : 0.6,
+                    transition: "opacity 0.3s ease",
+                  }}
+                  aria-hidden={!emailSaved}
+                >
+                  <Stepper
+                    activeStep={currentStep - 1}
+                    alternativeLabel
+                    sx={{
+                      "& .MuiStepIcon-root": {
+                        color: "rgba(148,163,184,0.4)",
+                        "&.Mui-active": {
+                          color: "#38bdf8",
+                        },
+                        "&.Mui-completed": {
+                          color: "#22c55e",
+                        },
+                      },
+                      "& .MuiStepLabel-label": {
+                        color: "rgba(248,250,252,0.8) !important",
+                      },
+                    }}
+                  >
+                    {steps.map((label, index) => (
+                      <Step key={label}>
+                        <StepLabel
+                          onClick={
+                            index === 0 && currentStep === 3
+                              ? handleRestart
+                              : undefined
+                          }
+                          sx={{
+                            cursor:
+                              index === 0 && currentStep === 3 ? "pointer" : "default",
                           }}
                         >
-                          <MenuItem value="Foto de Perfil">Foto de Perfil</MenuItem>
-                        </Select>
-                      </Box>
-
-                      <Box>
-                        <Typography variant="subtitle2" gutterBottom>
-                          Upload da imagem de referência
-                        </Typography>
-                        <Stack spacing={2}>
-                          <Button
-                            variant="outlined"
-                            component="label"
-                            sx={{
-                              alignSelf: "flex-start",
-                              borderColor: "rgba(148,163,184,0.4)",
-                              color: "#f8fafc",
-                              "&:hover": {
-                                borderColor: "#7dd3fc",
-                                bgcolor: "rgba(125,211,252,0.08)",
-                              },
-                            }}
-                          >
-                            Selecionar imagem
-                            <input type="file" hidden accept="image/*" onChange={handleFileChange} />
-                          </Button>
-                          {selectedFile ? (
-                            <Typography variant="caption" color="rgba(148,163,184,0.8)">
-                              {selectedFile.name}
+                          {label}
+                        </StepLabel>
+                      </Step>
+                    ))}
+                  </Stepper>
+                  {currentStep === 1 ? (
+                    <Card
+                      sx={{
+                        bgcolor: "rgba(15,23,42,0.65)",
+                        border: "1px solid rgba(148,163,184,0.2)",
+                        backdropFilter: "blur(8px)",
+                      }}
+                    >
+                      <CardContent sx={{ p: { xs: 3, md: 4 } }}>
+                        <Stack spacing={3}>
+                          <Box>
+                            <Typography variant="h6" fontWeight={600} gutterBottom>
+                              Configuração da nova geração
                             </Typography>
-                          ) : null}
-                          {previewUrl ? (
-                            <Box
+                            <Typography variant="body2" color="rgba(226,232,240,0.75)">
+                              Escolha o modelo e selecione a imagem de referência para continuar.
+                            </Typography>
+                          </Box>
+
+                          <Divider sx={{ borderColor: "rgba(148,163,184,0.2)" }} />
+
+                          <Box>
+                            <Typography variant="subtitle2" gutterBottom>
+                              Tipo de modelo
+                            </Typography>
+                            <Select
+                              fullWidth
+                              value={modelType}
+                              onChange={(event) => setModelType(event.target.value)}
+                              disabled={!emailSaved}
                               sx={{
-                                width: "100%",
-                                borderRadius: 2,
-                                overflow: "hidden",
-                                border: "1px solid rgba(148,163,184,0.3)",
-                                cursor: "pointer",
-                              }}
-                              onClick={handlePreviewOpen}
-                            >
-                              <Box
-                                component="img"
-                                src={previewUrl}
-                                alt="Pré-visualização"
-                                sx={{
-                                  width: "100%",
-                                  height: 200,
-                                  objectFit: "cover",
-                                  display: "block",
-                                }}
-                              />
-                            </Box>
-                          ) : null}
-                        </Stack>
-                      </Box>
-
-                      <Stack direction={{ xs: "column", sm: "row" }} justifyContent="flex-end" spacing={2}>
-                        <Button variant="contained" onClick={handleNextToPayment}>
-                          Ir para pagamento
-                        </Button>
-                      </Stack>
-                    </Stack>
-                  </CardContent>
-                </Card>
-              ) : null}
-
-              {currentStep === 2 ? (
-                <Card
-                  sx={{
-                    bgcolor: "rgba(15,23,42,0.8)",
-                    border: "1px solid rgba(148,163,184,0.2)",
-                    backdropFilter: "blur(10px)",
-                  }}
-                >
-                  <CardContent sx={{ p: { xs: 3, md: 4 } }}>
-                    <Stack spacing={3}>
-                      <Box>
-                        <Typography variant="h6" fontWeight={600} gutterBottom>
-                          Pagamento e geração
-                        </Typography>
-                        <Typography variant="body2" color="rgba(226,232,240,0.75)">
-                          Gere o QR Code e use a opção de copiar e colar para concluir o pagamento.
-                        </Typography>
-                      </Box>
-
-                      <Box>
-                        <Typography variant="subtitle2" color="rgba(125,211,252,0.9)">
-                          {config?.model || "Modelo"}
-                        </Typography>
-                        <Typography variant="h4" fontWeight={700}>
-                          {formattedPrice}
-                        </Typography>
-                      </Box>
-
-                      {orderStatus ? (
-                        <Alert severity={isPaymentConfirmed ? "success" : "info"}>
-                          Status atual: {orderStatus}
-                        </Alert>
-                      ) : null}
-
-                      {qrCodeUrl || qrCodeData ? (
-                        <Stack
-                          direction={{ xs: "column", md: "row" }}
-                          spacing={3}
-                          alignItems={{ xs: "stretch", md: "center" }}
-                        >
-                          {qrCodeUrl ? (
-                            <Box
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                p: 3,
-                                borderRadius: 2,
-                                bgcolor: "rgba(2,6,23,0.85)",
-                                border: "1px dashed rgba(125,211,252,0.45)",
-                                minWidth: { md: 260 },
+                                color: "#f8fafc",
+                                "& .MuiOutlinedInput-notchedOutline": {
+                                  borderColor: "rgba(148,163,184,0.4)",
+                                },
+                                "&:hover .MuiOutlinedInput-notchedOutline": {
+                                  borderColor: "#7dd3fc",
+                                },
+                                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                  borderColor: "#38bdf8",
+                                },
                               }}
                             >
-                              <Box
-                                component="img"
-                                src={qrCodeUrl}
-                                alt="QR Code para pagamento"
-                                sx={{ width: 240, height: 240 }}
-                              />
-                            </Box>
-                          ) : null}
+                              <MenuItem value="Foto de Perfil">Foto de Perfil</MenuItem>
+                            </Select>
+                          </Box>
 
-                          {qrCodeData ? (
-                            <Stack spacing={1.5} flex={1}>
-                              <Typography variant="subtitle2" color="rgba(148,163,184,0.9)">
-                                Código PIX (copia e cola)
-                              </Typography>
-                              <TextField
-                                value={qrCodeData}
-                                multiline
-                                minRows={4}
-                                InputProps={{
-                                  readOnly: true,
-                                }}
+                          <Box>
+                            <Typography variant="subtitle2" gutterBottom>
+                              Upload da imagem de referência
+                            </Typography>
+                            <Stack spacing={2}>
+                              <Button
+                                variant="outlined"
+                                component="label"
+                                disabled={!emailSaved}
                                 sx={{
-                                  width: "100%",
-                                  bgcolor: "rgba(15,23,42,0.6)",
-                                  borderRadius: 2,
-                                  "& .MuiOutlinedInput-root": {
-                                    color: "#f8fafc",
-                                    "& fieldset": {
-                                      borderColor: "rgba(148,163,184,0.3)",
-                                    },
-                                    "&:hover fieldset": {
-                                      borderColor: "#7dd3fc",
-                                    },
-                                    "&.Mui-focused fieldset": {
-                                      borderColor: "#38bdf8",
-                                    },
+                                  alignSelf: "flex-start",
+                                  borderColor: "rgba(148,163,184,0.4)",
+                                  color: "#f8fafc",
+                                  "&:hover": {
+                                    borderColor: "#7dd3fc",
+                                    bgcolor: "rgba(125,211,252,0.08)",
                                   },
                                 }}
-                              />
-                              <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
-                                <Button
-                                  variant="outlined"
-                                  startIcon={<ContentCopyIcon />}
-                                  onClick={handleCopyQrData}
+                              >
+                                Selecionar imagem
+                                <input
+                                  type="file"
+                                  hidden
+                                  accept="image/*"
+                                  onChange={handleFileChange}
+                                  disabled={!emailSaved}
+                                />
+                              </Button>
+                              {selectedFile ? (
+                                <Typography variant="caption" color="rgba(148,163,184,0.8)">
+                                  {selectedFile.name}
+                                </Typography>
+                              ) : null}
+                              {previewUrl ? (
+                                <Box
                                   sx={{
-                                    color: "#f8fafc",
-                                    borderColor: "rgba(125,211,252,0.45)",
-                                    "&:hover": {
-                                      borderColor: "#7dd3fc",
-                                      bgcolor: "rgba(125,211,252,0.08)",
-                                    },
+                                    width: "100%",
+                                    borderRadius: 2,
+                                    overflow: "hidden",
+                                    border: "1px solid rgba(148,163,184,0.3)",
+                                    cursor: "pointer",
                                   }}
+                                  onClick={handlePreviewOpen}
                                 >
-                                  Copiar código PIX
-                                </Button>
-                              </Stack>
-                              {copyStatus?.message ? (
-                                <Alert severity={copyStatus.severity}>{copyStatus.message}</Alert>
+                                  <Box
+                                    component="img"
+                                    src={previewUrl}
+                                    alt="Pré-visualização"
+                                    sx={{
+                                      width: "100%",
+                                      height: 200,
+                                      objectFit: "cover",
+                                      display: "block",
+                                    }}
+                                  />
+                                </Box>
                               ) : null}
                             </Stack>
-                          ) : null}
+                          </Box>
+
+                          <Stack direction={{ xs: "column", sm: "row" }} justifyContent="flex-end" spacing={2}>
+                            <Button
+                              variant="contained"
+                              onClick={handleNextToPayment}
+                              disabled={!emailSaved}
+                            >
+                              Ir para pagamento
+                            </Button>
+                          </Stack>
                         </Stack>
-                      ) : (
-                        <Alert severity="info">
-                          Clique em "Gerar" para criar o QR Code de pagamento.
-                        </Alert>
-                      )}
+                      </CardContent>
+                    </Card>
+                  ) : null}
 
-                      {statusMessage ? (
-                        <Alert severity={isPaymentConfirmed ? "success" : "info"}>
-                          {statusMessage}
-                        </Alert>
-                      ) : null}
+                  {currentStep === 2 ? (
+                    <Card
+                      sx={{
+                        bgcolor: "rgba(15,23,42,0.8)",
+                        border: "1px solid rgba(148,163,184,0.2)",
+                        backdropFilter: "blur(10px)",
+                      }}
+                    >
+                      <CardContent sx={{ p: { xs: 3, md: 4 } }}>
+                        <Stack spacing={3}>
+                          <Box>
+                            <Typography variant="h6" fontWeight={600} gutterBottom>
+                              Pagamento e geração
+                            </Typography>
+                            <Typography variant="body2" color="rgba(226,232,240,0.75)">
+                              Gere o QR Code e use a opção de copiar e colar para concluir o pagamento.
+                            </Typography>
+                          </Box>
 
-                      <Stack direction={{ xs: "column", sm: "row" }} spacing={2} justifyContent="flex-end">
-                        <Button variant="outlined" onClick={handleBackToConfig} disabled={isGenerating}>
-                          Voltar
-                        </Button>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          disabled={isGenerating}
-                          onClick={handleGenerate}
-                          sx={{ minWidth: 180 }}
-                        >
-                          {isGenerating ? (
-                            <Stack direction="row" spacing={1} alignItems="center">
-                              <CircularProgress size={20} color="inherit" />
-                              <span>Gerando...</span>
+                          <Box>
+                            <Typography variant="subtitle2" color="rgba(125,211,252,0.9)">
+                              {config?.model || "Modelo"}
+                            </Typography>
+                            <Typography variant="h4" fontWeight={700}>
+                              {formattedPrice}
+                            </Typography>
+                          </Box>
+
+                          {orderStatus ? (
+                            <Alert severity={isPaymentConfirmed ? "success" : "info"}>
+                              Status atual: {orderStatus}
+                            </Alert>
+                          ) : null}
+
+                          {qrCodeUrl || qrCodeData ? (
+                            <Stack
+                              direction={{ xs: "column", md: "row" }}
+                              spacing={3}
+                              alignItems={{ xs: "stretch", md: "center" }}
+                            >
+                              {qrCodeUrl ? (
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    p: 3,
+                                    borderRadius: 2,
+                                    bgcolor: "rgba(2,6,23,0.85)",
+                                    border: "1px dashed rgba(125,211,252,0.45)",
+                                    minWidth: { md: 260 },
+                                  }}
+                                >
+                                  <Box
+                                    component="img"
+                                    src={qrCodeUrl}
+                                    alt="QR Code para pagamento"
+                                    sx={{ width: 240, height: 240 }}
+                                  />
+                                </Box>
+                              ) : null}
+
+                              {qrCodeData ? (
+                                <Stack spacing={1.5} flex={1}>
+                                  <Typography variant="subtitle2" color="rgba(148,163,184,0.9)">
+                                    Código PIX (copia e cola)
+                                  </Typography>
+                                  <TextField
+                                    value={qrCodeData}
+                                    multiline
+                                    minRows={4}
+                                    InputProps={{
+                                      readOnly: true,
+                                    }}
+                                    sx={{
+                                      width: "100%",
+                                      bgcolor: "rgba(15,23,42,0.6)",
+                                      borderRadius: 2,
+                                      "& .MuiOutlinedInput-root": {
+                                        color: "#f8fafc",
+                                        "& fieldset": {
+                                          borderColor: "rgba(148,163,184,0.3)",
+                                        },
+                                        "&:hover fieldset": {
+                                          borderColor: "#7dd3fc",
+                                        },
+                                        "&.Mui-focused fieldset": {
+                                          borderColor: "#38bdf8",
+                                        },
+                                      },
+                                    }}
+                                  />
+                                  <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
+                                    <Button
+                                      variant="outlined"
+                                      startIcon={<ContentCopyIcon />}
+                                      onClick={handleCopyQrData}
+                                      sx={{
+                                        color: "#f8fafc",
+                                        borderColor: "rgba(125,211,252,0.45)",
+                                        "&:hover": {
+                                          borderColor: "#7dd3fc",
+                                          bgcolor: "rgba(125,211,252,0.08)",
+                                        },
+                                      }}
+                                    >
+                                      Copiar código PIX
+                                    </Button>
+                                  </Stack>
+                                  {copyStatus?.message ? (
+                                    <Alert severity={copyStatus.severity}>{copyStatus.message}</Alert>
+                                  ) : null}
+                                </Stack>
+                              ) : null}
                             </Stack>
                           ) : (
-                            orderId ? "Gerar novamente" : "Gerar"
+                            <Alert severity="info">
+                              Clique em "Gerar" para criar o QR Code de pagamento.
+                            </Alert>
                           )}
-                        </Button>
-                      </Stack>
-                    </Stack>
-                  </CardContent>
-                </Card>
-              ) : null}
 
-              {currentStep === 3 ? (
-                <Card
+                          {statusMessage ? (
+                            <Alert severity={isPaymentConfirmed ? "success" : "info"}>
+                              {statusMessage}
+                            </Alert>
+                          ) : null}
+
+                          <Stack direction={{ xs: "column", sm: "row" }} spacing={2} justifyContent="flex-end">
+                            <Button variant="outlined" onClick={handleBackToConfig} disabled={isGenerating}>
+                              Voltar
+                            </Button>
+                            <Button
+                              variant="contained"
+                              color="primary"
+                              disabled={isGenerating}
+                              onClick={handleGenerate}
+                              sx={{ minWidth: 180 }}
+                            >
+                              {isGenerating ? (
+                                <Stack direction="row" spacing={1} alignItems="center">
+                                  <CircularProgress size={20} color="inherit" />
+                                  <span>Gerando...</span>
+                                </Stack>
+                              ) : (
+                                orderId ? "Gerar novamente" : "Gerar"
+                              )}
+                            </Button>
+                          </Stack>
+                        </Stack>
+                      </CardContent>
+                    </Card>
+                  ) : null}
+
+                  {currentStep === 3 ? (
+                    <Card
+                      sx={{
+                        bgcolor: "rgba(15,23,42,0.8)",
+                        border: "1px solid rgba(148,163,184,0.2)",
+                        backdropFilter: "blur(12px)",
+                      }}
+                    >
+                      <CardContent sx={{ p: { xs: 3, md: 4 } }}>
+                        <Stack spacing={3} alignItems="center" textAlign="center">
+                          <Typography variant="h4" fontWeight={700}>
+                            Seu pagamento foi feito com sucesso!
+                          </Typography>
+                          <Typography
+                            variant="body1"
+                            color="rgba(226,232,240,0.85)"
+                            maxWidth={420}
+                          >
+                            Já estamos trabalhando na geração da sua imagem perfeita. Em breve
+                            você receberá o resultado diretamente no seu email.
+                          </Typography>
+                          <CircularProgress
+                            color="primary"
+                            size={48}
+                            thickness={4}
+                            sx={{ color: "#22c55e" }}
+                          />
+                        </Stack>
+                      </CardContent>
+                    </Card>
+                  ) : null}
+            </Stack>
+
+            {!emailSaved ? (
+              <Box
+                sx={{
+                  position: "absolute",
+                  inset: 0,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  px: 3,
+                  pointerEvents: "none",
+                }}
+              >
+                <Box
                   sx={{
-                    bgcolor: "rgba(15,23,42,0.8)",
-                    border: "1px solid rgba(148,163,184,0.2)",
-                    backdropFilter: "blur(12px)",
+                    bgcolor: "rgba(2,6,23,0.85)",
+                    border: "1px solid rgba(125,211,252,0.35)",
+                    borderRadius: 2,
+                    px: 3,
+                    py: 2.5,
+                    textAlign: "center",
+                    maxWidth: 420,
+                    width: "100%",
+                    backdropFilter: "blur(6px)",
                   }}
                 >
-                  <CardContent sx={{ p: { xs: 3, md: 4 } }}>
-                    <Stack spacing={3} alignItems="center" textAlign="center">
-                      <Typography variant="h4" fontWeight={700}>
-                        Seu pagamento foi feito com sucesso!
-                      </Typography>
-                      <Typography
-                        variant="body1"
-                        color="rgba(226,232,240,0.85)"
-                        maxWidth={420}
-                      >
-                        Já estamos trabalhando na geração da sua imagem perfeita. Em breve
-                        você receberá o resultado diretamente no seu email.
-                      </Typography>
-                      <CircularProgress
-                        color="primary"
-                        size={48}
-                        thickness={4}
-                        sx={{ color: "#22c55e" }}
-                      />
-                    </Stack>
-                  </CardContent>
-                </Card>
-              ) : null}
-            </Stack>
-          ) : (
+                  <Typography variant="body2" color="rgba(226,232,240,0.9)">
+                    Confirme o email de acesso para liberar as etapas de geração.
+                  </Typography>
+                </Box>
+              </Box>
+            ) : null}
+          </Box>
+        ) : (
             <Card
               sx={{
                 bgcolor: "rgba(15,23,42,0.65)",
