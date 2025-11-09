@@ -1,5 +1,54 @@
 import { normalizeMercadoPagoOrder } from "../../../utils/normalizeMercadoPagoOrder";
-import { updateOrderFromMercadoPago } from "../../../infra/database/paymentsRepository";
+import getDb from "infra/database";
+import { upsertPaymentRecord } from "./create-order";
+
+async function updateOrderFromMercadoPago({ orderId, normalizedOrder, rawOrder }) {
+  if (!orderId) {
+    throw new Error("orderId é obrigatório para atualizar o pedido");
+  }
+
+  const schema = process.env.DB_SCHEMA || process.env.POSTGRES_SCHEMA;
+  const client = await getDb(schema);
+
+  try {
+    const existingRecord = await client.query(
+      `
+        SELECT player_email, encrypted_email, model_type
+        FROM player_payments
+        WHERE order_id = $1
+        LIMIT 1;
+      `,
+      [orderId]
+    );
+
+    if (existingRecord.rowCount === 0) {
+      return null;
+    }
+
+    const {
+      player_email: email,
+      encrypted_email: encryptedEmail,
+      model_type: modelType,
+    } = existingRecord.rows[0];
+
+    const metadataModelType =
+      normalizedOrder?.metadata?.modelType ??
+      normalizedOrder?.metadata?.model_type ??
+      normalizedOrder?.metadata?.type ??
+      modelType;
+
+    return upsertPaymentRecord({
+      client,
+      email,
+      encryptedEmail,
+      order: normalizedOrder,
+      rawOrder,
+      modelType: metadataModelType,
+    });
+  } finally {
+    client.release();
+  }
+}
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
