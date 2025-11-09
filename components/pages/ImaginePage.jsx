@@ -529,7 +529,7 @@ export default function ImaginePage() {
 
           {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
 
-          {activeTab === "new" ? (
+          {activeTab === "new" && (
             <Stack spacing={3}>
               <Card
                 sx={{
@@ -983,7 +983,9 @@ export default function ImaginePage() {
               </Box>
             ) : null}
           </Box>
-        ) : (
+        )}
+
+          {activeTab === "history" && (
             <Card
               sx={{
                 bgcolor: "rgba(15,23,42,0.65)",
