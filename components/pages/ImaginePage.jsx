@@ -98,7 +98,14 @@ export default function ImaginePage() {
   const isPaymentConfirmed = useMemo(() => {
     if (!orderStatus) return false;
     const normalized = orderStatus.toLowerCase();
-    return ["paid", "closed", "finished", "approved"].includes(normalized);
+    return [
+      "paid",
+      "closed",
+      "finished",
+      "approved",
+      "processed",
+      "accredited",
+    ].includes(normalized);
   }, [orderStatus]);
 
   useEffect(() => {
@@ -168,7 +175,9 @@ export default function ImaginePage() {
   useEffect(() => {
     if (isPaymentConfirmed) {
       applyQrSources(null);
-      setStatusMessage("Pagamento confirmado com sucesso!");
+      setStatusMessage(
+        "Seu pagamento foi feito com sucesso! Já estamos trabalhando na geração da sua imagem perfeita!"
+      );
       setCurrentStep(3);
     }
   }, [applyQrSources, isPaymentConfirmed]);
@@ -842,10 +851,24 @@ export default function ImaginePage() {
                   }}
                 >
                   <CardContent sx={{ p: { xs: 3, md: 4 } }}>
-                    <Stack spacing={2} alignItems="center" textAlign="center">
+                    <Stack spacing={3} alignItems="center" textAlign="center">
                       <Typography variant="h4" fontWeight={700}>
-                        Ok obrigado
+                        Seu pagamento foi feito com sucesso!
                       </Typography>
+                      <Typography
+                        variant="body1"
+                        color="rgba(226,232,240,0.85)"
+                        maxWidth={420}
+                      >
+                        Já estamos trabalhando na geração da sua imagem perfeita. Em breve
+                        você receberá o resultado diretamente no seu email.
+                      </Typography>
+                      <CircularProgress
+                        color="primary"
+                        size={48}
+                        thickness={4}
+                        sx={{ color: "#22c55e" }}
+                      />
                     </Stack>
                   </CardContent>
                 </Card>
