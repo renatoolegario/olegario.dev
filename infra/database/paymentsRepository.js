@@ -1,4 +1,5 @@
 import { sql } from "@vercel/postgres";
+import getDb from "infra/database";
 
 function parseNumber(value) {
   if (value === null || value === undefined) {
@@ -25,8 +26,11 @@ function extractPaymentDetails(order) {
     paymentTicketUrl: paymentMethod?.ticketUrl || null,
     qrCode: paymentMethod?.qrCode || order?.qrData || null,
     qrCodeBase64: paymentMethod?.qrCodeBase64 || order?.qrImage || null,
-    dateOfExpiration: payment?.dateOfExpiration || order?.expirationTime || null,
-    paidAt: payment?.paidAt || (order?.status === "processed" ? order?.lastUpdatedDate : null),
+    dateOfExpiration:
+      payment?.dateOfExpiration || order?.expirationTime || null,
+    paidAt:
+      payment?.paidAt ||
+      (order?.status === "processed" ? order?.lastUpdatedDate : null),
   };
 }
 

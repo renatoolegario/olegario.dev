@@ -1,15 +1,10 @@
 import { v4 as uuidv4 } from "uuid";
 import { normalizeMercadoPagoOrder } from "../../../utils/normalizeMercadoPagoOrder";
 import { reverterConversaoCripto } from "../../../utils/crypto";
-import {
-  registerMercadoPagoOrder,
-} from "../../../infra/database/paymentsRepository";
+import { registerMercadoPagoOrder } from "../../../infra/database/paymentsRepository";
+import getDb from "infra/database";
 
-async function createMercadoPagoOrder({
-  email,
-  externalReference,
-  modelType,
-}) {
+async function createMercadoPagoOrder({ email, externalReference, modelType }) {
   const { ACCESS_TOKEN, PRICE, MODEL } = process.env;
 
   if (!ACCESS_TOKEN) {
@@ -130,8 +125,8 @@ export default async function handler(req, res) {
       typeof modelType === "string"
         ? modelType.trim() || null
         : modelType !== undefined && modelType !== null
-        ? String(modelType)
-        : null;
+          ? String(modelType)
+          : null;
 
     const orderResponse = await createMercadoPagoOrder({
       email: decryptedEmail,
