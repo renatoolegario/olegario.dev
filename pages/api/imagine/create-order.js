@@ -1,61 +1,37 @@
 import { v4 as uuidv4 } from "uuid";
 import { normalizeMercadoPagoOrder } from "../../../utils/normalizeMercadoPagoOrder";
 
-async function createMercadoPagoOrder({
-  encryptedEmail,
-  modelType,
-  externalReference,
-}) {
-  const { ACCESS_TOKEN, PRICE, MODEL, EXTERNAL_ID_CAIXA } = process.env;
+async function createMercadoPagoPayment({ externalReference }) {
+  const { ACCESS_TOKEN, PRICE, MODEL } = process.env;
 
   if (!ACCESS_TOKEN) {
     throw new Error("ACCESS_TOKEN não configurado");
   }
 
-  // amount como string com 2 casas
   const parsedAmount = Number.parseFloat(PRICE);
   const hasValidAmount = Number.isFinite(parsedAmount);
   const numericAmount = hasValidAmount ? parsedAmount : 0;
-  const formattedAmount = hasValidAmount
-    ? parsedAmount.toFixed(2)
-    : numericAmount.toFixed(2);
+  const transactionAmount = hasValidAmount ? parsedAmount : numericAmount;
 
   const description = MODEL || "Imagine";
   const fallbackExternalReference = `imagine-${Date.now()}`;
   const normalizedExternalReference =
     externalReference?.toString().trim() || fallbackExternalReference;
 
-  // external_pos_id prioriza EXTERNAL_ID_CAIXA; se não houver, usa o encryptedEmail
-  const qrExternalPosId = (
-    EXTERNAL_ID_CAIXA?.trim() ||
-    encryptedEmail ||
-    ""
-  ).toString();
-
   const idempotencyKey = uuidv4();
 
-  // === Payload mínimo solicitado ===
   const body = {
-    type: "qr",
-    description, // (usa MODEL se houver, senão "Imagine")
+    installments: 1,
+    payer: {
+      email: "centralpadilha@gmail.com",
+    },
+    payment_method_id: "qr",
+    transaction_amount: transactionAmount,
     external_reference: normalizedExternalReference,
-    config: {
-      qr: {
-        external_pos_id: qrExternalPosId,
-        mode: "dynamic",
-      },
-    },
-    transactions: {
-      payments: [
-        {
-          amount: formattedAmount, // string "4.99"
-        },
-      ],
-    },
+    description,
   };
-  // === fim do payload mínimo ===
 
-  const response = await fetch("https://api.mercadopago.com/v1/orders", {
+  const response = await fetch("https://api.mercadopago.com/v1/payments", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -82,7 +58,7 @@ async function createMercadoPagoOrder({
       `Mercado Pago retornou o status ${response.status} (${response.statusText || "sem descrição"})`;
 
     const error = new Error(
-      `Erro ao criar pedido no Mercado Pago: ${errorMessage}`
+      `Erro ao criar pagamento no Mercado Pago: ${errorMessage}`
     );
     error.status = response.status;
     error.statusText = response.statusText;
@@ -105,7 +81,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: "Método não permitido" });
   }
 
-  const { encryptedEmail, modelType, externalReference } = req.body || {};
+  const { encryptedEmail, externalReference } = req.body || {};
 
   if (!encryptedEmail) {
     return res.status(400).json({ message: "Email criptografado obrigatório" });
@@ -116,9 +92,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const orderResponse = await createMercadoPagoOrder({
-      encryptedEmail,
-      modelType,
+    const orderResponse = await createMercadoPagoPayment({
       externalReference,
     });
 
@@ -138,7 +112,7 @@ export default async function handler(req, res) {
       order: normalizedOrder,
     });
   } catch (error) {
-    console.error("Erro ao criar ordem no Mercado Pago:", {
+    console.error("Erro ao criar pagamento no Mercado Pago:", {
       message: error?.message,
       status: error?.status,
       statusText: error?.statusText,
@@ -146,7 +120,7 @@ export default async function handler(req, res) {
     });
 
     return res.status(500).json({
-      message: error.message || "Erro interno ao gerar pedido",
+      message: error.message || "Erro interno ao gerar pagamento",
       details: {
         status: error?.status,
         statusText: error?.statusText,

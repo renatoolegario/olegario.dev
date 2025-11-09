@@ -19,7 +19,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const response = await fetch(`https://api.mercadopago.com/v1/orders/${orderId}`, {
+    const response = await fetch(`https://api.mercadopago.com/v1/payments/${orderId}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${ACCESS_TOKEN}`,
@@ -28,7 +28,7 @@ export default async function handler(req, res) {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData?.message || "Erro ao consultar pedido" );
+      throw new Error(errorData?.message || "Erro ao consultar pagamento");
     }
 
     const data = await response.json();
@@ -46,7 +46,9 @@ export default async function handler(req, res) {
       order: normalizedOrder,
     });
   } catch (error) {
-    console.error("Erro ao consultar status do pedido:", error);
-    return res.status(500).json({ message: error.message || "Erro interno ao consultar status" });
+    console.error("Erro ao consultar status do pagamento:", error);
+    return res
+      .status(500)
+      .json({ message: error.message || "Erro interno ao consultar status" });
   }
 }
