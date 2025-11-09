@@ -14,15 +14,26 @@ export function normalizeMercadoPagoOrder(order) {
     };
   }
 
-  const qrData =
+  const parseAmount = (value) => {
+    if (value === null || value === undefined) {
+      return null;
+    }
+
+    const numericValue = Number(value);
+    return Number.isFinite(numericValue) ? numericValue : null;
+  };
+
+  let qrData =
     order?.point_of_interaction?.transaction_data?.qr_code ||
+    order?.transactions?.payments?.[0]?.payment_method?.qr_code ||
     order?.qr_data ||
     order?.qr?.data ||
     order?.type_response?.qr_data ||
     null;
 
-  const qrImage =
+  let qrImage =
     order?.point_of_interaction?.transaction_data?.qr_code_base64 ||
+    order?.transactions?.payments?.[0]?.payment_method?.qr_code_base64 ||
     order?.qr_image ||
     order?.qr?.image ||
     order?.type_response?.qr_image ||
@@ -31,11 +42,35 @@ export function normalizeMercadoPagoOrder(order) {
   const paymentEntries = Array.isArray(order?.transactions?.payments)
     ? order.transactions.payments.map((payment) => ({
         id: payment?.id || null,
-        amount: payment?.amount || null,
+        amount: parseAmount(payment?.amount),
         status: payment?.status || null,
         statusDetail: payment?.status_detail || null,
-        type: payment?.type || null,
-        transactionId: payment?.transaction_id || null,
+        type:
+          payment?.payment_method?.type ||
+          payment?.type ||
+          payment?.payment_type ||
+          null,
+        transactionId:
+          payment?.transaction_id ||
+          payment?.reference_id ||
+          payment?.transactionId ||
+          null,
+        referenceId: payment?.reference_id || null,
+        paidAmount: parseAmount(payment?.paid_amount),
+        paidAt:
+          payment?.paid_at ||
+          payment?.date_approved ||
+          payment?.date_last_updated ||
+          payment?.date_created ||
+          null,
+        dateOfExpiration: payment?.date_of_expiration || null,
+        paymentMethod: {
+          id: payment?.payment_method?.id || null,
+          type: payment?.payment_method?.type || payment?.type || null,
+          ticketUrl: payment?.payment_method?.ticket_url || null,
+          qrCode: payment?.payment_method?.qr_code || null,
+          qrCodeBase64: payment?.payment_method?.qr_code_base64 || null,
+        },
       }))
     : [];
 
@@ -56,12 +91,31 @@ export function normalizeMercadoPagoOrder(order) {
   if (paymentEntries.length === 0 && (order?.id || order?.transaction_amount)) {
     paymentEntries.push({
       id: order?.id || null,
-      amount: fallbackTotalAmount,
+      amount: parseAmount(fallbackTotalAmount),
       status: order?.status || null,
       statusDetail: order?.status_detail || null,
       type: fallbackPaymentType,
       transactionId: fallbackTransactionId,
+      referenceId: null,
+      paidAmount: parseAmount(order?.total_paid_amount),
+      paidAt: order?.last_updated_date || null,
+      dateOfExpiration: order?.date_of_expiration || null,
+      paymentMethod: {
+        id: fallbackPaymentType,
+        type: fallbackPaymentType,
+        ticketUrl: order?.ticket_url || null,
+        qrCode: qrData,
+        qrCodeBase64: qrImage,
+      },
     });
+  }
+
+  if (!qrData && paymentEntries[0]?.paymentMethod?.qrCode) {
+    qrData = paymentEntries[0].paymentMethod.qrCode;
+  }
+
+  if (!qrImage && paymentEntries[0]?.paymentMethod?.qrCodeBase64) {
+    qrImage = paymentEntries[0].paymentMethod.qrCodeBase64;
   }
 
   return {
@@ -75,7 +129,8 @@ export function normalizeMercadoPagoOrder(order) {
       order?.order?.external_reference ||
       null,
     description: order?.description || null,
-    totalAmount: fallbackTotalAmount,
+    totalAmount: parseAmount(fallbackTotalAmount),
+    totalPaidAmount: parseAmount(order?.total_paid_amount),
     expirationTime: order?.expiration_time || order?.date_of_expiration || null,
     countryCode: order?.country_code || null,
     userId: order?.user_id || null,
