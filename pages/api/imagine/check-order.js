@@ -1,4 +1,5 @@
 import { normalizeMercadoPagoOrder } from "../../../utils/normalizeMercadoPagoOrder";
+import { updateOrderFromMercadoPago } from "../../../infra/database/paymentsRepository";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -19,7 +20,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const response = await fetch(`https://api.mercadopago.com/v1/payments/${orderId}`, {
+    const response = await fetch(`https://api.mercadopago.com/v1/orders/${orderId}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${ACCESS_TOKEN}`,
@@ -33,6 +34,12 @@ export default async function handler(req, res) {
 
     const data = await response.json();
     const normalizedOrder = normalizeMercadoPagoOrder(data);
+
+    await updateOrderFromMercadoPago({
+      orderId,
+      normalizedOrder,
+      rawOrder: data,
+    });
 
     return res.status(200).json({
       orderId: normalizedOrder.id,
