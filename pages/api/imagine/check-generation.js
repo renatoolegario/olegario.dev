@@ -1,5 +1,6 @@
 import getDb from "infra/database";
 import {
+  deleteBlobByUrl,
   fetchBufferFromUrl,
   guessFileExtension,
   mapGenerationRow,
@@ -69,6 +70,7 @@ export default async function handler(req, res) {
     let nextStatusMessage = generation.status_message;
     let nextResultUrl = generation.result_image_url;
     let nextErrorMessage = generation.error_message;
+    let nextSourceBlobUrl = generation.source_image_blob_url;
 
     const needsRemoteCheck = ![
       "completed",
@@ -149,6 +151,19 @@ export default async function handler(req, res) {
                 nextResultUrl = blobUrl;
                 shouldUpdate = true;
                 nextErrorMessage = null;
+
+                if (nextSourceBlobUrl) {
+                  try {
+                    await deleteBlobByUrl(nextSourceBlobUrl);
+                    nextSourceBlobUrl = null;
+                    shouldUpdate = true;
+                  } catch (cleanupError) {
+                    console.error(
+                      "Erro ao remover imagem original do blob após verificação",
+                      cleanupError
+                    );
+                  }
+                }
               }
             }
           } catch (error) {
@@ -158,6 +173,17 @@ export default async function handler(req, res) {
               "Não foi possível salvar a imagem gerada no armazenamento.";
             nextStatus = "failed";
             shouldUpdate = true;
+          }
+        } else if (nextSourceBlobUrl) {
+          try {
+            await deleteBlobByUrl(nextSourceBlobUrl);
+            nextSourceBlobUrl = null;
+            shouldUpdate = true;
+          } catch (cleanupError) {
+            console.error(
+              "Erro ao remover imagem original do blob após conclusão",
+              cleanupError
+            );
           }
         }
       }
@@ -172,6 +198,7 @@ export default async function handler(req, res) {
             status_message = $3,
             result_image_url = COALESCE($4, result_image_url),
             error_message = $5,
+            source_image_blob_url = $6,
             last_checked_at = NOW(),
             updated_at = NOW()
           WHERE id = $1
@@ -183,6 +210,7 @@ export default async function handler(req, res) {
           nextStatusMessage,
           nextResultUrl,
           nextErrorMessage,
+          nextSourceBlobUrl,
         ]
       );
 
