@@ -245,140 +245,6 @@ export default function ImaginePage() {
     [getHistoryStatusDetails, resumingPayments, retryingOrders]
   );
 
-  const renderHistoryActions = useCallback(
-    (record, recordState, layout = "row") => {
-      const { isPending, isResuming, isFailed, isRetrying } = recordState || {};
-      const isColumnLayout = layout === "column";
-
-      return (
-        <Stack
-          direction={isColumnLayout ? "column" : "row"}
-          spacing={isColumnLayout ? 1.5 : 1}
-          justifyContent={isColumnLayout ? "flex-start" : "flex-end"}
-          alignItems={isColumnLayout ? "stretch" : "center"}
-          flexWrap={isColumnLayout ? "nowrap" : "wrap"}
-        >
-          {isPending ? (
-            <Button
-              size="small"
-              variant="contained"
-              color="info"
-              startIcon={isResuming ? null : <QrCode2Icon />}
-              onClick={() => handleHistoryResumePayment(record)}
-              disabled={isResuming}
-              sx={{ whiteSpace: "nowrap" }}
-              fullWidth={isColumnLayout}
-            >
-              {isResuming ? (
-                <Stack direction="row" spacing={1} alignItems="center">
-                  <CircularProgress size={16} />
-                  <Typography
-                    component="span"
-                    variant="caption"
-                    sx={{ color: "inherit" }}
-                  >
-                    Consultando...
-                  </Typography>
-                </Stack>
-              ) : (
-                "Ver QR Code"
-              )}
-            </Button>
-          ) : null}
-
-          <Tooltip
-            title={
-              record?.resultImageUrl
-                ? "Pré-visualizar imagem"
-                : "Imagem ainda não disponível"
-            }
-          >
-            <span style={{ display: isColumnLayout ? "block" : "inline-flex" }}>
-              <Button
-                size="small"
-                variant="outlined"
-                startIcon={<VisibilityIcon />}
-                onClick={() => handleHistoryPreviewOpen(record)}
-                disabled={!record?.resultImageUrl}
-                sx={{
-                  minWidth: 0,
-                  whiteSpace: "nowrap",
-                }}
-                fullWidth={isColumnLayout}
-              >
-                Pré-visualizar
-              </Button>
-            </span>
-          </Tooltip>
-
-          <Tooltip
-            title={
-              record?.resultImageUrl
-                ? "Baixar imagem"
-                : "Imagem ainda não disponível"
-            }
-          >
-            <span style={{ display: isColumnLayout ? "block" : "inline-flex" }}>
-              <Button
-                size="small"
-                variant="outlined"
-                startIcon={<DownloadIcon />}
-                onClick={() => handleDownloadHistoryImage(record)}
-                disabled={!record?.resultImageUrl}
-                sx={{
-                  minWidth: 0,
-                  whiteSpace: "nowrap",
-                }}
-                fullWidth={isColumnLayout}
-              >
-                Baixar
-              </Button>
-            </span>
-          </Tooltip>
-
-          {isFailed ? (
-            <Button
-              size="small"
-              variant="contained"
-              color="warning"
-              startIcon={isRetrying ? null : <ReplayIcon />}
-              onClick={() => handleRetryGeneration(record)}
-              disabled={isRetrying}
-              sx={{ whiteSpace: "nowrap" }}
-              fullWidth={isColumnLayout}
-            >
-              {isRetrying ? (
-                <Stack
-                  direction="row"
-                  spacing={1}
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  <CircularProgress size={16} />
-                  <Typography
-                    component="span"
-                    variant="caption"
-                    sx={{ color: "inherit" }}
-                  >
-                    Reenviando...
-                  </Typography>
-                </Stack>
-              ) : (
-                "Tentar novamente"
-              )}
-            </Button>
-          ) : null}
-        </Stack>
-      );
-    },
-    [
-      handleDownloadHistoryImage,
-      handleHistoryPreviewOpen,
-      handleHistoryResumePayment,
-      handleRetryGeneration,
-    ]
-  );
-
   const fetchHistory = useCallback(
     async ({ silent = false } = {}) => {
       if (!emailSaved || !encryptedEmail) {
@@ -1739,6 +1605,140 @@ export default function ImaginePage() {
       }
     },
     [deriveQrSources, encryptedEmail, fetchHistory]
+  );
+
+  const renderHistoryActions = useCallback(
+    (record, recordState, layout = "row") => {
+      const { isPending, isResuming, isFailed, isRetrying } = recordState || {};
+      const isColumnLayout = layout === "column";
+
+      return (
+        <Stack
+          direction={isColumnLayout ? "column" : "row"}
+          spacing={isColumnLayout ? 1.5 : 1}
+          justifyContent={isColumnLayout ? "flex-start" : "flex-end"}
+          alignItems={isColumnLayout ? "stretch" : "center"}
+          flexWrap={isColumnLayout ? "nowrap" : "wrap"}
+        >
+          {isPending ? (
+            <Button
+              size="small"
+              variant="contained"
+              color="info"
+              startIcon={isResuming ? null : <QrCode2Icon />}
+              onClick={() => handleHistoryResumePayment(record)}
+              disabled={isResuming}
+              sx={{ whiteSpace: "nowrap" }}
+              fullWidth={isColumnLayout}
+            >
+              {isResuming ? (
+                <Stack direction="row" spacing={1} alignItems="center">
+                  <CircularProgress size={16} />
+                  <Typography
+                    component="span"
+                    variant="caption"
+                    sx={{ color: "inherit" }}
+                  >
+                    Consultando...
+                  </Typography>
+                </Stack>
+              ) : (
+                "Ver QR Code"
+              )}
+            </Button>
+          ) : null}
+
+          <Tooltip
+            title={
+              record?.resultImageUrl
+                ? "Pré-visualizar imagem"
+                : "Imagem ainda não disponível"
+            }
+          >
+            <span style={{ display: isColumnLayout ? "block" : "inline-flex" }}>
+              <Button
+                size="small"
+                variant="outlined"
+                startIcon={<VisibilityIcon />}
+                onClick={() => handleHistoryPreviewOpen(record)}
+                disabled={!record?.resultImageUrl}
+                sx={{
+                  minWidth: 0,
+                  whiteSpace: "nowrap",
+                }}
+                fullWidth={isColumnLayout}
+              >
+                Pré-visualizar
+              </Button>
+            </span>
+          </Tooltip>
+
+          <Tooltip
+            title={
+              record?.resultImageUrl
+                ? "Baixar imagem"
+                : "Imagem ainda não disponível"
+            }
+          >
+            <span style={{ display: isColumnLayout ? "block" : "inline-flex" }}>
+              <Button
+                size="small"
+                variant="outlined"
+                startIcon={<DownloadIcon />}
+                onClick={() => handleDownloadHistoryImage(record)}
+                disabled={!record?.resultImageUrl}
+                sx={{
+                  minWidth: 0,
+                  whiteSpace: "nowrap",
+                }}
+                fullWidth={isColumnLayout}
+              >
+                Baixar
+              </Button>
+            </span>
+          </Tooltip>
+
+          {isFailed ? (
+            <Button
+              size="small"
+              variant="contained"
+              color="warning"
+              startIcon={isRetrying ? null : <ReplayIcon />}
+              onClick={() => handleRetryGeneration(record)}
+              disabled={isRetrying}
+              sx={{ whiteSpace: "nowrap" }}
+              fullWidth={isColumnLayout}
+            >
+              {isRetrying ? (
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <CircularProgress size={16} />
+                  <Typography
+                    component="span"
+                    variant="caption"
+                    sx={{ color: "inherit" }}
+                  >
+                    Reenviando...
+                  </Typography>
+                </Stack>
+              ) : (
+                "Tentar novamente"
+              )}
+            </Button>
+          ) : null}
+        </Stack>
+      );
+    },
+    [
+      handleDownloadHistoryImage,
+      handleHistoryPreviewOpen,
+      handleHistoryResumePayment,
+      handleRetryGeneration,
+    ]
   );
 
   return (
