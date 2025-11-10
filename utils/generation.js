@@ -110,10 +110,25 @@ async function uploadToBlob({
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    const message =
+
+    let message =
       errorData?.message ||
       errorData?.error ||
+      errorData?.code ||
       `Falha ao enviar imagem para o blob (${response.status})`;
+
+    if (typeof message === "object" && message !== null) {
+      try {
+        message = JSON.stringify(message);
+      } catch (error) {
+        message = `Falha ao enviar imagem para o blob (${response.status})`;
+      }
+    }
+
+    if (typeof message !== "string") {
+      message = String(message);
+    }
+
     throw new Error(message);
   }
 
