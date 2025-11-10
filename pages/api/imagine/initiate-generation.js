@@ -2,6 +2,7 @@ import { GoogleGenAI } from "@google/genai";
 import getDb from "infra/database";
 import { buildPromptWithReplacements } from "../../../utils/imagineModels";
 import {
+  deleteBlobByUrl,
   fetchBufferFromUrl,
   guessFileExtension,
   parseDataUrl,
@@ -174,6 +175,7 @@ export default async function handler(req, res) {
 
   let generationRow = null;
   let sourceImageBlobUrl = null;
+  let shouldClearSourceBlob = false;
 
   try {
     await client.query("BEGIN");
@@ -305,6 +307,18 @@ export default async function handler(req, res) {
 
             if (blobUrl) {
               resultImageUrl = blobUrl;
+              if (sourceImageBlobUrl) {
+                try {
+                  await deleteBlobByUrl(sourceImageBlobUrl);
+                  shouldClearSourceBlob = true;
+                  sourceImageBlobUrl = null;
+                } catch (cleanupError) {
+                  console.error(
+                    "Erro ao remover imagem original do blob após conclusão",
+                    cleanupError
+                  );
+                }
+              }
             }
           } else if (!resultImageUrl) {
             throw new Error(
@@ -388,7 +402,7 @@ export default async function handler(req, res) {
       resultImageUrl,
       originalFileName || null,
       mimeType || null,
-      sourceImageBlobUrl,
+      shouldClearSourceBlob ? null : sourceImageBlobUrl,
       errorMessage,
     ];
 

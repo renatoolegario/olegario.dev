@@ -88,6 +88,9 @@ export default function ImaginePage() {
   const [generationStatusMessage, setGenerationStatusMessage] = useState("");
   const [generationError, setGenerationError] = useState("");
   const [isUploadingSource, setIsUploadingSource] = useState(false);
+  const [isPreparingGeneration, setIsPreparingGeneration] = useState(false);
+  const [preparedGeneration, setPreparedGeneration] = useState(null);
+  const [hasInitiatedGeneration, setHasInitiatedGeneration] = useState(false);
   const [historyRecords, setHistoryRecords] = useState([]);
   const [isFetchingHistory, setIsFetchingHistory] = useState(false);
   const [historyError, setHistoryError] = useState("");
@@ -539,6 +542,8 @@ export default function ImaginePage() {
     setGeneratedImageUrl("");
     setGenerationStatusMessage("");
     setGenerationError("");
+    setPreparedGeneration(null);
+    setHasInitiatedGeneration(false);
     setCurrentStep(1);
   }, [applyQrSources]);
 
@@ -563,6 +568,8 @@ export default function ImaginePage() {
     setGeneratedImageUrl("");
     setGenerationStatusMessage("");
     setGenerationError("");
+    setPreparedGeneration(null);
+    setHasInitiatedGeneration(false);
     setCurrentStep(1);
   }, [applyQrSources]);
 
@@ -627,6 +634,8 @@ export default function ImaginePage() {
     setGeneratedImageUrl("");
     setGenerationStatusMessage("");
     setGenerationError("");
+    setPreparedGeneration(null);
+    setHasInitiatedGeneration(false);
 
     let responseData = null;
     let isSuccessful = false;
@@ -724,63 +733,123 @@ export default function ImaginePage() {
     setGenerationStatusMessage("");
     setGenerationError("");
 
-    if (!isChargingEnabled) {
-      setCurrentStep(3);
-      setStatusMessage(
-        "Cobrança desativada. Iniciamos o processamento da sua imagem."
-      );
-      const result = await handleGenerate();
-      if (!result) {
-        setCurrentStep(1);
-      }
+    setIsPreparingGeneration(true);
+
+    const orderResponse = await handleGenerate();
+
+    if (!orderResponse) {
+      setIsPreparingGeneration(false);
       return;
     }
 
-    setCurrentStep(2);
+    try {
+      const response = await fetch("/api/imagine/prepare-generation", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderId: orderResponse?.orderId || orderId,
+          encryptedEmail,
+          modelType,
+          colorName: selectedColor?.name || "",
+          colorHex: selectedColor?.hex || "",
+          imageDataUrl: selectedFileDataUrl,
+          originalFileName: selectedFile?.name || null,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(
+          errorData?.message ||
+            "Não foi possível preparar a geração da sua imagem."
+        );
+      }
+
+      const data = await response.json();
+      const generationPayload = data?.generation || null;
+      setPreparedGeneration(generationPayload);
+
+      if (generationPayload?.statusMessage) {
+        setGenerationStatusMessage(generationPayload.statusMessage);
+      }
+
+      if (!isChargingEnabled) {
+        setStatusMessage(
+          "Cobrança desativada. Iniciamos o processamento da sua imagem."
+        );
+        setCurrentStep(3);
+        return;
+      }
+
+      setCurrentStep(2);
+    } catch (error) {
+      console.error("Erro ao preparar geração", error);
+      setErrorMessage(
+        error.message || "Erro inesperado ao preparar a geração da imagem"
+      );
+      setCurrentStep(1);
+      setPreparedGeneration(null);
+      setHasInitiatedGeneration(false);
+    } finally {
+      setIsPreparingGeneration(false);
+    }
   }, [
     emailSaved,
     handleGenerate,
+    encryptedEmail,
+    modelType,
     isChargingEnabled,
+    orderId,
+    selectedColor,
     selectedFile,
     selectedFileDataUrl,
   ]);
 
   const initiateGeneration = useCallback(async () => {
-    if (!orderId || !selectedFileDataUrl || !encryptedEmail) return;
+    const existingSourceBlobUrl =
+      preparedGeneration?.sourceImageBlobUrl ||
+      generationRecord?.sourceImageBlobUrl ||
+      null;
+
+    if (!orderId || !encryptedEmail) return;
+    if (!selectedFileDataUrl && !existingSourceBlobUrl) return;
     if (isUploadingSource) return;
     setGenerationError("");
     setGenerationStatusMessage(
       `Preparando sua imagem para envio com a cor ${selectedColorLabel.toLowerCase()}.`
     );
 
-    let uploadedSourceBlobUrl = null;
+    let uploadedSourceBlobUrl = existingSourceBlobUrl;
 
     try {
       setIsUploadingSource(true);
-
-      const uploadResponse = await fetch("/api/imagine/upload-source", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          imageDataUrl: selectedFileDataUrl,
-          orderId,
-          originalFileName: selectedFile?.name || null,
-        }),
-      });
-
-      if (!uploadResponse.ok) {
-        const errorData = await uploadResponse.json().catch(() => ({}));
-        throw new Error(
-          errorData?.message ||
-            "Não foi possível preparar a imagem para processamento"
-        );
-      }
-
-      const uploadData = await uploadResponse.json();
-      uploadedSourceBlobUrl = uploadData?.blobUrl || null;
+      setHasInitiatedGeneration(true);
 
       if (!uploadedSourceBlobUrl) {
-        throw new Error("Resposta inválida ao preparar a imagem para envio");
+        const uploadResponse = await fetch("/api/imagine/upload-source", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            imageDataUrl: selectedFileDataUrl,
+            orderId,
+            originalFileName: selectedFile?.name || null,
+          }),
+        });
+
+        if (!uploadResponse.ok) {
+          const errorData = await uploadResponse.json().catch(() => ({}));
+          throw new Error(
+            errorData?.message ||
+              "Não foi possível preparar a imagem para processamento"
+          );
+        }
+
+        const uploadData = await uploadResponse.json();
+        uploadedSourceBlobUrl = uploadData?.blobUrl || null;
+
+        if (!uploadedSourceBlobUrl) {
+          throw new Error("Resposta inválida ao preparar a imagem para envio");
+        }
       }
 
       setGenerationStatusMessage(
@@ -813,6 +882,7 @@ export default function ImaginePage() {
 
       if (generation) {
         setGenerationRecord(generation);
+        setPreparedGeneration(generation);
 
         if (generation.statusMessage) {
           setGenerationStatusMessage(generation.statusMessage);
@@ -854,14 +924,17 @@ export default function ImaginePage() {
       }
 
       setGenerationStatusMessage("");
+      setHasInitiatedGeneration(false);
     } finally {
       setIsUploadingSource(false);
     }
   }, [
     encryptedEmail,
+    generationRecord,
     isUploadingSource,
     modelType,
     orderId,
+    preparedGeneration,
     selectedColor,
     selectedColorLabel,
     selectedFile,
@@ -887,6 +960,7 @@ export default function ImaginePage() {
 
       if (generation) {
         setGenerationRecord(generation);
+        setPreparedGeneration(generation);
 
         if (generation.statusMessage) {
           setGenerationStatusMessage(generation.statusMessage);
@@ -917,39 +991,29 @@ export default function ImaginePage() {
     }
   }, [orderId]);
 
-  // ✅ AGORA SIM: efeito que chama handleGenerate FICA DEPOIS da função
-  useEffect(() => {
-    if (!isChargingEnabled) return;
-    if (
-      currentStep === 2 &&
-      !orderId &&
-      !isGenerating &&
-      selectedFile &&
-      selectedFileDataUrl
-    ) {
-      handleGenerate();
-    }
-  }, [
-    currentStep,
-    handleGenerate,
-    isChargingEnabled,
-    isGenerating,
-    orderId,
-    selectedFile,
-    selectedFileDataUrl,
-  ]);
-
   useEffect(() => {
     if (!isPaymentConfirmed) return;
-    if (!orderId || !selectedFileDataUrl || !encryptedEmail) return;
-    if (generationRecord) return;
+    if (!orderId || !encryptedEmail) return;
+    if (generationError) return;
+
+    const hasSourceReady = Boolean(
+      selectedFileDataUrl || preparedGeneration?.sourceImageBlobUrl
+    );
+
+    if (!hasSourceReady) return;
+
+    if (hasInitiatedGeneration) return;
+
     initiateGeneration();
   }, [
     encryptedEmail,
+    generationError,
     generationRecord,
     initiateGeneration,
     isPaymentConfirmed,
     orderId,
+    hasInitiatedGeneration,
+    preparedGeneration,
     selectedFileDataUrl,
   ]);
 
@@ -1539,7 +1603,9 @@ export default function ImaginePage() {
                                 <Button
                                   variant="contained"
                                   onClick={handleNextToPayment}
-                                  disabled={!emailSaved}
+                                  disabled={
+                                    !emailSaved || isGenerating || isPreparingGeneration
+                                  }
                                 >
                                   Gerar Imagem
                                 </Button>
