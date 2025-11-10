@@ -696,9 +696,15 @@ export default function ImaginePage() {
     } finally {
       resetAllState();
       setIsReturningHome(false);
-      router.push("/");
+      router.push("/imagine");
     }
-  }, [cancelOrderRecord, isReturningHome, orderId, resetAllState, router]);
+  }, [
+    cancelOrderRecord,
+    isReturningHome,
+    orderId,
+    resetAllState,
+    router,
+  ]);
 
   const handleSaveEmail = useCallback(async () => {
     setErrorMessage("");
@@ -1418,31 +1424,6 @@ export default function ImaginePage() {
                 spacing={1}
                 alignItems={{ xs: "stretch", sm: "center" }}
               >
-                <Button
-                  variant="outlined"
-                  size="small"
-                  onClick={handleReturnHome}
-                  disabled={isReturningHome || isCancellingOrder}
-                  sx={{
-                    width: { xs: "100%", sm: "auto" },
-                    borderColor: "rgba(148,163,184,0.4)",
-                    color: "#f8fafc",
-                    "&:hover": {
-                      borderColor: "#7dd3fc",
-                      bgcolor: "rgba(125,211,252,0.08)",
-                    },
-                  }}
-                >
-                  {isReturningHome ? (
-                    <Stack direction="row" spacing={1} alignItems="center">
-                      <CircularProgress size={18} />
-                      <span>Voltando...</span>
-                    </Stack>
-                  ) : (
-                    "Voltar para início"
-                  )}
-                </Button>
-
                 {emailSaved && (
                   <Button
                     variant="outlined"
@@ -2155,7 +2136,7 @@ export default function ImaginePage() {
                           </Box>
 
                           {generatedImageUrl ? (
-                            <Stack spacing={2} alignItems="center">
+                            <Stack spacing={2} alignItems="center" width="100%">
                               <Alert
                                 severity="success"
                                 sx={{
@@ -2167,17 +2148,57 @@ export default function ImaginePage() {
                                 Sua nova imagem foi gerada com sucesso! Faça o
                                 download abaixo e aproveite.
                               </Alert>
-                              <Button
-                                variant="contained"
-                                color="primary"
-                                component="a"
-                                href={generatedImageUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                download={`imagine-${orderId || "resultado"}.png`}
+                              <Stack
+                                direction={{ xs: "column", sm: "row" }}
+                                spacing={2}
+                                width="100%"
+                                justifyContent="center"
                               >
-                                Baixar imagem
-                              </Button>
+                                <Button
+                                  variant="contained"
+                                  color="primary"
+                                  component="a"
+                                  href={generatedImageUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  download={`imagine-${orderId || "resultado"}.png`}
+                                  sx={{
+                                    minWidth: { sm: 180 },
+                                    width: { xs: "100%", sm: "auto" },
+                                  }}
+                                >
+                                  Baixar imagem
+                                </Button>
+                                <Button
+                                  variant="outlined"
+                                  onClick={handleReturnHome}
+                                  disabled={isReturningHome || isCancellingOrder}
+                                  sx={{
+                                    minWidth: { sm: 180 },
+                                    width: { xs: "100%", sm: "auto" },
+                                    borderColor: "rgba(148,163,184,0.4)",
+                                    color: "#f8fafc",
+                                    "&:hover": {
+                                      borderColor: "#7dd3fc",
+                                      bgcolor: "rgba(125,211,252,0.08)",
+                                    },
+                                  }}
+                                >
+                                  {isReturningHome ? (
+                                    <Stack
+                                      direction="row"
+                                      spacing={1}
+                                      alignItems="center"
+                                      justifyContent="center"
+                                    >
+                                      <CircularProgress size={18} />
+                                      <span>Voltando...</span>
+                                    </Stack>
+                                  ) : (
+                                    "Voltar para início"
+                                  )}
+                                </Button>
+                              </Stack>
                             </Stack>
                           ) : null}
 
