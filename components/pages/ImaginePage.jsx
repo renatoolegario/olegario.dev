@@ -29,10 +29,7 @@ import {
 } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import Cookies from "js-cookie";
-import {
-  IMAGINE_MODELS,
-  MODEL_OPTIONS,
-} from "../../utils/imagineModels";
+import { IMAGINE_MODELS, MODEL_OPTIONS } from "../../utils/imagineModels";
 
 const EMAIL_STORAGE_KEY = "imagine_user_email";
 const EMAIL_TOKEN_STORAGE_KEY = "imagine_user_token";
@@ -469,7 +466,7 @@ export default function ImaginePage() {
         if (typeof crypto !== "undefined" && crypto.randomUUID) {
           return crypto.randomUUID();
         }
-        return `imagine-${Date.now()}-${Math.random()`
+        return `imagine-${Date.now()}-${Math.random()
           .toString(36)
           .slice(2, 10)}`;
       };
@@ -1133,7 +1130,8 @@ export default function ImaginePage() {
                                     variant="caption"
                                     color="rgba(148,163,184,0.75)"
                                   >
-                                    Essa cor será utilizada no prompt do modelo ao gerar a imagem final.
+                                    Essa cor será utilizada no prompt do modelo
+                                    ao gerar a imagem final.
                                   </Typography>
                                 </Stack>
                               </Box>
