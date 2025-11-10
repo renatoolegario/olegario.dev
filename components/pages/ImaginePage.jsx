@@ -167,27 +167,30 @@ export default function ImaginePage() {
       .filter(Boolean);
   }, [historyRecords, isProcessingStatus]);
 
-  const getHistoryStatusDetails = useCallback((status) => {
-    const normalized = status ? status.toString().toLowerCase() : "";
+  const getHistoryStatusDetails = useCallback(
+    (status) => {
+      const normalized = status ? status.toString().toLowerCase() : "";
 
-    if (normalized === "completed") {
-      return { label: "Concluída", color: "success" };
-    }
+      if (normalized === "completed") {
+        return { label: "Concluída", color: "success" };
+      }
 
-    if (["failed", "error", "canceled", "cancelled"].includes(normalized)) {
-      return { label: "Erro", color: "error" };
-    }
+      if (["failed", "error", "canceled", "cancelled"].includes(normalized)) {
+        return { label: "Erro", color: "error" };
+      }
 
-    if (isProcessingStatus(normalized)) {
-      return { label: "Processando", color: "info" };
-    }
+      if (isProcessingStatus(normalized)) {
+        return { label: "Processando", color: "info" };
+      }
 
-    if (!normalized) {
-      return { label: "Desconhecido", color: "default" };
-    }
+      if (!normalized) {
+        return { label: "Desconhecido", color: "default" };
+      }
 
-    return { label: status, color: "default" };
-  }, [isProcessingStatus]);
+      return { label: status, color: "default" };
+    },
+    [isProcessingStatus]
+  );
 
   const fetchHistory = useCallback(
     async ({ silent = false } = {}) => {
@@ -211,12 +214,15 @@ export default function ImaginePage() {
           params.set("playerEmail", email.trim().toLowerCase());
         }
 
-        const response = await fetch(`/api/imagine/history?${params.toString()}`);
+        const response = await fetch(
+          `/api/imagine/history?${params.toString()}`
+        );
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}));
           throw new Error(
-            errorData?.message || "Não foi possível carregar o histórico de imagens"
+            errorData?.message ||
+              "Não foi possível carregar o histórico de imagens"
           );
         }
 
@@ -270,7 +276,11 @@ export default function ImaginePage() {
               );
             }
           } catch (error) {
-            console.error("Erro ao atualizar status do histórico", orderId, error);
+            console.error(
+              "Erro ao atualizar status do histórico",
+              orderId,
+              error
+            );
           }
         })
       );
@@ -951,6 +961,7 @@ export default function ImaginePage() {
         `/api/imagine/check-generation?orderId=${orderId}`
       );
 
+      console.log("AAAAAAAAAAAA", response);
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(
@@ -1213,12 +1224,14 @@ export default function ImaginePage() {
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}));
           throw new Error(
-            errorData?.message || "Não foi possível reenviar a geração da imagem"
+            errorData?.message ||
+              "Não foi possível reenviar a geração da imagem"
           );
         }
 
         setHistoryFeedback({
-          message: "Reprocessamento iniciado. Vamos atualizar o status em instantes.",
+          message:
+            "Reprocessamento iniciado. Vamos atualizar o status em instantes.",
           severity: "success",
         });
 
@@ -1607,7 +1620,9 @@ export default function ImaginePage() {
                                   variant="contained"
                                   onClick={handleNextToPayment}
                                   disabled={
-                                    !emailSaved || isGenerating || isPreparingGeneration
+                                    !emailSaved ||
+                                    isGenerating ||
+                                    isPreparingGeneration
                                   }
                                 >
                                   Gerar Imagem
@@ -2082,8 +2097,8 @@ export default function ImaginePage() {
 
                   {!emailSaved ? (
                     <Alert severity="info">
-                      Confirme o email de acesso para visualizar o histórico
-                      das suas gerações.
+                      Confirme o email de acesso para visualizar o histórico das
+                      suas gerações.
                     </Alert>
                   ) : (
                     <Stack spacing={2}>
@@ -2439,7 +2454,11 @@ export default function ImaginePage() {
               }
             }}
             disabled={!historyPreviewRecord?.resultImageUrl}
-            sx={{ color: historyPreviewRecord?.resultImageUrl ? "#38bdf8" : "#64748b" }}
+            sx={{
+              color: historyPreviewRecord?.resultImageUrl
+                ? "#38bdf8"
+                : "#64748b",
+            }}
           >
             Baixar imagem
           </Button>

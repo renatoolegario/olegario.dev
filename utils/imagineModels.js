@@ -6,7 +6,7 @@ const IMAGINE_MODELS = {
     prompt: `
       ✅ O personagem da imagem de referência, tem que preservar as características faciais idênticas, um sorriso natural e uma
 expressão gentil, tom de pele natural, foco nítido.
-✅Seu cabelo(caso tenha) e barba (caso tenha) capturam a luz com reflexos sutis.
+✅Seu cabelo capturam a luz com reflexos sutis.
 
 ✅Ele veste uma camisa [COR] de mangas compridas, social e impecável, transmitindo uma imagem executiva.
 
@@ -27,7 +27,11 @@ const MODEL_OPTIONS = Object.values(IMAGINE_MODELS);
 
 function getModelByValue(value) {
   if (!value) return MODEL_OPTIONS[0] || null;
-  return IMAGINE_MODELS[value] || MODEL_OPTIONS.find((model) => model.value === value) || null;
+  return (
+    IMAGINE_MODELS[value] ||
+    MODEL_OPTIONS.find((model) => model.value === value) ||
+    null
+  );
 }
 
 function buildPromptWithReplacements(modelValue, replacements = {}) {
@@ -44,4 +48,9 @@ function buildPromptWithReplacements(modelValue, replacements = {}) {
   }, promptTemplate);
 }
 
-export { IMAGINE_MODELS, MODEL_OPTIONS, getModelByValue, buildPromptWithReplacements };
+export {
+  IMAGINE_MODELS,
+  MODEL_OPTIONS,
+  getModelByValue,
+  buildPromptWithReplacements,
+};
