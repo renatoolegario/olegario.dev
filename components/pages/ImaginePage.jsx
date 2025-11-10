@@ -38,6 +38,7 @@ import {
 } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DownloadIcon from "@mui/icons-material/Download";
+import QrCode2Icon from "@mui/icons-material/QrCode2";
 import ReplayIcon from "@mui/icons-material/Replay";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import Cookies from "js-cookie";
@@ -59,6 +60,16 @@ const CLOTHING_COLORS = [
   { name: "Vinho", hex: "#7F1D1D" },
   { name: "Bege", hex: "#FDE68A" },
 ];
+
+const RESUME_PAYMENT_INITIAL_STATE = {
+  open: false,
+  orderId: null,
+  qrCodeUrl: "",
+  qrCodeData: "",
+  status: "",
+  statusDetail: "",
+  expirationTime: null,
+};
 
 export default function ImaginePage() {
   const router = useRouter();
@@ -102,6 +113,12 @@ export default function ImaginePage() {
   const [historyFeedback, setHistoryFeedback] = useState(null);
   const [historyPreviewRecord, setHistoryPreviewRecord] = useState(null);
   const [retryingOrders, setRetryingOrders] = useState({});
+  const [resumingPayments, setResumingPayments] = useState({});
+  const [resumePaymentModal, setResumePaymentModal] = useState(
+    RESUME_PAYMENT_INITIAL_STATE
+  );
+  const [resumePaymentError, setResumePaymentError] = useState("");
+  const [resumeCopyStatus, setResumeCopyStatus] = useState(null);
   const [isCancellingOrder, setIsCancellingOrder] = useState(false);
   const [isReturningHome, setIsReturningHome] = useState(false);
   const isPollingHistoryRef = useRef(false);
@@ -181,6 +198,10 @@ export default function ImaginePage() {
 
       if (["failed", "error", "canceled", "cancelled"].includes(normalized)) {
         return { label: "Erro", color: "error" };
+      }
+
+      if (normalized === "pending") {
+        return { label: "Pendente", color: "warning" };
       }
 
       if (isProcessingStatus(normalized)) {
@@ -312,27 +333,50 @@ export default function ImaginePage() {
     }
   }, []);
 
-  const applyQrSources = useCallback((orderData) => {
+  const resumeStatusDetails = useMemo(() => {
+    if (!resumePaymentModal?.status) return null;
+    return getHistoryStatusDetails(resumePaymentModal.status);
+  }, [getHistoryStatusDetails, resumePaymentModal?.status]);
+
+  const resumeExpirationLabel = useMemo(() => {
+    if (!resumePaymentModal?.expirationTime) return "";
+    return formatHistoryDate(resumePaymentModal.expirationTime);
+  }, [formatHistoryDate, resumePaymentModal?.expirationTime]);
+
+  const deriveQrSources = useCallback((orderData) => {
     if (!orderData) {
-      setQrCodeUrl("");
-      setQrCodeData("");
-      return;
+      return { qrUrl: "", qrData: "" };
     }
+
     const qrImage = orderData?.qrImage;
     const qrDataValue = orderData?.qrData;
 
     if (qrImage) {
-      setQrCodeUrl(`data:image/png;base64,${qrImage}`);
-    } else if (qrDataValue) {
-      const encodedData = encodeURIComponent(qrDataValue);
-      setQrCodeUrl(
-        `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodedData}`
-      );
-    } else {
-      setQrCodeUrl("");
+      return {
+        qrUrl: `data:image/png;base64,${qrImage}`,
+        qrData: qrDataValue || "",
+      };
     }
-    setQrCodeData(qrDataValue || "");
+
+    if (qrDataValue) {
+      const encodedData = encodeURIComponent(qrDataValue);
+      return {
+        qrUrl: `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodedData}`,
+        qrData: qrDataValue,
+      };
+    }
+
+    return { qrUrl: "", qrData: "" };
   }, []);
+
+  const applyQrSources = useCallback(
+    (orderData) => {
+      const { qrUrl, qrData } = deriveQrSources(orderData);
+      setQrCodeUrl(qrUrl);
+      setQrCodeData(qrData);
+    },
+    [deriveQrSources]
+  );
 
   const isPaymentConfirmed = useMemo(() => {
     if (!orderStatus) return false;
@@ -343,6 +387,7 @@ export default function ImaginePage() {
       "finished",
       "approved",
       "processed",
+      "processing",
       "accredited",
     ].includes(normalized);
   }, [orderStatus]);
@@ -408,6 +453,12 @@ export default function ImaginePage() {
     const timeoutId = setTimeout(() => setCopyStatus(null), 4000);
     return () => clearTimeout(timeoutId);
   }, [copyStatus]);
+
+  useEffect(() => {
+    if (!resumeCopyStatus?.message) return;
+    const timeoutId = setTimeout(() => setResumeCopyStatus(null), 4000);
+    return () => clearTimeout(timeoutId);
+  }, [resumeCopyStatus]);
 
   useEffect(() => {
     if (activeTab !== "history") return;
@@ -567,6 +618,10 @@ export default function ImaginePage() {
     setCurrentStep(1);
     setErrorMessage("");
     setActiveTab("new");
+    setResumePaymentModal(RESUME_PAYMENT_INITIAL_STATE);
+    setResumePaymentError("");
+    setResumeCopyStatus(null);
+    setResumingPayments({});
     if (typeof window !== "undefined") {
       window.localStorage.removeItem(ORDER_REFERENCE_STORAGE_KEY);
     }
@@ -1186,40 +1241,60 @@ export default function ImaginePage() {
 
   // 2) Vai para a etapa 3 assim que o pagamento for confirmado
   useEffect(() => {
-    if (isPaymentConfirmed) {
-      applyQrSources(null);
-      setStatusMessage(
-        `Seu pagamento foi feito com sucesso! Já estamos trabalhando na geração da sua imagem perfeita com a cor ${selectedColorLabel.toLowerCase()}.`
-      );
-      setCurrentStep(3); // "Geração"
+    if (!isPaymentConfirmed) return;
+
+    if (orderStatus && orderStatus.toLowerCase() !== "processing") {
+      setOrderStatus("processing");
     }
-  }, [applyQrSources, isPaymentConfirmed, selectedColorLabel]);
+
+    applyQrSources(null);
+    setStatusMessage(
+      `Seu pagamento foi feito com sucesso! Já estamos trabalhando na geração da sua imagem perfeita com a cor ${selectedColorLabel.toLowerCase()}.`
+    );
+    setCurrentStep(3); // "Geração"
+  }, [
+    applyQrSources,
+    isPaymentConfirmed,
+    orderStatus,
+    selectedColorLabel,
+  ]);
+
+  const copyTextToClipboard = useCallback(async (text) => {
+    if (!text) {
+      throw new Error("Conteúdo vazio para copiar");
+    }
+
+    const canUseClipboard =
+      typeof navigator !== "undefined" &&
+      navigator.clipboard &&
+      typeof navigator.clipboard.writeText === "function";
+
+    if (canUseClipboard) {
+      await navigator.clipboard.writeText(text);
+      return;
+    }
+
+    if (typeof document !== "undefined") {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed";
+      textArea.style.opacity = "0";
+      textArea.style.pointerEvents = "none";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textArea);
+      return;
+    }
+
+    throw new Error("Clipboard API indisponível");
+  }, []);
 
   const handleCopyQrData = useCallback(async () => {
     if (!qrCodeData) return;
     try {
-      const canUseClipboard =
-        typeof navigator !== "undefined" &&
-        navigator.clipboard &&
-        typeof navigator.clipboard.writeText === "function";
-
-      if (canUseClipboard) {
-        await navigator.clipboard.writeText(qrCodeData);
-      } else if (typeof document !== "undefined") {
-        const textArea = document.createElement("textarea");
-        textArea.value = qrCodeData;
-        textArea.style.position = "fixed";
-        textArea.style.opacity = "0";
-        textArea.style.pointerEvents = "none";
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-        document.execCommand("copy");
-        document.body.removeChild(textArea);
-      } else {
-        throw new Error("Clipboard API indisponível");
-      }
-
+      await copyTextToClipboard(qrCodeData);
       setCopyStatus({
         message: "Código PIX copiado para a área de transferência.",
         severity: "success",
@@ -1231,7 +1306,24 @@ export default function ImaginePage() {
         severity: "error",
       });
     }
-  }, [qrCodeData]);
+  }, [copyTextToClipboard, qrCodeData]);
+
+  const handleResumePaymentCopy = useCallback(async () => {
+    if (!resumePaymentModal?.qrCodeData) return;
+    try {
+      await copyTextToClipboard(resumePaymentModal.qrCodeData);
+      setResumeCopyStatus({
+        message: "Código PIX copiado para a área de transferência.",
+        severity: "success",
+      });
+    } catch (error) {
+      console.error("Erro ao copiar código PIX do histórico", error);
+      setResumeCopyStatus({
+        message: "Não foi possível copiar o código PIX. Copie manualmente.",
+        severity: "error",
+      });
+    }
+  }, [copyTextToClipboard, resumePaymentModal?.qrCodeData]);
 
   // Iniciar edição de email (remove token e volta a pedir confirmação)
   const handleStartEmailEdit = useCallback(() => {
@@ -1373,6 +1465,112 @@ export default function ImaginePage() {
       selectedColor?.hex,
       selectedColor?.name,
     ]
+  );
+
+  const handleResumePaymentClose = useCallback(() => {
+    setResumePaymentModal(RESUME_PAYMENT_INITIAL_STATE);
+    setResumePaymentError("");
+    setResumeCopyStatus(null);
+  }, []);
+
+  const handleHistoryResumePayment = useCallback(
+    async (record) => {
+      if (!record?.orderId) {
+        setHistoryFeedback({
+          message: "Registro sem identificador válido para consultar o pagamento.",
+          severity: "error",
+        });
+        return;
+      }
+
+      if (!encryptedEmail) {
+        setHistoryFeedback({
+          message: "Confirme o email antes de consultar o pagamento pendente.",
+          severity: "error",
+        });
+        return;
+      }
+
+      const orderKey = record.orderId;
+      setHistoryFeedback(null);
+      setResumePaymentError("");
+      setResumeCopyStatus(null);
+
+      setResumingPayments((prev) => ({ ...prev, [orderKey]: true }));
+
+      try {
+        const response = await fetch("/api/imagine/resume-payment", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderId: orderKey, encryptedEmail }),
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (response.status === 410) {
+          setHistoryFeedback({
+            message:
+              data?.message ||
+              "O QR Code estava expirado e removemos os dados para que você possa iniciar um novo pedido.",
+            severity: "warning",
+          });
+          await fetchHistory({ silent: true });
+          return;
+        }
+
+        if (response.status === 404) {
+          setHistoryFeedback({
+            message:
+              data?.message ||
+              "Não encontramos mais informações de pagamento para este pedido.",
+            severity: "warning",
+          });
+          await fetchHistory({ silent: true });
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error(
+            data?.message ||
+              "Não foi possível recuperar o QR Code deste pagamento. Tente novamente."
+          );
+        }
+
+        const { qrUrl, qrData } = deriveQrSources(data);
+
+        setResumePaymentModal({
+          ...RESUME_PAYMENT_INITIAL_STATE,
+          open: true,
+          orderId: data?.orderId || orderKey,
+          qrCodeUrl: qrUrl,
+          qrCodeData: qrData,
+          status: data?.status || record?.status || "pending",
+          statusDetail: data?.statusDetail || "",
+          expirationTime: data?.expirationTime || null,
+        });
+
+        if (!qrUrl && !qrData) {
+          setResumePaymentError(
+            "Não encontramos dados do QR Code para este pagamento. Gere uma nova imagem para continuar."
+          );
+        }
+      } catch (error) {
+        console.error("Erro ao recuperar pagamento pendente do histórico", error);
+        setHistoryFeedback({
+          message:
+            error.message ||
+            "Não foi possível recuperar o pagamento pendente. Tente novamente mais tarde.",
+          severity: "error",
+        });
+      } finally {
+        setResumingPayments((prev) => {
+          const next = { ...prev };
+          delete next[orderKey];
+          return next;
+        });
+      }
+    },
+    [deriveQrSources, encryptedEmail, fetchHistory]
   );
 
   return (
@@ -2340,6 +2538,7 @@ export default function ImaginePage() {
                                 const normalizedStatus = record?.status
                                   ? record.status.toString().toLowerCase()
                                   : "";
+                                const isPending = normalizedStatus === "pending";
                                 const isFailed = [
                                   "failed",
                                   "error",
@@ -2348,6 +2547,9 @@ export default function ImaginePage() {
                                 ].includes(normalizedStatus);
                                 const isRetrying = Boolean(
                                   retryingOrders?.[record?.orderId]
+                                );
+                                const isResuming = Boolean(
+                                  resumingPayments?.[record?.orderId]
                                 );
 
                                 return (
@@ -2402,6 +2604,41 @@ export default function ImaginePage() {
                                         alignItems="center"
                                         flexWrap="nowrap"
                                       >
+                                        {isPending ? (
+                                          <Button
+                                            size="small"
+                                            variant="contained"
+                                            color="info"
+                                            startIcon={
+                                              isResuming ? null : <QrCode2Icon />
+                                            }
+                                            onClick={() =>
+                                              handleHistoryResumePayment(record)
+                                            }
+                                            disabled={isResuming}
+                                            sx={{ whiteSpace: "nowrap" }}
+                                          >
+                                            {isResuming ? (
+                                              <Stack
+                                                direction="row"
+                                                spacing={1}
+                                                alignItems="center"
+                                              >
+                                                <CircularProgress size={16} />
+                                                <Typography
+                                                  component="span"
+                                                  variant="caption"
+                                                  sx={{ color: "inherit" }}
+                                                >
+                                                  Consultando...
+                                                </Typography>
+                                              </Stack>
+                                            ) : (
+                                              "Ver QR Code"
+                                            )}
+                                          </Button>
+                                        ) : null}
+
                                         <Tooltip
                                           title={
                                             record?.resultImageUrl
@@ -2508,6 +2745,151 @@ export default function ImaginePage() {
           )}
         </Stack>
       </Box>
+
+      <Dialog
+        open={resumePaymentModal.open}
+        onClose={handleResumePaymentClose}
+        fullWidth
+        maxWidth="sm"
+        PaperProps={{
+          sx: {
+            bgcolor: "rgba(2,6,23,0.95)",
+            color: "#f8fafc",
+            border: "1px solid rgba(148,163,184,0.2)",
+            backdropFilter: "blur(12px)",
+          },
+        }}
+      >
+        <DialogTitle sx={{ fontWeight: 600 }}>
+          Pagamento pendente
+        </DialogTitle>
+        <DialogContent dividers sx={{ borderColor: "rgba(148,163,184,0.2)" }}>
+          <Stack spacing={3}>
+            <Stack spacing={0.5}>
+              <Typography variant="subtitle1" fontWeight={600}>
+                Conclua o pagamento para retomar a geração
+              </Typography>
+              <Typography variant="body2" color="rgba(226,232,240,0.75)">
+                Utilize o QR Code ou copie o código PIX para finalizar o
+                pagamento deste pedido.
+              </Typography>
+            </Stack>
+
+            {resumePaymentError ? (
+              <Alert severity="warning">{resumePaymentError}</Alert>
+            ) : null}
+
+            {resumeStatusDetails ? (
+              <Stack
+                direction={{ xs: "column", sm: "row" }}
+                spacing={1.5}
+                alignItems={{ xs: "flex-start", sm: "center" }}
+              >
+                <Chip
+                  size="small"
+                  label={resumeStatusDetails.label}
+                  color={resumeStatusDetails.color}
+                  variant={
+                    resumeStatusDetails.color === "default"
+                      ? "outlined"
+                      : "filled"
+                  }
+                />
+                {resumeExpirationLabel ? (
+                  <Typography
+                    variant="caption"
+                    color="rgba(226,232,240,0.7)"
+                  >
+                    Expira em: {resumeExpirationLabel}
+                  </Typography>
+                ) : null}
+              </Stack>
+            ) : null}
+
+            {resumePaymentModal.qrCodeUrl ? (
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  p: 3,
+                  borderRadius: 2,
+                  bgcolor: "rgba(2,6,23,0.85)",
+                  border: "1px dashed rgba(125,211,252,0.45)",
+                }}
+              >
+                <Box
+                  component="img"
+                  src={resumePaymentModal.qrCodeUrl}
+                  alt="QR Code para pagamento pendente"
+                  sx={{ width: 220, height: 220 }}
+                />
+              </Box>
+            ) : null}
+
+            {resumePaymentModal.qrCodeData ? (
+              <Stack spacing={1.5}>
+                <Typography
+                  variant="subtitle2"
+                  color="rgba(148,163,184,0.9)"
+                >
+                  Código PIX (copia e cola)
+                </Typography>
+                <TextField
+                  value={resumePaymentModal.qrCodeData}
+                  multiline
+                  minRows={4}
+                  InputProps={{ readOnly: true }}
+                  sx={{
+                    width: "100%",
+                    bgcolor: "rgba(15,23,42,0.6)",
+                    borderRadius: 2,
+                    "& .MuiOutlinedInput-root": {
+                      color: "#f8fafc",
+                      "& fieldset": {
+                        borderColor: "rgba(148,163,184,0.3)",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#7dd3fc",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#38bdf8",
+                      },
+                    },
+                  }}
+                />
+              </Stack>
+            ) : null}
+
+            {resumeCopyStatus?.message ? (
+              <Alert severity={resumeCopyStatus.severity}>
+                {resumeCopyStatus.message}
+              </Alert>
+            ) : null}
+          </Stack>
+        </DialogContent>
+        <DialogActions
+          sx={{
+            borderTop: "1px solid rgba(148,163,184,0.2)",
+            px: 3,
+            py: 1.5,
+          }}
+        >
+          <Button
+            onClick={handleResumePaymentCopy}
+            startIcon={<ContentCopyIcon />}
+            disabled={!resumePaymentModal.qrCodeData}
+            sx={{
+              color: resumePaymentModal.qrCodeData ? "#38bdf8" : "#64748b",
+            }}
+          >
+            Copiar código PIX
+          </Button>
+          <Button onClick={handleResumePaymentClose} sx={{ color: "#94a3b8" }}>
+            Fechar
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <Drawer
         anchor="left"
