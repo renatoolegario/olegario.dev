@@ -64,7 +64,9 @@ function extractPartsFromGenerateResponse(response) {
 function collectTextFromParts(parts) {
   if (!Array.isArray(parts)) return "";
   return parts
-    .filter((part) => typeof part?.text === "string" && part.text.trim().length > 0)
+    .filter(
+      (part) => typeof part?.text === "string" && part.text.trim().length > 0
+    )
     .map((part) => part.text.trim())
     .join(" ")
     .trim();
@@ -94,16 +96,20 @@ async function requestRemoteGeneration({ prompt, imageBase64, imageMimeType }) {
   }
 
   if (contents.length === 0) {
-    throw new Error("Não foi possível preparar o conteúdo para o modelo de imagem.");
+    throw new Error(
+      "Não foi possível preparar o conteúdo para o modelo de imagem."
+    );
   }
 
-  const modelName = process.env.GOOGLE_GENAI_IMAGE_MODEL || "gemini-2.5-flash-image";
+  const modelName =
+    process.env.GOOGLE_GENAI_IMAGE_MODEL || "gemini-2.5-flash-image";
 
   const response = await ai.models.generateContent({
     model: modelName,
     contents,
   });
 
+  console.log("Resposta", response);
   const parts = extractPartsFromGenerateResponse(response) || [];
   const textMessage = collectTextFromParts(parts);
 
@@ -119,7 +125,8 @@ async function requestRemoteGeneration({ prompt, imageBase64, imageMimeType }) {
     status: "completed",
     statusMessage: textMessage || "Imagem gerada com sucesso.",
     imageBase64: inlinePart.inlineData.data,
-    imageMimeType: inlinePart.inlineData.mimeType || imageMimeType || "image/png",
+    imageMimeType:
+      inlinePart.inlineData.mimeType || imageMimeType || "image/png",
   };
 }
 
@@ -196,7 +203,9 @@ export default async function handler(req, res) {
 
     if (!base64) {
       await client.query("ROLLBACK");
-      return res.status(400).json({ message: "Imagem inválida ou não suportada" });
+      return res
+        .status(400)
+        .json({ message: "Imagem inválida ou não suportada" });
     }
 
     let status = "processing";
@@ -262,7 +271,9 @@ export default async function handler(req, res) {
               resultImageUrl = blobUrl;
             }
           } else if (!resultImageUrl) {
-            throw new Error("Nenhuma imagem gerada foi retornada pelo provedor.");
+            throw new Error(
+              "Nenhuma imagem gerada foi retornada pelo provedor."
+            );
           }
         } catch (uploadError) {
           console.error("Erro ao salvar imagem gerada no blob", uploadError);

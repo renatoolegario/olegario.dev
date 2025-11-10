@@ -555,6 +555,8 @@ export default function ImaginePage() {
         }),
       });
 
+      console.log("AAAAAAAAAAAAAAAAAAAA", response);
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(
@@ -564,7 +566,6 @@ export default function ImaginePage() {
 
       const data = await response.json();
       const generation = data?.generation || null;
-
       if (generation) {
         setGenerationRecord(generation);
 
