@@ -1,4 +1,4 @@
-import { del as deleteBlob, get as getBlob, put as putBlob } from "@vercel/blob";
+import { del as deleteBlob, put as putBlob } from "@vercel/blob";
 
 const BLOB_ENDPOINT = "https://blob.vercel-storage.com";
 
@@ -72,26 +72,37 @@ async function fetchBufferFromUrl(url) {
 
   const isBlobUrl = typeof url === "string" && url.includes("vercel-storage.com");
 
+  let response;
+
   if (isBlobUrl) {
-    try {
-      const token = process.env.BLOB_READ_WRITE_TOKEN;
-      const options = token ? { token } : undefined;
-      const { blob } = await getBlob(url, options);
+    const token = process.env.BLOB_READ_WRITE_TOKEN;
 
-      if (!blob) {
-        throw new Error("Resposta vazia do blob");
+    if (token) {
+      try {
+        response = await fetch(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          const message = `Não foi possível baixar a imagem gerada (${response.status})`;
+          throw new Error(message);
+        }
+      } catch (error) {
+        console.warn(
+          "Falha ao baixar imagem via fetch autenticado do Blob, tentando requisição pública",
+          error
+        );
+        response = undefined;
       }
-
-      const arrayBuffer = await blob.arrayBuffer();
-      const contentType = blob.type || "image/png";
-
-      return { buffer: Buffer.from(arrayBuffer), contentType };
-    } catch (error) {
-      console.warn("Falha ao baixar imagem via SDK do Blob, tentando via fetch", error);
     }
   }
 
-  const response = await fetch(url);
+  if (!response) {
+    response = await fetch(url);
+  }
+
   if (!response.ok) {
     const message = `Não foi possível baixar a imagem gerada (${response.status})`;
     throw new Error(message);
