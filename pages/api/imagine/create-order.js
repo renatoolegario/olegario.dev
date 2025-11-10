@@ -218,10 +218,6 @@ async function createMercadoPagoOrder({ email, externalReference, modelType }) {
     payer: {
       email: normalizedEmail,
     },
-    metadata: {
-      description,
-      modelType: modelType || null,
-    },
     transactions: {
       payments: [
         {
