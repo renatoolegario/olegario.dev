@@ -1,9 +1,13 @@
+import { GoogleGenAI } from "@google/genai";
 import getDb from "infra/database";
 import { buildPromptWithReplacements } from "../../../utils/imagineModels";
 import {
+  fetchBufferFromUrl,
+  guessFileExtension,
   parseDataUrl,
   mapGenerationRow,
   normalizeRemoteStatus,
+  uploadToBlob,
 } from "../../../utils/generation";
 
 function normalizeColorDescription(colorName, colorHex) {
@@ -28,33 +32,95 @@ function extractJobIdFromResponse(response) {
   );
 }
 
-async function requestRemoteGeneration(payload) {
-  const { GEMINI_API } = process.env;
-  if (!GEMINI_API) {
-    return { status: "processing", statusMessage: "Processando com recurso local." };
+function extractPartsFromGenerateResponse(response) {
+  if (!response || typeof response !== "object") return [];
+
+  if (Array.isArray(response.parts)) {
+    return response.parts;
   }
 
-  const requestBody = {
-    action: "generate",
-    ...payload,
-  };
+  const candidateSources = [];
 
-  const response = await fetch(GEMINI_API, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(requestBody),
+  if (Array.isArray(response.response?.candidates)) {
+    candidateSources.push(...response.response.candidates);
+  }
+
+  if (Array.isArray(response.candidates)) {
+    candidateSources.push(...response.candidates);
+  }
+
+  for (const candidate of candidateSources) {
+    if (candidate?.content?.parts && Array.isArray(candidate.content.parts)) {
+      return candidate.content.parts;
+    }
+    if (Array.isArray(candidate?.parts)) {
+      return candidate.parts;
+    }
+  }
+
+  return [];
+}
+
+function collectTextFromParts(parts) {
+  if (!Array.isArray(parts)) return "";
+  return parts
+    .filter((part) => typeof part?.text === "string" && part.text.trim().length > 0)
+    .map((part) => part.text.trim())
+    .join(" ")
+    .trim();
+}
+
+async function requestRemoteGeneration({ prompt, imageBase64, imageMimeType }) {
+  const apiKey =
+    process.env.GOOGLE_GENAI_API_KEY ||
+    process.env.GOOGLE_API_KEY ||
+    process.env.GEMINI_API_KEY;
+
+  const ai = apiKey ? new GoogleGenAI({ apiKey }) : new GoogleGenAI({});
+
+  const contents = [];
+  const promptText = typeof prompt === "string" ? prompt.trim() : "";
+  if (promptText) {
+    contents.push({ text: promptText });
+  }
+
+  if (imageBase64) {
+    contents.push({
+      inlineData: {
+        mimeType: imageMimeType || "image/png",
+        data: imageBase64,
+      },
+    });
+  }
+
+  if (contents.length === 0) {
+    throw new Error("Não foi possível preparar o conteúdo para o modelo de imagem.");
+  }
+
+  const modelName = process.env.GOOGLE_GENAI_IMAGE_MODEL || "gemini-2.5-flash-image";
+
+  const response = await ai.models.generateContent({
+    model: modelName,
+    contents,
   });
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    const message =
-      errorData?.message ||
-      errorData?.error ||
-      `Falha ao solicitar geração remota (${response.status})`;
-    throw new Error(message);
+  const parts = extractPartsFromGenerateResponse(response) || [];
+  const textMessage = collectTextFromParts(parts);
+
+  const inlinePart = parts.find((part) => part?.inlineData?.data);
+
+  if (!inlinePart) {
+    throw new Error(
+      textMessage || "O provedor não retornou a imagem gerada para este pedido."
+    );
   }
 
-  return response.json();
+  return {
+    status: "completed",
+    statusMessage: textMessage || "Imagem gerada com sucesso.",
+    imageBase64: inlinePart.inlineData.data,
+    imageMimeType: inlinePart.inlineData.mimeType || imageMimeType || "image/png",
+  };
 }
 
 export default async function handler(req, res) {
@@ -137,16 +203,14 @@ export default async function handler(req, res) {
     let statusMessage =
       "Imagem recebida. Iniciamos o processamento no provedor de IA.";
     let externalJobId = null;
+    let resultImageUrl = null;
     let errorMessage = null;
 
     try {
       const remoteResponse = await requestRemoteGeneration({
-        orderId,
         prompt: promptTemplate,
-        modelType: appliedModelType,
-        color: { name: colorName || null, hex: colorHex || null },
         imageBase64: base64,
-        email: payment.player_email,
+        imageMimeType: mimeType,
       });
 
       externalJobId = extractJobIdFromResponse(remoteResponse);
@@ -164,6 +228,49 @@ export default async function handler(req, res) {
       if (status === "failed") {
         errorMessage =
           remoteResponse?.error || remoteResponse?.errorMessage || errorMessage;
+      }
+
+      if (status === "completed") {
+        const generatedBase64 =
+          remoteResponse?.imageBase64 || remoteResponse?.base64 || null;
+        const generatedUrl =
+          remoteResponse?.imageUrl || remoteResponse?.url || null;
+        const generatedMimeType =
+          remoteResponse?.imageMimeType || remoteResponse?.mimeType || mimeType;
+
+        try {
+          let uploadBuffer = null;
+          let uploadMimeType = generatedMimeType || "image/png";
+
+          if (generatedBase64) {
+            uploadBuffer = Buffer.from(generatedBase64, "base64");
+          } else if (generatedUrl) {
+            const remoteData = await fetchBufferFromUrl(generatedUrl);
+            uploadBuffer = remoteData.buffer;
+            uploadMimeType = remoteData.contentType || uploadMimeType;
+          }
+
+          if (uploadBuffer) {
+            const blobUrl = await uploadToBlob({
+              buffer: uploadBuffer,
+              contentType: uploadMimeType,
+              orderId,
+              extension: guessFileExtension(uploadMimeType),
+            });
+
+            if (blobUrl) {
+              resultImageUrl = blobUrl;
+            }
+          } else if (!resultImageUrl) {
+            throw new Error("Nenhuma imagem gerada foi retornada pelo provedor.");
+          }
+        } catch (uploadError) {
+          console.error("Erro ao salvar imagem gerada no blob", uploadError);
+          status = "failed";
+          statusMessage =
+            "Não foi possível salvar a imagem gerada no armazenamento.";
+          errorMessage = uploadError.message || statusMessage;
+        }
       }
     } catch (error) {
       console.error("Erro ao solicitar geração externa", error);
@@ -229,7 +336,7 @@ export default async function handler(req, res) {
       status,
       statusMessage,
       externalJobId,
-      null,
+      resultImageUrl,
       originalFileName || null,
       mimeType || null,
       errorMessage,

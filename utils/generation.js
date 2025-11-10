@@ -1,3 +1,5 @@
+const BLOB_ENDPOINT = "https://blob.vercel-storage.com";
+
 function parseDataUrl(dataUrl) {
   if (typeof dataUrl !== "string") {
     return { mimeType: null, base64: null };
@@ -61,4 +63,65 @@ function normalizeRemoteStatus(status) {
   return "processing";
 }
 
-export { parseDataUrl, guessFileExtension, mapGenerationRow, normalizeRemoteStatus };
+async function fetchBufferFromUrl(url) {
+  const response = await fetch(url);
+  if (!response.ok) {
+    const message = `Não foi possível baixar a imagem gerada (${response.status})`;
+    throw new Error(message);
+  }
+
+  const arrayBuffer = await response.arrayBuffer();
+  const contentType = response.headers.get("content-type") || "image/png";
+
+  return { buffer: Buffer.from(arrayBuffer), contentType };
+}
+
+async function uploadToBlob({ buffer, contentType, orderId, extension }) {
+  const token = process.env.BLOB_READ_WRITE_TOKEN;
+  if (!token) {
+    throw new Error("BLOB_READ_WRITE_TOKEN não configurado");
+  }
+
+  const safeExtension = extension || guessFileExtension(contentType) || "png";
+  const safeOrder = (orderId || "imagem").replace(/[^a-zA-Z0-9_-]/g, "-");
+  const filename = `generated/${safeOrder}-${Date.now()}.${safeExtension}`;
+
+  const response = await fetch(`${BLOB_ENDPOINT}/${filename}`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "x-blob-meta-access": "public",
+      "Content-Type": contentType || "image/png",
+    },
+    body: buffer,
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    const message =
+      errorData?.message ||
+      errorData?.error ||
+      `Falha ao enviar imagem para o blob (${response.status})`;
+    throw new Error(message);
+  }
+
+  const payload = await response.json();
+
+  return (
+    payload?.url ||
+    payload?.downloadUrl ||
+    (payload?.pathname
+      ? `${BLOB_ENDPOINT}/${payload.pathname.replace(/^\//, "")}`
+      : null)
+  );
+}
+
+export {
+  BLOB_ENDPOINT,
+  parseDataUrl,
+  guessFileExtension,
+  mapGenerationRow,
+  normalizeRemoteStatus,
+  fetchBufferFromUrl,
+  uploadToBlob,
+};
