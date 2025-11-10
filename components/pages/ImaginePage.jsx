@@ -983,6 +983,7 @@ export default function ImaginePage() {
               </Box>
             ) : null}
           </Box>
+          </Stack>
         )}
 
           {activeTab === "history" && (
