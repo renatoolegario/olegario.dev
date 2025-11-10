@@ -11,6 +11,14 @@ import {
   deleteBlobByUrl,
 } from "../../../utils/generation";
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "10mb",
+    },
+  },
+};
+
 function normalizeColorDescription(colorName, colorHex) {
   if (colorName && typeof colorName === "string") {
     return colorName.trim();
