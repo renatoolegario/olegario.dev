@@ -8,8 +8,13 @@ import {
   Card,
   CardContent,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Divider,
   Drawer,
+  Grid,
   IconButton,
   MenuItem,
   Select,
@@ -21,41 +26,30 @@ import {
   Tabs,
   TextField,
   Typography,
-  Grid,
 } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import Cookies from "js-cookie";
+import {
+  IMAGINE_MODELS,
+  MODEL_OPTIONS,
+} from "../../utils/imagineModels";
 
 const EMAIL_STORAGE_KEY = "imagine_user_email";
 const EMAIL_TOKEN_STORAGE_KEY = "imagine_user_token";
 const POLLING_INTERVAL = 5000;
 const ORDER_REFERENCE_STORAGE_KEY = "imagine_order_reference";
 
-// Catálogo de modelos (pode crescer depois)
-const MODELS = {
-  "Foto de Perfil": {
-    value: "Foto de Perfil",
-    label: "Foto de Perfil",
-    preview: "/imagine/foto_perfil/1.jpg",
-    prompt: `
-      ✅ O personagem da imagem de referência, tem que preservar as características faciais idênticas, um sorriso natural e uma expressão gentil, tom de pele natural, foco nítido. 
-✅Seu cabelo(caso tenha) e barba (caso tenha) capturam a luz com reflexos sutis. 
-
-✅Ele veste uma camisa [COR] de mangas compridas, social e impecável, transmitindo uma imagem executiva. 
-
-✅O fundo com um gradiente de cinza médio que se esvai suavemente da esquerda para direita. 
-
-✅A iluminação é dramática, porém refinada — uma única luz lateral suave cria profundidade e contraste, com sombras delicadas esculpindo o rosto e o corpo, destacando a seriedade e o foco. 
-
-✅Estilo editorial ultrarrealista, alta faixa dinâmica, tom de pele natural, foco nítido na pessoa, capturado com uma lente Canon EOS R5, 85 mm f/1.2. 
-
-✅Fotografado em um estilo Vogue cinematográfico com elegância refinada e um toque de sofisticação tecnológica.
-      `,
-  },
-};
-
-// Lista de opções para popular o <Select>
-const MODEL_OPTIONS = Object.values(MODELS);
+// Paleta sugerida para o seletor de cor de roupas
+const CLOTHING_COLORS = [
+  { name: "Azul Royal", hex: "#2563EB" },
+  { name: "Azul Claro", hex: "#38BDF8" },
+  { name: "Cinza Grafite", hex: "#1F2937" },
+  { name: "Branco", hex: "#F8FAFC" },
+  { name: "Preto", hex: "#0F172A" },
+  { name: "Verde Esmeralda", hex: "#10B981" },
+  { name: "Vinho", hex: "#7F1D1D" },
+  { name: "Bege", hex: "#FDE68A" },
+];
 
 export default function ImaginePage() {
   const [email, setEmail] = useState("");
@@ -64,6 +58,7 @@ export default function ImaginePage() {
   const [emailSaved, setEmailSaved] = useState(false);
   const [modelType, setModelType] = useState("Foto de Perfil");
   const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFileDataUrl, setSelectedFileDataUrl] = useState("");
   const [previewUrl, setPreviewUrl] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [activeTab, setActiveTab] = useState("new");
@@ -77,6 +72,12 @@ export default function ImaginePage() {
   const [config, setConfig] = useState({ model: "", price: null });
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [copyStatus, setCopyStatus] = useState(null);
+  const [selectedColor, setSelectedColor] = useState(CLOTHING_COLORS[0]);
+  const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
+  const [generationRecord, setGenerationRecord] = useState(null);
+  const [generatedImageUrl, setGeneratedImageUrl] = useState("");
+  const [generationStatusMessage, setGenerationStatusMessage] = useState("");
+  const [generationError, setGenerationError] = useState("");
 
   const formattedPrice = useMemo(() => {
     if (!config?.price && config?.price !== 0) return "Valor a definir";
@@ -92,12 +93,20 @@ export default function ImaginePage() {
   const steps = ["Configuração", "Confirmação", "Geração"];
 
   const selectedModel = useMemo(() => {
-    return MODELS[modelType] || MODEL_OPTIONS[0];
+    return IMAGINE_MODELS[modelType] || MODEL_OPTIONS[0];
   }, [modelType]);
 
   const previewSrc = useMemo(() => {
     return previewUrl || selectedModel.preview;
   }, [previewUrl, selectedModel]);
+
+  const selectedColorLabel = useMemo(() => {
+    return selectedColor?.name || "Selecionar cor";
+  }, [selectedColor]);
+
+  const selectedColorHex = useMemo(() => {
+    return selectedColor?.hex || "#2563EB";
+  }, [selectedColor]);
 
   const applyQrSources = useCallback((orderData) => {
     if (!orderData) {
@@ -189,17 +198,6 @@ export default function ImaginePage() {
     };
   }, [applyQrSources, isPaymentConfirmed, orderId]);
 
-  // Avança para confirmação quando pago
-  useEffect(() => {
-    if (isPaymentConfirmed) {
-      applyQrSources(null);
-      setStatusMessage(
-        "Seu pagamento foi feito com sucesso! Já estamos trabalhando na geração da sua imagem perfeita!"
-      );
-      setCurrentStep(3);
-    }
-  }, [applyQrSources, isPaymentConfirmed]);
-
   // Limpa mensagem de cópia após 4s
   useEffect(() => {
     if (!copyStatus?.message) return;
@@ -255,6 +253,19 @@ export default function ImaginePage() {
       const url = URL.createObjectURL(file);
       setSelectedFile(file);
       setPreviewUrl(url);
+      setSelectedFileDataUrl("");
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (typeof reader.result === "string") {
+          setSelectedFileDataUrl(reader.result);
+        }
+      };
+      reader.onerror = () => {
+        console.error("Erro ao ler o arquivo selecionado");
+        setSelectedFileDataUrl("");
+      };
+      reader.readAsDataURL(file);
     },
     [previewUrl]
   );
@@ -270,6 +281,22 @@ export default function ImaginePage() {
     setActiveTab(value);
   }, []);
 
+  const handleColorModalOpen = useCallback(() => {
+    if (!emailSaved) return;
+    setIsColorPickerOpen(true);
+  }, [emailSaved]);
+
+  const handleColorModalClose = useCallback(() => {
+    setIsColorPickerOpen(false);
+  }, []);
+
+  const handleColorSelect = useCallback((color) => {
+    if (color) {
+      setSelectedColor(color);
+    }
+    setIsColorPickerOpen(false);
+  }, []);
+
   const handleNextToPayment = useCallback(() => {
     setErrorMessage("");
     if (!emailSaved) {
@@ -280,8 +307,16 @@ export default function ImaginePage() {
       setErrorMessage("Selecione uma imagem para continuar");
       return;
     }
+    if (!selectedFileDataUrl) {
+      setErrorMessage("A imagem selecionada ainda está sendo carregada. Aguarde alguns segundos e tente novamente.");
+      return;
+    }
+    setGenerationRecord(null);
+    setGeneratedImageUrl("");
+    setGenerationStatusMessage("");
+    setGenerationError("");
     setCurrentStep(2);
-  }, [emailSaved, selectedFile]);
+  }, [emailSaved, selectedFile, selectedFileDataUrl]);
 
   const handleBackToConfig = useCallback(() => {
     setOrderId(null);
@@ -291,6 +326,10 @@ export default function ImaginePage() {
     setQrCodeUrl("");
     setCopyStatus(null);
     applyQrSources(null);
+    setGenerationRecord(null);
+    setGeneratedImageUrl("");
+    setGenerationStatusMessage("");
+    setGenerationError("");
     setCurrentStep(1);
   }, [applyQrSources]);
 
@@ -304,11 +343,17 @@ export default function ImaginePage() {
     setCopyStatus(null);
     applyQrSources(null);
     setSelectedFile(null);
+    setSelectedFileDataUrl("");
     setPreviewUrl((current) => {
       if (current) URL.revokeObjectURL(current);
       return "";
     });
     setIsPreviewOpen(false);
+    setSelectedColor(CLOTHING_COLORS[0]);
+    setGenerationRecord(null);
+    setGeneratedImageUrl("");
+    setGenerationStatusMessage("");
+    setGenerationError("");
     setCurrentStep(1);
   }, [applyQrSources]);
 
@@ -356,6 +401,12 @@ export default function ImaginePage() {
       setErrorMessage("Selecione uma imagem para continuar");
       return;
     }
+    if (!selectedFileDataUrl) {
+      setErrorMessage(
+        "A imagem selecionada ainda está sendo carregada. Aguarde alguns instantes e tente novamente."
+      );
+      return;
+    }
 
     setIsGenerating(true);
     setOrderId(null);
@@ -363,6 +414,10 @@ export default function ImaginePage() {
     setStatusMessage("");
     applyQrSources(null);
     setCopyStatus(null);
+    setGenerationRecord(null);
+    setGeneratedImageUrl("");
+    setGenerationStatusMessage("");
+    setGenerationError("");
 
     try {
       const generateReference = () => {
@@ -417,25 +472,218 @@ export default function ImaginePage() {
     } finally {
       setIsGenerating(false);
     }
-  }, [applyQrSources, emailSaved, encryptedEmail, modelType, selectedFile]);
+  }, [
+    applyQrSources,
+    emailSaved,
+    encryptedEmail,
+    modelType,
+    selectedFile,
+    selectedFileDataUrl,
+  ]);
+
+  const initiateGeneration = useCallback(async () => {
+    if (!orderId || !selectedFileDataUrl || !encryptedEmail) return;
+    setGenerationError("");
+    setGenerationStatusMessage(
+      `Enviando sua imagem para processamento com a cor ${selectedColorLabel.toLowerCase()}.`
+    );
+
+    try {
+      const response = await fetch("/api/imagine/initiate-generation", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderId,
+          encryptedEmail,
+          modelType,
+          colorName: selectedColor?.name || "",
+          colorHex: selectedColor?.hex || "",
+          imageDataUrl: selectedFileDataUrl,
+          originalFileName: selectedFile?.name || null,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(
+          errorData?.message || "Erro ao iniciar a geração da imagem"
+        );
+      }
+
+      const data = await response.json();
+      const generation = data?.generation || null;
+
+      if (generation) {
+        setGenerationRecord(generation);
+
+        if (generation.statusMessage) {
+          setGenerationStatusMessage(generation.statusMessage);
+        } else if (generation.status) {
+          setGenerationStatusMessage(
+            generation.status === "processing"
+              ? "Processando sua imagem com o modelo selecionado..."
+              : generation.status
+          );
+        }
+
+        if (generation.resultImageUrl) {
+          setGeneratedImageUrl(generation.resultImageUrl);
+        }
+      }
+    } catch (error) {
+      console.error("Erro ao iniciar geração de imagem", error);
+      setGenerationError(
+        error.message || "Erro ao iniciar a geração da imagem"
+      );
+      setGenerationRecord({
+        status: "failed",
+        statusMessage: "",
+        errorMessage:
+          error.message || "Não foi possível iniciar a geração da imagem.",
+      });
+    }
+  }, [
+    encryptedEmail,
+    modelType,
+    orderId,
+    selectedColor,
+    selectedColorLabel,
+    selectedFile,
+    selectedFileDataUrl,
+  ]);
+
+  const checkGenerationStatus = useCallback(async () => {
+    if (!orderId) return;
+    try {
+      const response = await fetch(
+        `/api/imagine/check-generation?orderId=${orderId}`
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(
+          errorData?.message || "Erro ao consultar a geração da imagem"
+        );
+      }
+
+      const data = await response.json();
+      const generation = data?.generation || null;
+
+      if (generation) {
+        setGenerationRecord(generation);
+
+        if (generation.statusMessage) {
+          setGenerationStatusMessage(generation.statusMessage);
+        } else if (generation.status) {
+          setGenerationStatusMessage(
+            generation.status === "processing"
+              ? "Ainda estamos trabalhando na transformação da sua imagem..."
+              : generation.status
+          );
+        }
+
+        if (generation.status === "completed" && generation.resultImageUrl) {
+          setGeneratedImageUrl(generation.resultImageUrl);
+        }
+
+        if (generation.status === "failed") {
+          setGenerationError(
+            generation.errorMessage ||
+              "Não foi possível concluir a geração da imagem. Tente novamente."
+          );
+        }
+      }
+    } catch (error) {
+      console.error("Erro ao consultar geração de imagem", error);
+      setGenerationError(
+        error.message || "Erro ao consultar o andamento da geração."
+      );
+    }
+  }, [orderId]);
 
   // ✅ AGORA SIM: efeito que chama handleGenerate FICA DEPOIS da função
   useEffect(() => {
-    if (currentStep === 2 && !orderId && !isGenerating) {
+    if (
+      currentStep === 2 &&
+      !orderId &&
+      !isGenerating &&
+      selectedFile &&
+      selectedFileDataUrl
+    ) {
       handleGenerate();
     }
-  }, [currentStep, orderId, isGenerating, handleGenerate]);
+  }, [
+    currentStep,
+    orderId,
+    isGenerating,
+    handleGenerate,
+    selectedFile,
+    selectedFileDataUrl,
+  ]);
+
+  useEffect(() => {
+    if (!isPaymentConfirmed) return;
+    if (!orderId || !selectedFileDataUrl || !encryptedEmail) return;
+    if (generationRecord) return;
+    initiateGeneration();
+  }, [
+    encryptedEmail,
+    generationRecord,
+    initiateGeneration,
+    isPaymentConfirmed,
+    orderId,
+    selectedFileDataUrl,
+  ]);
+
+  useEffect(() => {
+    if (!orderId || !isPaymentConfirmed) return;
+
+    if (!generationRecord) {
+      checkGenerationStatus();
+      return;
+    }
+
+    if (
+      generationRecord.status === "completed" ||
+      generationRecord.status === "failed" ||
+      generatedImageUrl
+    ) {
+      return;
+    }
+
+    let isCancelled = false;
+
+    const poll = async () => {
+      if (!isCancelled) {
+        await checkGenerationStatus();
+      }
+    };
+
+    poll();
+    const intervalId = setInterval(poll, POLLING_INTERVAL);
+
+    return () => {
+      isCancelled = true;
+      clearInterval(intervalId);
+    };
+  }, [
+    checkGenerationStatus,
+    generationRecord,
+    generatedImageUrl,
+    isPaymentConfirmed,
+    orderId,
+  ]);
 
   // 2) Vai para a etapa 3 assim que o pagamento for confirmado
   useEffect(() => {
     if (isPaymentConfirmed) {
       applyQrSources(null);
       setStatusMessage(
-        "Seu pagamento foi feito com sucesso! Já estamos trabalhando na geração da sua imagem perfeita!"
+        `Seu pagamento foi feito com sucesso! Já estamos trabalhando na geração da sua imagem perfeita com a cor ${selectedColorLabel.toLowerCase()}.`
       );
       setCurrentStep(3); // "Geração"
     }
-  }, [applyQrSources, isPaymentConfirmed]);
+  }, [applyQrSources, isPaymentConfirmed, selectedColorLabel]);
 
   const handleCopyQrData = useCallback(async () => {
     if (!qrCodeData) return;
@@ -787,6 +1035,52 @@ export default function ImaginePage() {
                                 </Stack>
                               </Box>
 
+                              <Box>
+                                <Typography variant="subtitle2" gutterBottom>
+                                  Selecionar cor da roupa
+                                </Typography>
+                                <Stack spacing={1.5} alignItems="flex-start">
+                                  <Button
+                                    variant="outlined"
+                                    disabled={!emailSaved}
+                                    onClick={handleColorModalOpen}
+                                    sx={{
+                                      borderColor: "rgba(148,163,184,0.4)",
+                                      color: "#f8fafc",
+                                      display: "inline-flex",
+                                      alignItems: "center",
+                                      gap: 1,
+                                      "&:hover": {
+                                        borderColor: "#7dd3fc",
+                                        bgcolor: "rgba(125,211,252,0.08)",
+                                      },
+                                      "&.Mui-disabled": {
+                                        color: "rgba(148,163,184,0.4)",
+                                        borderColor: "rgba(148,163,184,0.15)",
+                                      },
+                                    }}
+                                  >
+                                    <Box
+                                      sx={{
+                                        width: 16,
+                                        height: 16,
+                                        borderRadius: "50%",
+                                        bgcolor: selectedColorHex,
+                                        border: "1px solid rgba(2,6,23,0.35)",
+                                      }}
+                                    />
+                                    {selectedColorLabel}
+                                  </Button>
+
+                                  <Typography
+                                    variant="caption"
+                                    color="rgba(148,163,184,0.75)"
+                                  >
+                                    Essa cor será utilizada no prompt do modelo ao gerar a imagem final.
+                                  </Typography>
+                                </Stack>
+                              </Box>
+
                               <Stack
                                 direction={{ xs: "column", sm: "row" }}
                                 justifyContent="flex-end"
@@ -889,6 +1183,33 @@ export default function ImaginePage() {
                             <Typography variant="h4" fontWeight={700}>
                               {formattedPrice}
                             </Typography>
+                          </Box>
+
+                          <Box>
+                            <Typography variant="subtitle2" gutterBottom>
+                              Cor selecionada
+                            </Typography>
+                            <Stack
+                              direction="row"
+                              spacing={1.5}
+                              alignItems="center"
+                            >
+                              <Box
+                                sx={{
+                                  width: 18,
+                                  height: 18,
+                                  borderRadius: "50%",
+                                  bgcolor: selectedColorHex,
+                                  border: "1px solid rgba(148,163,184,0.35)",
+                                }}
+                              />
+                              <Typography
+                                variant="body2"
+                                color="rgba(226,232,240,0.85)"
+                              >
+                                {selectedColorLabel}
+                              </Typography>
+                            </Stack>
                           </Box>
 
                           {/* QR + código copia-e-cola (com loading enquanto cria) */}
@@ -1041,35 +1362,143 @@ export default function ImaginePage() {
                   {currentStep === 3 ? (
                     <Card
                       sx={{
-                        bgcolor: "rgba(15,23,42,0.8)",
+                        bgcolor: "rgba(15,23,42,0.85)",
                         border: "1px solid rgba(148,163,184,0.2)",
-                        backdropFilter: "blur(12px)",
+                        backdropFilter: "blur(14px)",
                       }}
                     >
                       <CardContent sx={{ p: { xs: 3, md: 4 } }}>
-                        <Stack
-                          spacing={3}
-                          alignItems="center"
-                          textAlign="center"
-                        >
-                          <Typography variant="h4" fontWeight={700}>
-                            Seu pagamento foi feito com sucesso!
-                          </Typography>
-                          <Typography
-                            variant="body1"
-                            color="rgba(226,232,240,0.85)"
-                            maxWidth={420}
+                        <Stack spacing={3} alignItems="center">
+                          {!generatedImageUrl ? (
+                            <Typography
+                              variant="h5"
+                              fontWeight={600}
+                              textAlign="center"
+                            >
+                              Estamos gerando sua imagem personalizada
+                            </Typography>
+                          ) : (
+                            <Typography
+                              variant="h5"
+                              fontWeight={600}
+                              textAlign="center"
+                            >
+                              Sua imagem está pronta!
+                            </Typography>
+                          )}
+
+                          {!generatedImageUrl && !generationError ? (
+                            <Typography
+                              variant="body2"
+                              color="rgba(226,232,240,0.75)"
+                              textAlign="center"
+                              maxWidth={460}
+                            >
+                              {generationStatusMessage ||
+                                statusMessage ||
+                                `Aplicando o modelo escolhido com a cor ${selectedColorLabel.toLowerCase()}. Isso pode levar alguns segundos.`}
+                            </Typography>
+                          ) : null}
+
+                          {generationError ? (
+                            <Alert severity="error" sx={{ width: "100%" }}>
+                              {generationError}
+                            </Alert>
+                          ) : null}
+
+                          <Box
+                            sx={{
+                              position: "relative",
+                              width: "100%",
+                              maxWidth: 420,
+                              borderRadius: 3,
+                              overflow: "hidden",
+                              border: "1px solid rgba(148,163,184,0.3)",
+                            }}
                           >
-                            Já estamos trabalhando na geração da sua imagem
-                            perfeita. Em breve você receberá o resultado
-                            diretamente no seu email.
-                          </Typography>
-                          <CircularProgress
-                            color="primary"
-                            size={48}
-                            thickness={4}
-                            sx={{ color: "#22c55e" }}
-                          />
+                            <Box
+                              component="img"
+                              src={generatedImageUrl || previewSrc}
+                              alt="Pré-visualização da geração"
+                              sx={{
+                                width: "100%",
+                                height: { xs: 260, md: 360 },
+                                objectFit: "cover",
+                                filter:
+                                  generatedImageUrl || generationError
+                                    ? "none"
+                                    : "blur(6px) brightness(0.7)",
+                                transition: "filter 0.4s ease",
+                              }}
+                            />
+
+                            {!generatedImageUrl && !generationError ? (
+                              <Stack
+                                spacing={1}
+                                alignItems="center"
+                                justifyContent="center"
+                                sx={{
+                                  position: "absolute",
+                                  inset: 0,
+                                  bgcolor: "rgba(2,6,23,0.55)",
+                                  backdropFilter: "blur(4px)",
+                                }}
+                              >
+                                <CircularProgress
+                                  size={48}
+                                  sx={{ color: "#38bdf8" }}
+                                />
+                                <Typography
+                                  variant="body2"
+                                  sx={{
+                                    color: "rgba(248,250,252,0.9)",
+                                    fontWeight: 600,
+                                    textTransform: "uppercase",
+                                    letterSpacing: 1.2,
+                                  }}
+                                >
+                                  Gerando
+                                </Typography>
+                              </Stack>
+                            ) : null}
+                          </Box>
+
+                          {generatedImageUrl ? (
+                            <Stack spacing={2} alignItems="center">
+                              <Alert
+                                severity="success"
+                                sx={{
+                                  width: "100%",
+                                  bgcolor: "rgba(15,118,110,0.35)",
+                                  color: "#f0fdfa",
+                                }}
+                              >
+                                Sua nova imagem foi gerada com sucesso! Faça o
+                                download abaixo e aproveite.
+                              </Alert>
+                              <Button
+                                variant="contained"
+                                color="primary"
+                                component="a"
+                                href={generatedImageUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                download={`imagine-${orderId || "resultado"}.png`}
+                              >
+                                Baixar imagem
+                              </Button>
+                            </Stack>
+                          ) : null}
+
+                          {!generatedImageUrl && generationError ? (
+                            <Button
+                              variant="outlined"
+                              color="secondary"
+                              onClick={handleRestart}
+                            >
+                              Tentar novamente
+                            </Button>
+                          ) : null}
                         </Stack>
                       </CardContent>
                     </Card>
@@ -1182,6 +1611,90 @@ export default function ImaginePage() {
           </Box>
         </Box>
       </Drawer>
+
+      <Dialog
+        open={isColorPickerOpen}
+        onClose={handleColorModalClose}
+        fullWidth
+        maxWidth="xs"
+        PaperProps={{
+          sx: {
+            bgcolor: "rgba(2,6,23,0.92)",
+            color: "#f8fafc",
+            border: "1px solid rgba(148,163,184,0.2)",
+            backdropFilter: "blur(12px)",
+          },
+        }}
+      >
+        <DialogTitle sx={{ fontWeight: 600 }}>
+          Selecionar cor da roupa
+        </DialogTitle>
+        <DialogContent dividers sx={{ borderColor: "rgba(148,163,184,0.2)" }}>
+          <Grid container spacing={2}>
+            {CLOTHING_COLORS.map((color) => {
+              const isSelected = selectedColor?.hex === color.hex;
+              return (
+                <Grid item xs={12} sm={6} key={color.hex}>
+                  <Button
+                    fullWidth
+                    variant={isSelected ? "contained" : "outlined"}
+                    onClick={() => handleColorSelect(color)}
+                    sx={{
+                      justifyContent: "flex-start",
+                      gap: 1.5,
+                      alignItems: "center",
+                      textTransform: "none",
+                      borderColor: isSelected
+                        ? "#38bdf8"
+                        : "rgba(148,163,184,0.35)",
+                      bgcolor: isSelected
+                        ? "rgba(56,189,248,0.18)"
+                        : "rgba(15,23,42,0.6)",
+                      color: "#f8fafc",
+                      "&:hover": {
+                        borderColor: "#38bdf8",
+                        bgcolor: "rgba(56,189,248,0.18)",
+                      },
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        width: 18,
+                        height: 18,
+                        borderRadius: "50%",
+                        bgcolor: color.hex,
+                        border: "1px solid rgba(15,23,42,0.4)",
+                      }}
+                    />
+                    <Stack spacing={0.5} alignItems="flex-start">
+                      <Typography variant="body2" fontWeight={600}>
+                        {color.name}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        color="rgba(226,232,240,0.7)"
+                      >
+                        {color.hex}
+                      </Typography>
+                    </Stack>
+                  </Button>
+                </Grid>
+              );
+            })}
+          </Grid>
+        </DialogContent>
+        <DialogActions
+          sx={{
+            borderTop: "1px solid rgba(148,163,184,0.2)",
+            px: 3,
+            py: 1.5,
+          }}
+        >
+          <Button onClick={handleColorModalClose} sx={{ color: "#94a3b8" }}>
+            Cancelar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
