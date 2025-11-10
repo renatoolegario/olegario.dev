@@ -43,7 +43,6 @@ function mapGenerationRow(row) {
     resultImageUrl: row.result_image_url,
     sourceImageName: row.source_image_name,
     sourceImageMimeType: row.source_image_mime_type,
-    sourceImageBlobUrl: row.source_image_blob_url,
     errorMessage: row.error_message,
     lastCheckedAt: row.last_checked_at,
     createdAt: row.created_at,

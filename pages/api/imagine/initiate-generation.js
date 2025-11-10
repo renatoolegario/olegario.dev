@@ -8,6 +8,7 @@ import {
   mapGenerationRow,
   normalizeRemoteStatus,
   uploadToBlob,
+  deleteBlobByUrl,
 } from "../../../utils/generation";
 
 export const config = {
@@ -173,7 +174,7 @@ export default async function handler(req, res) {
   const client = await getDb(schema);
 
   let generationRow = null;
-  let sourceImageBlobUrl = null;
+  let sourceBlobUrlForCleanup = null;
 
   try {
     await client.query("BEGIN");
@@ -219,7 +220,7 @@ export default async function handler(req, res) {
         const remoteSource = await fetchBufferFromUrl(imageBlobUrl);
         base64 = remoteSource.buffer.toString("base64");
         mimeType = remoteSource.contentType || null;
-        sourceImageBlobUrl = imageBlobUrl;
+        sourceBlobUrlForCleanup = imageBlobUrl;
       } catch (blobError) {
         await client.query("ROLLBACK");
         console.error("Erro ao baixar imagem do blob", blobError);
@@ -343,13 +344,12 @@ export default async function handler(req, res) {
         result_image_url,
         source_image_name,
         source_image_mime_type,
-        source_image_blob_url,
         error_message,
         last_checked_at,
         created_at,
         updated_at
       ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, NOW(), NOW(), NOW()
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, NOW(), NOW(), NOW()
       )
       ON CONFLICT (order_id) DO UPDATE
       SET
@@ -366,7 +366,6 @@ export default async function handler(req, res) {
         result_image_url = COALESCE(EXCLUDED.result_image_url, generated_images.result_image_url),
         source_image_name = EXCLUDED.source_image_name,
         source_image_mime_type = EXCLUDED.source_image_mime_type,
-        source_image_blob_url = COALESCE(EXCLUDED.source_image_blob_url, generated_images.source_image_blob_url),
         error_message = EXCLUDED.error_message,
         last_checked_at = NOW(),
         updated_at = NOW()
@@ -388,7 +387,6 @@ export default async function handler(req, res) {
       resultImageUrl,
       originalFileName || null,
       mimeType || null,
-      sourceImageBlobUrl,
       errorMessage,
     ];
 
@@ -404,6 +402,17 @@ export default async function handler(req, res) {
     });
   } finally {
     client.release();
+
+    if (sourceBlobUrlForCleanup) {
+      try {
+        await deleteBlobByUrl(sourceBlobUrlForCleanup);
+      } catch (cleanupError) {
+        console.error(
+          "Não foi possível remover a imagem original do blob",
+          cleanupError
+        );
+      }
+    }
   }
 
   const payload = mapGenerationRow(generationRow);
