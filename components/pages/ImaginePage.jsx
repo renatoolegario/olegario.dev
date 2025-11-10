@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/router";
 import {
   Alert,
   Box,
@@ -60,6 +61,7 @@ const CLOTHING_COLORS = [
 ];
 
 export default function ImaginePage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [encryptedEmail, setEncryptedEmail] = useState("");
@@ -100,6 +102,8 @@ export default function ImaginePage() {
   const [historyFeedback, setHistoryFeedback] = useState(null);
   const [historyPreviewRecord, setHistoryPreviewRecord] = useState(null);
   const [retryingOrders, setRetryingOrders] = useState({});
+  const [isCancellingOrder, setIsCancellingOrder] = useState(false);
+  const [isReturningHome, setIsReturningHome] = useState(false);
   const isPollingHistoryRef = useRef(false);
 
   const isChargingEnabled = useMemo(() => {
@@ -543,24 +547,7 @@ export default function ImaginePage() {
     setIsColorPickerOpen(false);
   }, []);
 
-  const handleBackToConfig = useCallback(() => {
-    setOrderId(null);
-    setOrderStatus(null);
-    setStatusMessage("");
-    setQrCodeData("");
-    setQrCodeUrl("");
-    setCopyStatus(null);
-    applyQrSources(null);
-    setGenerationRecord(null);
-    setGeneratedImageUrl("");
-    setGenerationStatusMessage("");
-    setGenerationError("");
-    setPreparedGeneration(null);
-    setHasInitiatedGeneration(false);
-    setCurrentStep(1);
-  }, [applyQrSources]);
-
-  const handleRestart = useCallback(() => {
+  const resetOrderState = useCallback(() => {
     setIsGenerating(false);
     setOrderId(null);
     setOrderStatus(null);
@@ -569,6 +556,88 @@ export default function ImaginePage() {
     setQrCodeUrl("");
     setCopyStatus(null);
     applyQrSources(null);
+    setGenerationRecord(null);
+    setGeneratedImageUrl("");
+    setGenerationStatusMessage("");
+    setGenerationError("");
+    setPreparedGeneration(null);
+    setHasInitiatedGeneration(false);
+    setIsUploadingSource(false);
+    setIsPreparingGeneration(false);
+    setCurrentStep(1);
+    setErrorMessage("");
+    setActiveTab("new");
+    if (typeof window !== "undefined") {
+      window.localStorage.removeItem(ORDER_REFERENCE_STORAGE_KEY);
+    }
+  }, [applyQrSources]);
+
+  const cancelOrderRecord = useCallback(async (orderIdentifier) => {
+    if (!orderIdentifier) {
+      return { success: true };
+    }
+
+    try {
+      const response = await fetch("/api/imagine/cancel-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId: orderIdentifier }),
+      });
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          return { success: true };
+        }
+        const errorData = await response.json().catch(() => ({}));
+        const message =
+          errorData?.message || "Não foi possível cancelar o pedido atual.";
+        return { success: false, message };
+      }
+
+      return { success: true };
+    } catch (error) {
+      console.error("Erro ao cancelar pedido", error);
+      return {
+        success: false,
+        message: error.message || "Não foi possível cancelar o pedido atual.",
+      };
+    }
+  }, []);
+
+  const handleBackToConfig = useCallback(async () => {
+    if (isCancellingOrder) return;
+
+    setErrorMessage("");
+    const currentOrderId = orderId;
+    let cancelResult = { success: true };
+
+    setIsCancellingOrder(true);
+    try {
+      cancelResult = await cancelOrderRecord(currentOrderId);
+    } catch (error) {
+      console.error("Erro inesperado ao cancelar pedido", error);
+      cancelResult = {
+        success: false,
+        message:
+          error.message || "Não foi possível cancelar o pedido atual.",
+      };
+    } finally {
+      resetOrderState();
+      setIsCancellingOrder(false);
+    }
+
+    if (!cancelResult.success && cancelResult.message) {
+      setErrorMessage(cancelResult.message);
+    }
+  }, [
+    cancelOrderRecord,
+    isCancellingOrder,
+    orderId,
+    resetOrderState,
+  ]);
+
+  const handleRestart = useCallback(() => {
+    resetOrderState();
     setSelectedFile(null);
     setSelectedFileDataUrl("");
     setPreviewUrl((current) => {
@@ -577,14 +646,59 @@ export default function ImaginePage() {
     });
     setIsPreviewOpen(false);
     setSelectedColor(CLOTHING_COLORS[0]);
-    setGenerationRecord(null);
-    setGeneratedImageUrl("");
-    setGenerationStatusMessage("");
-    setGenerationError("");
-    setPreparedGeneration(null);
-    setHasInitiatedGeneration(false);
-    setCurrentStep(1);
-  }, [applyQrSources]);
+  }, [resetOrderState]);
+
+  const resetAllState = useCallback(() => {
+    resetOrderState();
+    setEmail("");
+    setEmailError("");
+    setEncryptedEmail("");
+    setEmailSaved(false);
+    setModelType("Foto de Perfil");
+    setSelectedFile(null);
+    setSelectedFileDataUrl("");
+    setPreviewUrl((current) => {
+      if (current) URL.revokeObjectURL(current);
+      return "";
+    });
+    setIsPreviewOpen(false);
+    setSelectedColor(CLOTHING_COLORS[0]);
+    setIsColorPickerOpen(false);
+    setHistoryRecords([]);
+    setIsFetchingHistory(false);
+    setHistoryError("");
+    setHistoryFeedback(null);
+    setHistoryPreviewRecord(null);
+    setRetryingOrders({});
+    isPollingHistoryRef.current = false;
+    if (typeof window !== "undefined") {
+      window.localStorage.removeItem(EMAIL_STORAGE_KEY);
+      window.localStorage.removeItem(EMAIL_TOKEN_STORAGE_KEY);
+      window.localStorage.removeItem(ORDER_REFERENCE_STORAGE_KEY);
+    }
+    Cookies.remove(EMAIL_STORAGE_KEY);
+    Cookies.remove(EMAIL_TOKEN_STORAGE_KEY);
+    setIsCancellingOrder(false);
+    setIsReturningHome(false);
+  }, [resetOrderState]);
+
+  const handleReturnHome = useCallback(async () => {
+    if (isReturningHome) return;
+
+    setIsReturningHome(true);
+    try {
+      const result = await cancelOrderRecord(orderId);
+      if (!result.success && result.message) {
+        console.error(result.message);
+      }
+    } catch (error) {
+      console.error("Erro inesperado ao cancelar pedido antes de voltar", error);
+    } finally {
+      resetAllState();
+      setIsReturningHome(false);
+      router.push("/");
+    }
+  }, [cancelOrderRecord, isReturningHome, orderId, resetAllState, router]);
 
   const handleSaveEmail = useCallback(async () => {
     setErrorMessage("");
@@ -1299,12 +1413,18 @@ export default function ImaginePage() {
                 )}
               </Typography>
 
-              {emailSaved && (
+              <Stack
+                direction={{ xs: "column", sm: "row" }}
+                spacing={1}
+                alignItems={{ xs: "stretch", sm: "center" }}
+              >
                 <Button
                   variant="outlined"
                   size="small"
-                  onClick={handleStartEmailEdit}
+                  onClick={handleReturnHome}
+                  disabled={isReturningHome || isCancellingOrder}
                   sx={{
+                    width: { xs: "100%", sm: "auto" },
                     borderColor: "rgba(148,163,184,0.4)",
                     color: "#f8fafc",
                     "&:hover": {
@@ -1313,9 +1433,36 @@ export default function ImaginePage() {
                     },
                   }}
                 >
-                  Alterar email
+                  {isReturningHome ? (
+                    <Stack direction="row" spacing={1} alignItems="center">
+                      <CircularProgress size={18} />
+                      <span>Voltando...</span>
+                    </Stack>
+                  ) : (
+                    "Voltar para início"
+                  )}
                 </Button>
-              )}
+
+                {emailSaved && (
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={handleStartEmailEdit}
+                    disabled={isCancellingOrder}
+                    sx={{
+                      width: { xs: "100%", sm: "auto" },
+                      borderColor: "rgba(148,163,184,0.4)",
+                      color: "#f8fafc",
+                      "&:hover": {
+                        borderColor: "#7dd3fc",
+                        bgcolor: "rgba(125,211,252,0.08)",
+                      },
+                    }}
+                  >
+                    Alterar email
+                  </Button>
+                )}
+              </Stack>
             </Stack>
 
             <Typography variant="body1" color="rgba(248,250,252,0.75)">
@@ -1860,14 +2007,25 @@ export default function ImaginePage() {
                             <Button
                               variant="outlined"
                               onClick={handleBackToConfig}
-                              disabled={isGenerating}
+                              disabled={isGenerating || isCancellingOrder}
                             >
-                              Voltar
+                              {isCancellingOrder ? (
+                                <Stack
+                                  direction="row"
+                                  spacing={1}
+                                  alignItems="center"
+                                >
+                                  <CircularProgress size={18} />
+                                  <span>Voltando...</span>
+                                </Stack>
+                              ) : (
+                                "Voltar"
+                              )}
                             </Button>
                             <Button
                               variant="contained"
                               color="primary"
-                              disabled={isGenerating}
+                              disabled={isGenerating || isCancellingOrder}
                               onClick={handleGenerate}
                               sx={{ minWidth: 180 }}
                             >
