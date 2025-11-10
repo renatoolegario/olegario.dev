@@ -1,3 +1,15 @@
+function isChargingEnabled() {
+  const value = process.env.COBRANCA;
+
+  if (value === undefined || value === null) {
+    return true;
+  }
+
+  const normalized = value.toString().trim().toLowerCase();
+
+  return !["false", "0", "off", "no"].includes(normalized);
+}
+
 export default function handler(req, res) {
   if (req.method !== "GET") {
     res.setHeader("Allow", ["GET"]);
@@ -12,9 +24,10 @@ export default function handler(req, res) {
   } = process.env;
 
   return res.status(200).json({
-    model: MODEL || "Modelo", 
+    model: MODEL || "Modelo",
     price: PRICE ? Number(PRICE) : null,
     integrationType: TYPE_INTEGRACTION || null,
     applicationNumber: NUMBER_APLICATION || null,
+    chargingEnabled: isChargingEnabled(),
   });
 }
