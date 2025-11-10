@@ -36,6 +36,9 @@ import {
   Typography,
 } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import DownloadIcon from "@mui/icons-material/Download";
+import ReplayIcon from "@mui/icons-material/Replay";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import Cookies from "js-cookie";
 import { IMAGINE_MODELS, MODEL_OPTIONS } from "../../utils/imagineModels";
 
@@ -2067,7 +2070,7 @@ export default function ImaginePage() {
                                 <TableCell
                                   sx={{ color: "rgba(226,232,240,0.85)" }}
                                 >
-                                  Modelo / Pedido
+                                  Modelo
                                 </TableCell>
                                 <TableCell
                                   sx={{ color: "rgba(226,232,240,0.85)" }}
@@ -2098,9 +2101,6 @@ export default function ImaginePage() {
                                 const normalizedStatus = record?.status
                                   ? record.status.toString().toLowerCase()
                                   : "";
-                                const isProcessing = isProcessingStatus(
-                                  normalizedStatus
-                                );
                                 const isFailed = [
                                   "failed",
                                   "error",
@@ -2122,87 +2122,46 @@ export default function ImaginePage() {
                                     }}
                                   >
                                     <TableCell>
-                                      <Stack spacing={0.5}>
-                                        <Typography
-                                          variant="subtitle2"
-                                          color="#f8fafc"
-                                          fontWeight={600}
-                                        >
-                                          {record?.modelType ||
-                                            "Modelo não informado"}
-                                        </Typography>
-                                        <Typography
-                                          variant="caption"
-                                          color="rgba(148,163,184,0.75)"
-                                        >
-                                          Pedido: {record?.orderId || "-"}
-                                        </Typography>
-                                      </Stack>
+                                      <Typography
+                                        variant="subtitle2"
+                                        color="#f8fafc"
+                                        fontWeight={600}
+                                        noWrap
+                                        sx={{ whiteSpace: "nowrap" }}
+                                      >
+                                        {record?.modelType ||
+                                          "Modelo não informado"}
+                                      </Typography>
                                     </TableCell>
                                     <TableCell>
                                       <Typography
                                         variant="body2"
                                         color="rgba(226,232,240,0.85)"
+                                        noWrap
+                                        sx={{ whiteSpace: "nowrap" }}
                                       >
                                         {formatHistoryDate(record?.createdAt)}
                                       </Typography>
                                     </TableCell>
                                     <TableCell>
-                                      <Stack spacing={1}>
-                                        <Chip
-                                          size="small"
-                                          label={statusDetails.label}
-                                          color={statusDetails.color}
-                                          variant={
-                                            statusDetails.color === "default"
-                                              ? "outlined"
-                                              : "filled"
-                                          }
-                                          sx={{ alignSelf: "flex-start" }}
-                                        />
-
-                                        {isProcessing ? (
-                                          <Stack
-                                            direction="row"
-                                            spacing={1}
-                                            alignItems="center"
-                                          >
-                                            <CircularProgress size={14} />
-                                            <Typography
-                                              variant="caption"
-                                              color="rgba(148,163,184,0.75)"
-                                            >
-                                              {record?.statusMessage ||
-                                                "Processando..."}
-                                            </Typography>
-                                          </Stack>
-                                        ) : null}
-
-                                        {!isProcessing && record?.statusMessage ? (
-                                          <Typography
-                                            variant="caption"
-                                            color="rgba(148,163,184,0.75)"
-                                          >
-                                            {record.statusMessage}
-                                          </Typography>
-                                        ) : null}
-
-                                        {isFailed && record?.errorMessage ? (
-                                          <Typography
-                                            variant="caption"
-                                            color="#f87171"
-                                          >
-                                            {record.errorMessage}
-                                          </Typography>
-                                        ) : null}
-                                      </Stack>
+                                      <Chip
+                                        size="small"
+                                        label={statusDetails.label}
+                                        color={statusDetails.color}
+                                        variant={
+                                          statusDetails.color === "default"
+                                            ? "outlined"
+                                            : "filled"
+                                        }
+                                      />
                                     </TableCell>
                                     <TableCell align="right">
                                       <Stack
                                         direction="row"
                                         spacing={1}
                                         justifyContent="flex-end"
-                                        flexWrap="wrap"
+                                        alignItems="center"
+                                        flexWrap="nowrap"
                                       >
                                         <Tooltip
                                           title={
@@ -2215,11 +2174,15 @@ export default function ImaginePage() {
                                             <Button
                                               size="small"
                                               variant="outlined"
+                                              startIcon={<VisibilityIcon />}
                                               onClick={() =>
                                                 handleHistoryPreviewOpen(record)
                                               }
                                               disabled={!record?.resultImageUrl}
-                                              sx={{ minWidth: 120 }}
+                                              sx={{
+                                                minWidth: 0,
+                                                whiteSpace: "nowrap",
+                                              }}
                                             >
                                               Pré-visualizar
                                             </Button>
@@ -2237,13 +2200,17 @@ export default function ImaginePage() {
                                             <Button
                                               size="small"
                                               variant="outlined"
+                                              startIcon={<DownloadIcon />}
                                               onClick={() =>
                                                 handleDownloadHistoryImage(
                                                   record
                                                 )
                                               }
                                               disabled={!record?.resultImageUrl}
-                                              sx={{ minWidth: 110 }}
+                                              sx={{
+                                                minWidth: 0,
+                                                whiteSpace: "nowrap",
+                                              }}
                                             >
                                               Baixar
                                             </Button>
@@ -2255,11 +2222,14 @@ export default function ImaginePage() {
                                             size="small"
                                             variant="contained"
                                             color="warning"
+                                            startIcon={
+                                              isRetrying ? null : <ReplayIcon />
+                                            }
                                             onClick={() =>
                                               handleRetryGeneration(record)
                                             }
                                             disabled={isRetrying}
-                                            sx={{ minWidth: 150 }}
+                                            sx={{ whiteSpace: "nowrap" }}
                                           >
                                             {isRetrying ? (
                                               <Stack
