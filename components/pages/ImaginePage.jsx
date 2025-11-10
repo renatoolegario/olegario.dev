@@ -37,8 +37,20 @@ const MODELS = {
     value: "Foto de Perfil",
     label: "Foto de Perfil",
     preview: "/imagine/foto_perfil/1.jpg",
-    prompt:
-      "Gere uma foto de perfil nítida, iluminação suave, foco no rosto, fundo levemente desfocado.",
+    prompt: `
+      ✅ O personagem da imagem de referência, tem que preservar as características faciais idênticas, um sorriso natural e uma expressão gentil, tom de pele natural, foco nítido. 
+✅Seu cabelo(caso tenha) e barba (caso tenha) capturam a luz com reflexos sutis. 
+
+✅Ele veste uma camisa [COR] de mangas compridas, social e impecável, transmitindo uma imagem executiva. 
+
+✅O fundo com um gradiente de cinza médio que se esvai suavemente da esquerda para direita. 
+
+✅A iluminação é dramática, porém refinada — uma única luz lateral suave cria profundidade e contraste, com sombras delicadas esculpindo o rosto e o corpo, destacando a seriedade e o foco. 
+
+✅Estilo editorial ultrarrealista, alta faixa dinâmica, tom de pele natural, foco nítido na pessoa, capturado com uma lente Canon EOS R5, 85 mm f/1.2. 
+
+✅Fotografado em um estilo Vogue cinematográfico com elegância refinada e um toque de sofisticação tecnológica.
+      `,
   },
 };
 
@@ -77,7 +89,7 @@ export default function ImaginePage() {
     });
   }, [config?.price]);
 
-  const steps = ["Configuração", "Pagamento", "Confirmação"];
+  const steps = ["Configuração", "Confirmação", "Geração"];
 
   const selectedModel = useMemo(() => {
     return MODELS[modelType] || MODEL_OPTIONS[0];
@@ -160,7 +172,7 @@ export default function ImaginePage() {
           const response = await fetch(
             `/api/imagine/check-order?orderId=${orderId}`
           );
-        if (!response.ok) throw new Error("Erro ao consultar pedido");
+          if (!response.ok) throw new Error("Erro ao consultar pedido");
           const data = await response.json();
           const status = data?.status || null;
           const statusDetail = data?.statusDetail || "";
@@ -414,6 +426,17 @@ export default function ImaginePage() {
     }
   }, [currentStep, orderId, isGenerating, handleGenerate]);
 
+  // 2) Vai para a etapa 3 assim que o pagamento for confirmado
+  useEffect(() => {
+    if (isPaymentConfirmed) {
+      applyQrSources(null);
+      setStatusMessage(
+        "Seu pagamento foi feito com sucesso! Já estamos trabalhando na geração da sua imagem perfeita!"
+      );
+      setCurrentStep(3); // "Geração"
+    }
+  }, [applyQrSources, isPaymentConfirmed]);
+
   const handleCopyQrData = useCallback(async () => {
     if (!qrCodeData) return;
     try {
@@ -461,8 +484,6 @@ export default function ImaginePage() {
     }
     Cookies.remove(EMAIL_TOKEN_STORAGE_KEY);
   }, []);
-}
-
 
   return (
     <Box
@@ -847,14 +868,14 @@ export default function ImaginePage() {
                               fontWeight={600}
                               gutterBottom
                             >
-                              Pagamento e geração
+                              Confirmação para Geraeção
                             </Typography>
                             <Typography
                               variant="body2"
                               color="rgba(226,232,240,0.75)"
                             >
-                              Gere o QR Code e use a opção de copiar e colar
-                              para concluir o pagamento.
+                              Por menos de <strong>R$ 5,00</strong> você gera
+                              sua imagem.
                             </Typography>
                           </Box>
 
@@ -869,20 +890,6 @@ export default function ImaginePage() {
                               {formattedPrice}
                             </Typography>
                           </Box>
-
-                          {/* COPY curto acima do QR */}
-                          <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                            Por menos de <strong>R$ 5,00</strong> você gera sua
-                            imagem.
-                          </Typography>
-
-                          {orderStatus ? (
-                            <Alert
-                              severity={isPaymentConfirmed ? "success" : "info"}
-                            >
-                              Status atual: {orderStatus}
-                            </Alert>
-                          ) : null}
 
                           {/* QR + código copia-e-cola (com loading enquanto cria) */}
                           {qrCodeUrl || qrCodeData ? (
@@ -990,14 +997,6 @@ export default function ImaginePage() {
                               </Typography>
                             </Stack>
                           )}
-
-                          {statusMessage ? (
-                            <Alert
-                              severity={isPaymentConfirmed ? "success" : "info"}
-                            >
-                              {statusMessage}
-                            </Alert>
-                          ) : null}
 
                           <Stack
                             direction={{ xs: "column", sm: "row" }}
