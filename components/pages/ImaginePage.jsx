@@ -217,6 +217,168 @@ export default function ImaginePage() {
     [isProcessingStatus]
   );
 
+  const getHistoryRecordState = useCallback(
+    (record) => {
+      const statusDetails = getHistoryStatusDetails(record?.status);
+      const normalizedStatus = record?.status
+        ? record.status.toString().toLowerCase()
+        : "";
+      const isPending = normalizedStatus === "pending";
+      const isFailed = [
+        "failed",
+        "error",
+        "canceled",
+        "cancelled",
+      ].includes(normalizedStatus);
+      const isRetrying = Boolean(retryingOrders?.[record?.orderId]);
+      const isResuming = Boolean(resumingPayments?.[record?.orderId]);
+
+      return {
+        statusDetails,
+        normalizedStatus,
+        isPending,
+        isFailed,
+        isRetrying,
+        isResuming,
+      };
+    },
+    [getHistoryStatusDetails, resumingPayments, retryingOrders]
+  );
+
+  const renderHistoryActions = useCallback(
+    (record, recordState, layout = "row") => {
+      const { isPending, isResuming, isFailed, isRetrying } = recordState || {};
+      const isColumnLayout = layout === "column";
+
+      return (
+        <Stack
+          direction={isColumnLayout ? "column" : "row"}
+          spacing={isColumnLayout ? 1.5 : 1}
+          justifyContent={isColumnLayout ? "flex-start" : "flex-end"}
+          alignItems={isColumnLayout ? "stretch" : "center"}
+          flexWrap={isColumnLayout ? "nowrap" : "wrap"}
+        >
+          {isPending ? (
+            <Button
+              size="small"
+              variant="contained"
+              color="info"
+              startIcon={isResuming ? null : <QrCode2Icon />}
+              onClick={() => handleHistoryResumePayment(record)}
+              disabled={isResuming}
+              sx={{ whiteSpace: "nowrap" }}
+              fullWidth={isColumnLayout}
+            >
+              {isResuming ? (
+                <Stack direction="row" spacing={1} alignItems="center">
+                  <CircularProgress size={16} />
+                  <Typography
+                    component="span"
+                    variant="caption"
+                    sx={{ color: "inherit" }}
+                  >
+                    Consultando...
+                  </Typography>
+                </Stack>
+              ) : (
+                "Ver QR Code"
+              )}
+            </Button>
+          ) : null}
+
+          <Tooltip
+            title={
+              record?.resultImageUrl
+                ? "Pré-visualizar imagem"
+                : "Imagem ainda não disponível"
+            }
+          >
+            <span style={{ display: isColumnLayout ? "block" : "inline-flex" }}>
+              <Button
+                size="small"
+                variant="outlined"
+                startIcon={<VisibilityIcon />}
+                onClick={() => handleHistoryPreviewOpen(record)}
+                disabled={!record?.resultImageUrl}
+                sx={{
+                  minWidth: 0,
+                  whiteSpace: "nowrap",
+                }}
+                fullWidth={isColumnLayout}
+              >
+                Pré-visualizar
+              </Button>
+            </span>
+          </Tooltip>
+
+          <Tooltip
+            title={
+              record?.resultImageUrl
+                ? "Baixar imagem"
+                : "Imagem ainda não disponível"
+            }
+          >
+            <span style={{ display: isColumnLayout ? "block" : "inline-flex" }}>
+              <Button
+                size="small"
+                variant="outlined"
+                startIcon={<DownloadIcon />}
+                onClick={() => handleDownloadHistoryImage(record)}
+                disabled={!record?.resultImageUrl}
+                sx={{
+                  minWidth: 0,
+                  whiteSpace: "nowrap",
+                }}
+                fullWidth={isColumnLayout}
+              >
+                Baixar
+              </Button>
+            </span>
+          </Tooltip>
+
+          {isFailed ? (
+            <Button
+              size="small"
+              variant="contained"
+              color="warning"
+              startIcon={isRetrying ? null : <ReplayIcon />}
+              onClick={() => handleRetryGeneration(record)}
+              disabled={isRetrying}
+              sx={{ whiteSpace: "nowrap" }}
+              fullWidth={isColumnLayout}
+            >
+              {isRetrying ? (
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <CircularProgress size={16} />
+                  <Typography
+                    component="span"
+                    variant="caption"
+                    sx={{ color: "inherit" }}
+                  >
+                    Reenviando...
+                  </Typography>
+                </Stack>
+              ) : (
+                "Tentar novamente"
+              )}
+            </Button>
+          ) : null}
+        </Stack>
+      );
+    },
+    [
+      handleDownloadHistoryImage,
+      handleHistoryPreviewOpen,
+      handleHistoryResumePayment,
+      handleRetryGeneration,
+    ]
+  );
+
   const fetchHistory = useCallback(
     async ({ silent = false } = {}) => {
       if (!emailSaved || !encryptedEmail) {
@@ -2514,249 +2676,188 @@ export default function ImaginePage() {
                           até o momento.
                         </Typography>
                       ) : (
-                        <TableContainer
-                          sx={{
-                            border: "1px solid rgba(148,163,184,0.1)",
-                            borderRadius: 2,
-                            overflow: "hidden",
-                            backgroundColor: "rgba(15,23,42,0.35)",
-                          }}
-                        >
-                          <Table size="small">
-                            <TableHead>
-                              <TableRow>
-                                <TableCell
-                                  sx={{ color: "rgba(226,232,240,0.85)" }}
-                                >
-                                  Modelo
-                                </TableCell>
-                                <TableCell
-                                  sx={{ color: "rgba(226,232,240,0.85)" }}
-                                >
-                                  Criado em
-                                </TableCell>
-                                <TableCell
-                                  sx={{ color: "rgba(226,232,240,0.85)" }}
-                                >
-                                  Status
-                                </TableCell>
-                                <TableCell
-                                  align="right"
-                                  sx={{
-                                    color: "rgba(226,232,240,0.85)",
-                                    minWidth: { xs: 180, md: 220 },
-                                  }}
-                                >
-                                  Ações
-                                </TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
+                        <>
+                          <Box sx={{ display: { xs: "none", md: "block" } }}>
+                            <TableContainer
+                              sx={{
+                                border: "1px solid rgba(148,163,184,0.1)",
+                                borderRadius: 2,
+                                overflow: "hidden",
+                                backgroundColor: "rgba(15,23,42,0.35)",
+                              }}
+                            >
+                              <Table size="small">
+                                <TableHead>
+                                  <TableRow>
+                                    <TableCell
+                                      sx={{ color: "rgba(226,232,240,0.85)" }}
+                                    >
+                                      Modelo
+                                    </TableCell>
+                                    <TableCell
+                                      sx={{ color: "rgba(226,232,240,0.85)" }}
+                                    >
+                                      Criado em
+                                    </TableCell>
+                                    <TableCell
+                                      sx={{ color: "rgba(226,232,240,0.85)" }}
+                                    >
+                                      Status
+                                    </TableCell>
+                                    <TableCell
+                                      align="right"
+                                      sx={{
+                                        color: "rgba(226,232,240,0.85)",
+                                        minWidth: { xs: 180, md: 220 },
+                                      }}
+                                    >
+                                      Ações
+                                    </TableCell>
+                                  </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                  {historyRecords.map((record) => {
+                                    const recordState = getHistoryRecordState(record);
+                                    const { statusDetails } = recordState;
+
+                                    return (
+                                      <TableRow
+                                        key={record?.id || record?.orderId}
+                                        hover
+                                        sx={{
+                                          "&:hover": {
+                                            backgroundColor: "rgba(30,41,59,0.35)",
+                                          },
+                                        }}
+                                      >
+                                        <TableCell>
+                                          <Typography
+                                            variant="subtitle2"
+                                            color="#f8fafc"
+                                            fontWeight={600}
+                                            noWrap
+                                            sx={{ whiteSpace: "nowrap" }}
+                                          >
+                                            {record?.modelType ||
+                                              "Modelo não informado"}
+                                          </Typography>
+                                        </TableCell>
+                                        <TableCell>
+                                          <Typography
+                                            variant="body2"
+                                            color="rgba(226,232,240,0.85)"
+                                            noWrap
+                                            sx={{ whiteSpace: "nowrap" }}
+                                          >
+                                            {formatHistoryDate(record?.createdAt)}
+                                          </Typography>
+                                        </TableCell>
+                                        <TableCell>
+                                          <Chip
+                                            size="small"
+                                            label={statusDetails.label}
+                                            color={statusDetails.color}
+                                            variant={
+                                              statusDetails.color === "default"
+                                                ? "outlined"
+                                                : "filled"
+                                            }
+                                          />
+                                        </TableCell>
+                                        <TableCell align="right">
+                                          {renderHistoryActions(record, recordState)}
+                                        </TableCell>
+                                      </TableRow>
+                                    );
+                                  })}
+                                </TableBody>
+                              </Table>
+                            </TableContainer>
+                          </Box>
+
+                          <Box sx={{ display: { xs: "block", md: "none" } }}>
+                            <Stack spacing={2}>
                               {historyRecords.map((record) => {
-                                const statusDetails = getHistoryStatusDetails(
-                                  record?.status
-                                );
-                                const normalizedStatus = record?.status
-                                  ? record.status.toString().toLowerCase()
-                                  : "";
-                                const isPending = normalizedStatus === "pending";
-                                const isFailed = [
-                                  "failed",
-                                  "error",
-                                  "canceled",
-                                  "cancelled",
-                                ].includes(normalizedStatus);
-                                const isRetrying = Boolean(
-                                  retryingOrders?.[record?.orderId]
-                                );
-                                const isResuming = Boolean(
-                                  resumingPayments?.[record?.orderId]
-                                );
+                                const recordState = getHistoryRecordState(record);
+                                const { statusDetails } = recordState;
 
                                 return (
-                                  <TableRow
+                                  <Box
                                     key={record?.id || record?.orderId}
-                                    hover
                                     sx={{
-                                      "&:hover": {
-                                        backgroundColor: "rgba(30,41,59,0.35)",
-                                      },
+                                      border: "1px solid rgba(148,163,184,0.18)",
+                                      borderRadius: 2,
+                                      p: 2,
+                                      backgroundColor: "rgba(15,23,42,0.35)",
                                     }}
                                   >
-                                    <TableCell>
-                                      <Typography
-                                        variant="subtitle2"
-                                        color="#f8fafc"
-                                        fontWeight={600}
-                                        noWrap
-                                        sx={{ whiteSpace: "nowrap" }}
-                                      >
-                                        {record?.modelType ||
-                                          "Modelo não informado"}
-                                      </Typography>
-                                    </TableCell>
-                                    <TableCell>
-                                      <Typography
-                                        variant="body2"
-                                        color="rgba(226,232,240,0.85)"
-                                        noWrap
-                                        sx={{ whiteSpace: "nowrap" }}
-                                      >
-                                        {formatHistoryDate(record?.createdAt)}
-                                      </Typography>
-                                    </TableCell>
-                                    <TableCell>
-                                      <Chip
-                                        size="small"
-                                        label={statusDetails.label}
-                                        color={statusDetails.color}
-                                        variant={
-                                          statusDetails.color === "default"
-                                            ? "outlined"
-                                            : "filled"
-                                        }
-                                      />
-                                    </TableCell>
-                                    <TableCell align="right">
+                                    <Stack spacing={1.5}>
+                                      <Stack spacing={0.5}>
+                                        <Typography
+                                          variant="caption"
+                                          color="rgba(148,163,184,0.9)"
+                                          textTransform="uppercase"
+                                        >
+                                          Modelo
+                                        </Typography>
+                                        <Typography
+                                          variant="subtitle2"
+                                          color="#f8fafc"
+                                          fontWeight={600}
+                                        >
+                                          {record?.modelType ||
+                                            "Modelo não informado"}
+                                        </Typography>
+                                      </Stack>
+
+                                      <Stack spacing={0.5}>
+                                        <Typography
+                                          variant="caption"
+                                          color="rgba(148,163,184,0.9)"
+                                          textTransform="uppercase"
+                                        >
+                                          Criado em
+                                        </Typography>
+                                        <Typography
+                                          variant="body2"
+                                          color="rgba(226,232,240,0.85)"
+                                        >
+                                          {formatHistoryDate(record?.createdAt)}
+                                        </Typography>
+                                      </Stack>
+
                                       <Stack
                                         direction="row"
                                         spacing={1}
-                                        justifyContent="flex-end"
                                         alignItems="center"
-                                        flexWrap="nowrap"
                                       >
-                                        {isPending ? (
-                                          <Button
-                                            size="small"
-                                            variant="contained"
-                                            color="info"
-                                            startIcon={
-                                              isResuming ? null : <QrCode2Icon />
-                                            }
-                                            onClick={() =>
-                                              handleHistoryResumePayment(record)
-                                            }
-                                            disabled={isResuming}
-                                            sx={{ whiteSpace: "nowrap" }}
-                                          >
-                                            {isResuming ? (
-                                              <Stack
-                                                direction="row"
-                                                spacing={1}
-                                                alignItems="center"
-                                              >
-                                                <CircularProgress size={16} />
-                                                <Typography
-                                                  component="span"
-                                                  variant="caption"
-                                                  sx={{ color: "inherit" }}
-                                                >
-                                                  Consultando...
-                                                </Typography>
-                                              </Stack>
-                                            ) : (
-                                              "Ver QR Code"
-                                            )}
-                                          </Button>
-                                        ) : null}
-
-                                        <Tooltip
-                                          title={
-                                            record?.resultImageUrl
-                                              ? "Pré-visualizar imagem"
-                                              : "Imagem ainda não disponível"
-                                          }
+                                        <Typography
+                                          variant="caption"
+                                          color="rgba(148,163,184,0.9)"
+                                          textTransform="uppercase"
                                         >
-                                          <span>
-                                            <Button
-                                              size="small"
-                                              variant="outlined"
-                                              startIcon={<VisibilityIcon />}
-                                              onClick={() =>
-                                                handleHistoryPreviewOpen(record)
-                                              }
-                                              disabled={!record?.resultImageUrl}
-                                              sx={{
-                                                minWidth: 0,
-                                                whiteSpace: "nowrap",
-                                              }}
-                                            >
-                                              Pré-visualizar
-                                            </Button>
-                                          </span>
-                                        </Tooltip>
-
-                                        <Tooltip
-                                          title={
-                                            record?.resultImageUrl
-                                              ? "Baixar imagem"
-                                              : "Imagem ainda não disponível"
+                                          Status
+                                        </Typography>
+                                        <Chip
+                                          size="small"
+                                          label={statusDetails.label}
+                                          color={statusDetails.color}
+                                          variant={
+                                            statusDetails.color === "default"
+                                              ? "outlined"
+                                              : "filled"
                                           }
-                                        >
-                                          <span>
-                                            <Button
-                                              size="small"
-                                              variant="outlined"
-                                              startIcon={<DownloadIcon />}
-                                              onClick={() =>
-                                                handleDownloadHistoryImage(
-                                                  record
-                                                )
-                                              }
-                                              disabled={!record?.resultImageUrl}
-                                              sx={{
-                                                minWidth: 0,
-                                                whiteSpace: "nowrap",
-                                              }}
-                                            >
-                                              Baixar
-                                            </Button>
-                                          </span>
-                                        </Tooltip>
-
-                                        {isFailed ? (
-                                          <Button
-                                            size="small"
-                                            variant="contained"
-                                            color="warning"
-                                            startIcon={
-                                              isRetrying ? null : <ReplayIcon />
-                                            }
-                                            onClick={() =>
-                                              handleRetryGeneration(record)
-                                            }
-                                            disabled={isRetrying}
-                                            sx={{ whiteSpace: "nowrap" }}
-                                          >
-                                            {isRetrying ? (
-                                              <Stack
-                                                direction="row"
-                                                spacing={1}
-                                                alignItems="center"
-                                                justifyContent="center"
-                                              >
-                                                <CircularProgress size={16} />
-                                                <Typography
-                                                  component="span"
-                                                  variant="caption"
-                                                  sx={{ color: "inherit" }}
-                                                >
-                                                  Reenviando...
-                                                </Typography>
-                                              </Stack>
-                                            ) : (
-                                              "Tentar novamente"
-                                            )}
-                                          </Button>
-                                        ) : null}
+                                        />
                                       </Stack>
-                                    </TableCell>
-                                  </TableRow>
+
+                                      {renderHistoryActions(record, recordState, "column")}
+                                    </Stack>
+                                  </Box>
                                 );
                               })}
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
+                            </Stack>
+                          </Box>
+                        </>
                       )}
                     </Stack>
                   )}
