@@ -79,6 +79,7 @@ export default function ImaginePage() {
   const [generatedImageUrl, setGeneratedImageUrl] = useState("");
   const [generationStatusMessage, setGenerationStatusMessage] = useState("");
   const [generationError, setGenerationError] = useState("");
+  const [isUploadingSource, setIsUploadingSource] = useState(false);
 
   const isChargingEnabled = useMemo(() => {
     if (typeof config?.chargingEnabled === "boolean") {
@@ -535,12 +536,46 @@ export default function ImaginePage() {
 
   const initiateGeneration = useCallback(async () => {
     if (!orderId || !selectedFileDataUrl || !encryptedEmail) return;
+    if (isUploadingSource) return;
     setGenerationError("");
     setGenerationStatusMessage(
-      `Enviando sua imagem para processamento com a cor ${selectedColorLabel.toLowerCase()}.`
+      `Preparando sua imagem para envio com a cor ${selectedColorLabel.toLowerCase()}.`
     );
 
+    let uploadedSourceBlobUrl = null;
+
     try {
+      setIsUploadingSource(true);
+
+      const uploadResponse = await fetch("/api/imagine/upload-source", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          imageDataUrl: selectedFileDataUrl,
+          orderId,
+          originalFileName: selectedFile?.name || null,
+        }),
+      });
+
+      if (!uploadResponse.ok) {
+        const errorData = await uploadResponse.json().catch(() => ({}));
+        throw new Error(
+          errorData?.message ||
+            "Não foi possível preparar a imagem para processamento"
+        );
+      }
+
+      const uploadData = await uploadResponse.json();
+      uploadedSourceBlobUrl = uploadData?.blobUrl || null;
+
+      if (!uploadedSourceBlobUrl) {
+        throw new Error("Resposta inválida ao preparar a imagem para envio");
+      }
+
+      setGenerationStatusMessage(
+        `Enviando sua imagem para processamento com a cor ${selectedColorLabel.toLowerCase()}.`
+      );
+
       const response = await fetch("/api/imagine/initiate-generation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -550,12 +585,10 @@ export default function ImaginePage() {
           modelType,
           colorName: selectedColor?.name || "",
           colorHex: selectedColor?.hex || "",
-          imageDataUrl: selectedFileDataUrl,
+          imageBlobUrl: uploadedSourceBlobUrl,
           originalFileName: selectedFile?.name || null,
         }),
       });
-
-      console.log("AAAAAAAAAAAAAAAAAAAA", response);
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
@@ -566,6 +599,7 @@ export default function ImaginePage() {
 
       const data = await response.json();
       const generation = data?.generation || null;
+
       if (generation) {
         setGenerationRecord(generation);
 
@@ -594,9 +628,27 @@ export default function ImaginePage() {
         errorMessage:
           error.message || "Não foi possível iniciar a geração da imagem.",
       });
+
+      if (uploadedSourceBlobUrl) {
+        fetch("/api/imagine/upload-source", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ blobUrl: uploadedSourceBlobUrl }),
+        }).catch((cleanupError) => {
+          console.error(
+            "Erro ao remover imagem temporária após falha na geração",
+            cleanupError
+          );
+        });
+      }
+
+      setGenerationStatusMessage("");
+    } finally {
+      setIsUploadingSource(false);
     }
   }, [
     encryptedEmail,
+    isUploadingSource,
     modelType,
     orderId,
     selectedColor,

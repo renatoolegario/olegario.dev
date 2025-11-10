@@ -76,7 +76,14 @@ async function fetchBufferFromUrl(url) {
   return { buffer: Buffer.from(arrayBuffer), contentType };
 }
 
-async function uploadToBlob({ buffer, contentType, orderId, extension }) {
+async function uploadToBlob({
+  buffer,
+  contentType,
+  orderId,
+  extension,
+  prefix = "generated",
+  access = "public",
+}) {
   const token = process.env.BLOB_READ_WRITE_TOKEN;
   if (!token) {
     throw new Error("BLOB_READ_WRITE_TOKEN não configurado");
@@ -84,13 +91,18 @@ async function uploadToBlob({ buffer, contentType, orderId, extension }) {
 
   const safeExtension = extension || guessFileExtension(contentType) || "png";
   const safeOrder = (orderId || "imagem").replace(/[^a-zA-Z0-9_-]/g, "-");
-  const filename = `generated/${safeOrder}-${Date.now()}.${safeExtension}`;
+  const rawPrefix = (prefix || "generated")
+    .replace(/[^a-zA-Z0-9/_-]/g, "")
+    .replace(/^\/+/, "")
+    .replace(/\/+$/, "");
+  const safePrefix = rawPrefix || "generated";
+  const filename = `${safePrefix}/${safeOrder}-${Date.now()}.${safeExtension}`;
 
   const response = await fetch(`${BLOB_ENDPOINT}/${filename}`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
-      "x-blob-meta-access": "public",
+      "x-blob-meta-access": access === "public" ? "public" : "private",
       "Content-Type": contentType || "image/png",
     },
     body: buffer,
@@ -116,6 +128,41 @@ async function uploadToBlob({ buffer, contentType, orderId, extension }) {
   );
 }
 
+async function deleteBlobByUrl(url) {
+  if (!url) return false;
+
+  const token = process.env.BLOB_READ_WRITE_TOKEN;
+  if (!token) {
+    throw new Error("BLOB_READ_WRITE_TOKEN não configurado");
+  }
+
+  const normalizedUrl = url.startsWith("http")
+    ? url
+    : `${BLOB_ENDPOINT}/${url.replace(/^\/+/, "")}`;
+
+  const response = await fetch(normalizedUrl, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (response.status === 404) {
+    return false;
+  }
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    const message =
+      errorData?.message ||
+      errorData?.error ||
+      `Falha ao remover imagem do blob (${response.status})`;
+    throw new Error(message);
+  }
+
+  return true;
+}
+
 export {
   BLOB_ENDPOINT,
   parseDataUrl,
@@ -124,4 +171,5 @@ export {
   normalizeRemoteStatus,
   fetchBufferFromUrl,
   uploadToBlob,
+  deleteBlobByUrl,
 };

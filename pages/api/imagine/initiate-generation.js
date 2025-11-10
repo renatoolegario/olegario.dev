@@ -8,6 +8,7 @@ import {
   mapGenerationRow,
   normalizeRemoteStatus,
   uploadToBlob,
+  deleteBlobByUrl,
 } from "../../../utils/generation";
 
 function normalizeColorDescription(colorName, colorHex) {
@@ -143,6 +144,7 @@ export default async function handler(req, res) {
     colorName,
     colorHex,
     imageDataUrl,
+    imageBlobUrl,
     originalFileName,
   } = req.body || {};
 
@@ -154,14 +156,17 @@ export default async function handler(req, res) {
     return res.status(400).json({ message: "encryptedEmail é obrigatório" });
   }
 
-  if (!imageDataUrl) {
-    return res.status(400).json({ message: "imageDataUrl é obrigatório" });
+  if (!imageDataUrl && !imageBlobUrl) {
+    return res.status(400).json({
+      message: "É necessário fornecer a imagem de origem para gerar o conteúdo",
+    });
   }
 
   const schema = process.env.DB_SCHEMA || process.env.POSTGRES_SCHEMA;
   const client = await getDb(schema);
 
   let generationRow = null;
+  let sourceBlobUrlForCleanup = null;
 
   try {
     await client.query("BEGIN");
@@ -199,7 +204,31 @@ export default async function handler(req, res) {
       cor: normalizeColorDescription(colorName, colorHex),
     });
 
-    const { base64, mimeType } = parseDataUrl(imageDataUrl);
+    let base64 = null;
+    let mimeType = null;
+
+    if (imageBlobUrl) {
+      try {
+        const remoteSource = await fetchBufferFromUrl(imageBlobUrl);
+        base64 = remoteSource.buffer.toString("base64");
+        mimeType = remoteSource.contentType || null;
+        sourceBlobUrlForCleanup = imageBlobUrl;
+      } catch (blobError) {
+        await client.query("ROLLBACK");
+        console.error("Erro ao baixar imagem do blob", blobError);
+        return res.status(400).json({
+          message:
+            blobError.message ||
+            "Não foi possível acessar a imagem enviada para processamento.",
+        });
+      }
+    }
+
+    if (!base64 && imageDataUrl) {
+      const parsed = parseDataUrl(imageDataUrl);
+      base64 = parsed.base64;
+      mimeType = parsed.mimeType || mimeType;
+    }
 
     if (!base64) {
       await client.query("ROLLBACK");
@@ -365,6 +394,17 @@ export default async function handler(req, res) {
     });
   } finally {
     client.release();
+
+    if (sourceBlobUrlForCleanup) {
+      try {
+        await deleteBlobByUrl(sourceBlobUrlForCleanup);
+      } catch (cleanupError) {
+        console.error(
+          "Não foi possível remover a imagem original do blob",
+          cleanupError
+        );
+      }
+    }
   }
 
   const payload = mapGenerationRow(generationRow);
