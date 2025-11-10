@@ -5,6 +5,8 @@ import { useEffect, useMemo, useState } from "react";
 import { Box, Fade, IconButton, Stack, Typography } from "@mui/material";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import InstagramIcon from "@mui/icons-material/Instagram";
@@ -31,6 +33,20 @@ const badgeSx = {
     bgcolor: accentColor,
     color: "#0f172a",
     transform: "scale(1.05)",
+  },
+};
+
+const navigationButtonSx = {
+  bgcolor: "rgba(15,23,42,0.6)",
+  color: "#ffffff",
+  border: "1px solid rgba(255,255,255,0.35)",
+  transition: "background-color 0.25s ease",
+  "&:hover": {
+    bgcolor: "rgba(15,23,42,0.8)",
+  },
+  "&.Mui-disabled": {
+    bgcolor: "rgba(15,23,42,0.35)",
+    color: "rgba(255,255,255,0.4)",
   },
 };
 
@@ -163,7 +179,7 @@ export default function HomePage() {
             sx={{
               color: "rgba(255,255,255,0.92)",
               lineHeight: 1.6,
-              textAlign: "justify",
+              textAlign: { xs: "left", sm: "justify" },
             }}
           >
             Cada projeto nasce com o objetivo de entregar mais com menos no
@@ -182,14 +198,19 @@ export default function HomePage() {
               sx={{
                 color: "rgba(255,255,255,0.8)",
                 lineHeight: 1.6,
-                textAlign: "justify",
+                textAlign: { xs: "left", sm: "justify" },
               }}
             >
               Construímos soluções sob medida utilizando uma base moderna e
               flexível que garante performance, escalabilidade e integrações
               rápidas.
             </Typography>
-            <Stack direction="row" flexWrap="wrap" gap={1.2}>
+            <Stack
+              direction="row"
+              flexWrap="wrap"
+              gap={1.2}
+              justifyContent={{ xs: "center", sm: "flex-start" }}
+            >
               {technologies.map((item) => (
                 <Box key={item} sx={badgeSx}>
                   {item}
@@ -209,14 +230,19 @@ export default function HomePage() {
               sx={{
                 color: "rgba(255,255,255,0.8)",
                 lineHeight: 1.6,
-                textAlign: "justify",
+                textAlign: { xs: "left", sm: "justify" },
               }}
             >
               Integramos bibliotecas e serviços especializados para acelerar a
               entrega e manter a qualidade em cada etapa do ciclo de vida dos
               produtos digitais.
             </Typography>
-            <Stack direction="row" flexWrap="wrap" gap={1.2}>
+            <Stack
+              direction="row"
+              flexWrap="wrap"
+              gap={1.2}
+              justifyContent={{ xs: "center", sm: "flex-start" }}
+            >
               {frameworks.map((item) => (
                 <Box key={item} sx={badgeSx}>
                   {item}
@@ -235,7 +261,7 @@ export default function HomePage() {
             sx={{
               color: "rgba(255,255,255,0.9)",
               lineHeight: 1.6,
-              textAlign: "justify",
+              textAlign: { xs: "left", sm: "justify" },
             }}
           >
             Nosso foco é transformar a visão do cliente em realidade de forma
@@ -254,13 +280,18 @@ export default function HomePage() {
               sx={{
                 color: "rgba(255,255,255,0.8)",
                 lineHeight: 1.6,
-                textAlign: "justify",
+                textAlign: { xs: "left", sm: "justify" },
               }}
             >
               Estamos prontos para discutir novos desafios, parcerias e
               consultorias especializadas.
             </Typography>
-            <Stack direction="row" flexWrap="wrap" gap={1.2}>
+            <Stack
+              direction="row"
+              flexWrap="wrap"
+              gap={1.2}
+              justifyContent={{ xs: "center", sm: "flex-start" }}
+            >
               {contactMethods.map(({ key, icon: Icon, value, href }) => (
                 <Box
                   key={key}
@@ -281,6 +312,8 @@ export default function HomePage() {
                     textDecoration: "none",
                     transition:
                       "transform 0.25s ease, background-color 0.25s ease",
+                    width: { xs: "100%", sm: "auto" },
+                    justifyContent: "center",
                     "&:hover": {
                       bgcolor: accentColor,
                       color: "#0f172a",
@@ -294,6 +327,7 @@ export default function HomePage() {
                     sx={{
                       color: "inherit",
                       letterSpacing: "0.05em",
+                      textAlign: { xs: "center", sm: "left" },
                     }}
                   >
                     {value}
@@ -301,7 +335,10 @@ export default function HomePage() {
                 </Box>
               ))}
             </Stack>
-            <Stack spacing={0.8}>
+            <Stack
+              spacing={0.8}
+              alignItems={{ xs: "center", sm: "flex-start" }}
+            >
               {companyDetails.map((item) => (
                 <Box
                   key={item}
@@ -312,6 +349,8 @@ export default function HomePage() {
                     py: 1,
                     transition:
                       "transform 0.25s ease, background-color 0.25s ease",
+                    width: { xs: "100%", sm: "auto" },
+                    textAlign: "center",
                     "&:hover": {
                       bgcolor: accentColor,
                       color: "#0f172a",
@@ -324,7 +363,7 @@ export default function HomePage() {
                     sx={{
                       color: "inherit",
                       letterSpacing: "0.05em",
-                      textAlign: "justify",
+                      textAlign: { xs: "center", sm: "justify" },
                     }}
                   >
                     {item}
@@ -345,13 +384,16 @@ export default function HomePage() {
               sx={{
                 color: "rgba(255,255,255,0.8)",
                 lineHeight: 1.6,
-                textAlign: "justify",
+                textAlign: { xs: "left", sm: "justify" },
               }}
             >
               Soluções digitais criadas para diferentes segmentos, todas com
               foco em resultados reais e expansão contínua.
             </Typography>
-            <Stack spacing={0.8}>
+            <Stack
+              spacing={0.8}
+              alignItems={{ xs: "center", sm: "flex-start" }}
+            >
               {projects.map((item) => (
                 <Box
                   key={item}
@@ -362,6 +404,8 @@ export default function HomePage() {
                     py: 1,
                     transition:
                       "transform 0.25s ease, background-color 0.25s ease",
+                    width: { xs: "100%", sm: "auto" },
+                    textAlign: "center",
                     "&:hover": {
                       bgcolor: accentColor,
                       color: "#0f172a",
@@ -374,7 +418,7 @@ export default function HomePage() {
                     sx={{
                       color: "inherit",
                       letterSpacing: "0.05em",
-                      textAlign: "justify",
+                      textAlign: { xs: "center", sm: "justify" },
                     }}
                   >
                     {item}
@@ -397,6 +441,8 @@ export default function HomePage() {
 
   const [activeIndex, setActiveIndex] = useState(0);
   const activeSection = sections[activeIndex];
+  const totalSections = sections.length;
+  const currentSection = activeIndex + 1;
   const hasPrevious = activeIndex > 0;
   const hasNext = activeIndex < sections.length - 1;
 
@@ -429,13 +475,18 @@ export default function HomePage() {
       <Box
         component="nav"
         sx={{
-          px: { xs: 3, md: 6 },
-          pt: { xs: 4, md: 6 },
+          px: { xs: 2.5, md: 6 },
+          pt: { xs: 3, md: 6 },
           pb: { xs: 1.5, md: 2 },
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
           textAlign: "center",
+          "& canvas": {
+            maxWidth: "min(280px, 90vw)",
+            width: "100%",
+            height: "auto",
+          },
         }}
       >
         {/* <SplitText text="Olegário.Dev" delay={100} duration={0.6} /> */}
@@ -451,29 +502,82 @@ export default function HomePage() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          px: { xs: 3, sm: 6, md: 10 },
+          width: "100%",
+          px: { xs: 2, sm: 4, md: 10 },
           pb: { xs: 4, md: 8 },
         }}
       >
         <Stack
-          spacing={2.5}
+          spacing={{ xs: 2, md: 2.5 }}
           alignItems="center"
           sx={{
-            height: { xs: "auto", md: 520 },
-            justifyContent: { xs: "center", md: "space-between" },
+            width: "100%",
+            maxWidth: { xs: 480, sm: 600, md: 720 },
+            minHeight: { md: 520 },
+            justifyContent: { xs: "flex-start", md: "space-between" },
+            py: { xs: 1.5, md: 0 },
           }}
         >
+          <Box
+            sx={{
+              width: "100%",
+              display: { xs: "flex", md: "none" },
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 2,
+            }}
+          >
+            <IconButton
+              onClick={handlePrevious}
+              disabled={!hasPrevious}
+              aria-label="Seção anterior"
+              sx={{ ...navigationButtonSx, flexShrink: 0 }}
+            >
+              <KeyboardArrowLeftIcon fontSize="medium" />
+            </IconButton>
+
+            <Stack spacing={0.5} alignItems="center">
+              <Typography
+                variant="caption"
+                sx={{
+                  letterSpacing: "0.3em",
+                  textTransform: "uppercase",
+                  color: "rgba(255,255,255,0.6)",
+                }}
+              >
+                Seções
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  fontWeight: 600,
+                  letterSpacing: "0.1em",
+                }}
+              >
+                {String(currentSection).padStart(2, "0")} /
+                {" "}
+                {String(totalSections).padStart(2, "0")}
+              </Typography>
+            </Stack>
+
+            <IconButton
+              onClick={handleNext}
+              disabled={!hasNext}
+              aria-label="Próxima seção"
+              sx={{ ...navigationButtonSx, flexShrink: 0 }}
+            >
+              <KeyboardArrowRightIcon fontSize="medium" />
+            </IconButton>
+          </Box>
+
           <IconButton
             onClick={handlePrevious}
             disabled={!hasPrevious}
+            aria-label="Seção anterior"
             sx={{
-              bgcolor: "rgba(15,23,42,0.6)",
-              color: "#ffffff",
-              border: "1px solid rgba(255,255,255,0.35)",
+              ...navigationButtonSx,
+              display: { xs: "none", md: "inline-flex" },
               visibility: hasPrevious ? "visible" : "hidden",
-              "&:hover": {
-                bgcolor: "rgba(15,23,42,0.8)",
-              },
             }}
           >
             <KeyboardArrowUpIcon fontSize="large" />
@@ -490,13 +594,27 @@ export default function HomePage() {
                   bgcolor: "rgba(15,23,42,0.72)",
                   border: "1px solid rgba(255,255,255,0.18)",
                   borderRadius: 4,
-                  p: { xs: 3, md: 4 },
+                  p: { xs: 2.5, md: 4 },
                   backdropFilter: "blur(6px)",
                   display: "flex",
                   flexDirection: "column",
-                  gap: { xs: 1.5, md: 2 },
+                  gap: { xs: 1.8, md: 2 },
                   boxShadow: "0 20px 45px rgba(8,15,35,0.45)",
                   transition: "transform 0.3s ease",
+                  maxHeight: { xs: "70vh", md: "unset" },
+                  overflow: { xs: "auto", md: "visible" },
+                  scrollbarWidth: "thin",
+                  scrollbarColor: "rgba(125,211,252,0.4) transparent",
+                  "&::-webkit-scrollbar": {
+                    width: 6,
+                  },
+                  "&::-webkit-scrollbar-thumb": {
+                    backgroundColor: "rgba(125,211,252,0.4)",
+                    borderRadius: 999,
+                  },
+                  "&::-webkit-scrollbar-track": {
+                    background: "transparent",
+                  },
                 }}
               >
                 <Typography
@@ -526,24 +644,54 @@ export default function HomePage() {
                   {activeSection.subtitle}
                 </Typography>
 
-                <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: { xs: 1.8, md: 2 },
+                  }}
+                >
                   {activeSection.body}
                 </Box>
               </Box>
             </Fade>
           </Box>
 
+          <Stack
+            direction="row"
+            spacing={0.75}
+            sx={{
+              width: "100%",
+              display: { xs: "flex", md: "none" },
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {sections.map(({ title }, index) => (
+              <Box
+                key={title}
+                sx={{
+                  width: index === activeIndex ? 24 : 8,
+                  height: 6,
+                  borderRadius: 999,
+                  bgcolor:
+                    index === activeIndex
+                      ? accentColor
+                      : "rgba(255,255,255,0.35)",
+                  transition: "all 0.3s ease",
+                }}
+              />
+            ))}
+          </Stack>
+
           <IconButton
             onClick={handleNext}
             disabled={!hasNext}
+            aria-label="Próxima seção"
             sx={{
-              bgcolor: "rgba(15,23,42,0.6)",
-              color: "#ffffff",
-              border: "1px solid rgba(255,255,255,0.35)",
+              ...navigationButtonSx,
+              display: { xs: "none", md: "inline-flex" },
               visibility: hasNext ? "visible" : "hidden",
-              "&:hover": {
-                bgcolor: "rgba(15,23,42,0.8)",
-              },
             }}
           >
             <KeyboardArrowDownIcon fontSize="large" />
