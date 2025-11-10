@@ -24,7 +24,8 @@ function MyApp({ Component, pageProps }) {
         }
         body {
           margin: 0;
-          overflow: hidden;
+          overflow-x: hidden;
+          overflow-y: auto;
           background-color: #000;
         }
       `}</style>
