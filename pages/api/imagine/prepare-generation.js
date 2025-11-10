@@ -126,7 +126,7 @@ export default async function handler(req, res) {
     });
 
     const statusMessage =
-      "Imagem recebida e aguardando a etapa de processamento.";
+      "Pagamento pendente. Assim que confirmado iniciaremos o processamento.";
 
     const upsertQuery = `
       INSERT INTO generated_images (
@@ -148,7 +148,7 @@ export default async function handler(req, res) {
         created_at,
         updated_at
       ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, 'processing', $9, $10, $11, $12, NULL, NOW(), NOW(), NOW()
+        $1, $2, $3, $4, $5, $6, $7, $8, 'pending', $9, $10, $11, $12, NULL, NOW(), NOW(), NOW()
       )
       ON CONFLICT (order_id) DO UPDATE
       SET
