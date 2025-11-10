@@ -952,6 +952,16 @@ export default function ImaginePage() {
       );
 
       if (!response.ok) {
+        if (response.status === 404) {
+          setGenerationError("");
+          setGenerationStatusMessage("");
+          setGeneratedImageUrl("");
+          setPreparedGeneration(null);
+          setGenerationRecord(null);
+          setHasInitiatedGeneration(false);
+          return;
+        }
+
         const errorData = await response.json().catch(() => ({}));
         throw new Error(
           errorData?.message || "Erro ao consultar a geração da imagem"
