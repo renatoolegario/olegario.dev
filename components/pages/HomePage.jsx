@@ -1,4 +1,5 @@
 "use client";
+import SplitText from "components/SplitText";
 import FuzzyText from "components/FuzzyText";
 import { useEffect, useMemo, useState } from "react";
 import { Box, Fade, IconButton, Stack, Typography } from "@mui/material";
@@ -15,23 +16,17 @@ import { keyframes } from "@mui/system";
 const accentColor = "#7dd3fc";
 
 const badgeSx = {
-  px: { xs: 1.2, sm: 1.5 },
-  py: { xs: 0.6, sm: 0.5 },
+  px: 1.5,
+  py: 0.5,
   borderRadius: 999,
   border: "1px solid rgba(255,255,255,0.35)",
   bgcolor: "rgba(15,23,42,0.6)",
-  fontSize: { xs: "0.7rem", sm: "0.75rem" },
+  fontSize: "0.75rem",
   letterSpacing: "0.08em",
   textTransform: "uppercase",
   color: "rgba(255,255,255,0.92)",
   transition: "transform 0.25s ease, background-color 0.25s ease",
   cursor: "default",
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
-  textAlign: "center",
-  flex: { xs: "1 1 120px", sm: "0 0 auto" },
-  minHeight: 32,
   "&:hover": {
     bgcolor: accentColor,
     color: "#0f172a",
@@ -168,7 +163,7 @@ export default function HomePage() {
             sx={{
               color: "rgba(255,255,255,0.92)",
               lineHeight: 1.6,
-              textAlign: { xs: "left", md: "justify" },
+              textAlign: "justify",
             }}
           >
             Cada projeto nasce com o objetivo de entregar mais com menos no
@@ -187,20 +182,14 @@ export default function HomePage() {
               sx={{
                 color: "rgba(255,255,255,0.8)",
                 lineHeight: 1.6,
-                textAlign: { xs: "left", md: "justify" },
+                textAlign: "justify",
               }}
             >
               Construímos soluções sob medida utilizando uma base moderna e
               flexível que garante performance, escalabilidade e integrações
               rápidas.
             </Typography>
-            <Stack
-              direction="row"
-              flexWrap="wrap"
-              gap={1.2}
-              justifyContent={{ xs: "flex-start", md: "center" }}
-              sx={{ width: "100%" }}
-            >
+            <Stack direction="row" flexWrap="wrap" gap={1.2}>
               {technologies.map((item) => (
                 <Box key={item} sx={badgeSx}>
                   {item}
@@ -220,20 +209,14 @@ export default function HomePage() {
               sx={{
                 color: "rgba(255,255,255,0.8)",
                 lineHeight: 1.6,
-                textAlign: { xs: "left", md: "justify" },
+                textAlign: "justify",
               }}
             >
               Integramos bibliotecas e serviços especializados para acelerar a
               entrega e manter a qualidade em cada etapa do ciclo de vida dos
               produtos digitais.
             </Typography>
-            <Stack
-              direction="row"
-              flexWrap="wrap"
-              gap={1.2}
-              justifyContent={{ xs: "flex-start", md: "center" }}
-              sx={{ width: "100%" }}
-            >
+            <Stack direction="row" flexWrap="wrap" gap={1.2}>
               {frameworks.map((item) => (
                 <Box key={item} sx={badgeSx}>
                   {item}
@@ -252,7 +235,7 @@ export default function HomePage() {
             sx={{
               color: "rgba(255,255,255,0.9)",
               lineHeight: 1.6,
-              textAlign: { xs: "left", md: "justify" },
+              textAlign: "justify",
             }}
           >
             Nosso foco é transformar a visão do cliente em realidade de forma
@@ -271,18 +254,13 @@ export default function HomePage() {
               sx={{
                 color: "rgba(255,255,255,0.8)",
                 lineHeight: 1.6,
-                textAlign: { xs: "left", md: "justify" },
+                textAlign: "justify",
               }}
             >
               Estamos prontos para discutir novos desafios, parcerias e
               consultorias especializadas.
             </Typography>
-            <Stack
-              direction={{ xs: "column", sm: "row" }}
-              flexWrap="wrap"
-              gap={1.2}
-              sx={{ width: "100%" }}
-            >
+            <Stack direction="row" flexWrap="wrap" gap={1.2}>
               {contactMethods.map(({ key, icon: Icon, value, href }) => (
                 <Box
                   key={key}
@@ -298,12 +276,11 @@ export default function HomePage() {
                     gap: 1,
                     color: "rgba(255,255,255,0.85)",
                     borderRadius: 2,
-                    px: { xs: 1.4, md: 1.5 },
-                    py: { xs: 0.9, md: 1 },
+                    px: 1.5,
+                    py: 1,
                     textDecoration: "none",
                     transition:
                       "transform 0.25s ease, background-color 0.25s ease",
-                    width: { xs: "100%", sm: "auto" },
                     "&:hover": {
                       bgcolor: accentColor,
                       color: "#0f172a",
@@ -324,18 +301,17 @@ export default function HomePage() {
                 </Box>
               ))}
             </Stack>
-            <Stack spacing={0.8} sx={{ width: "100%" }}>
+            <Stack spacing={0.8}>
               {companyDetails.map((item) => (
                 <Box
                   key={item}
                   sx={{
                     color: "rgba(255,255,255,0.85)",
                     borderRadius: 2,
-                    px: { xs: 1.4, md: 1.5 },
-                    py: { xs: 0.9, md: 1 },
+                    px: 1.5,
+                    py: 1,
                     transition:
                       "transform 0.25s ease, background-color 0.25s ease",
-                    width: "100%",
                     "&:hover": {
                       bgcolor: accentColor,
                       color: "#0f172a",
@@ -348,7 +324,7 @@ export default function HomePage() {
                     sx={{
                       color: "inherit",
                       letterSpacing: "0.05em",
-                      textAlign: { xs: "left", md: "justify" },
+                      textAlign: "justify",
                     }}
                   >
                     {item}
@@ -369,24 +345,23 @@ export default function HomePage() {
               sx={{
                 color: "rgba(255,255,255,0.8)",
                 lineHeight: 1.6,
-                textAlign: { xs: "left", md: "justify" },
+                textAlign: "justify",
               }}
             >
               Soluções digitais criadas para diferentes segmentos, todas com
               foco em resultados reais e expansão contínua.
             </Typography>
-            <Stack spacing={0.8} sx={{ width: "100%" }}>
+            <Stack spacing={0.8}>
               {projects.map((item) => (
                 <Box
                   key={item}
                   sx={{
                     color: "rgba(255,255,255,0.88)",
                     borderRadius: 2,
-                    px: { xs: 1.4, md: 1.5 },
-                    py: { xs: 0.9, md: 1 },
+                    px: 1.5,
+                    py: 1,
                     transition:
                       "transform 0.25s ease, background-color 0.25s ease",
-                    width: "100%",
                     "&:hover": {
                       bgcolor: accentColor,
                       color: "#0f172a",
@@ -399,7 +374,7 @@ export default function HomePage() {
                     sx={{
                       color: "inherit",
                       letterSpacing: "0.05em",
-                      textAlign: { xs: "left", md: "justify" },
+                      textAlign: "justify",
                     }}
                   >
                     {item}
@@ -437,20 +412,9 @@ export default function HomePage() {
     }
   };
 
-  const handleSelect = (index) => {
-    setActiveIndex((current) => {
-      if (index < 0 || index >= sections.length) {
-        return current;
-      }
-
-      return index;
-    });
-  };
-
   return (
     <Box
       sx={{
-        position: "relative",
         minHeight: "100vh",
         width: "100%",
         display: "flex",
@@ -460,300 +424,131 @@ export default function HomePage() {
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
         color: "#ffffff",
-        overflow: "hidden",
       }}
     >
       <Box
+        component="nav"
         sx={{
-          position: "absolute",
-          inset: 0,
-          bgcolor: "rgba(8,15,35,0.6)",
-          backdropFilter: { xs: "blur(6px)", md: "blur(2px)" },
+          px: { xs: 3, md: 6 },
+          pt: { xs: 4, md: 6 },
+          pb: { xs: 1.5, md: 2 },
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          textAlign: "center",
         }}
-      />
+      >
+        {/* <SplitText text="Olegário.Dev" delay={100} duration={0.6} /> */}
+
+        <FuzzyText baseIntensity={0.2} hoverIntensity={0.5} enableHover={true}>
+          Olegário.Dev
+        </FuzzyText>
+      </Box>
 
       <Box
         sx={{
-          position: "relative",
-          zIndex: 1,
           flex: 1,
           display: "flex",
-          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          px: { xs: 3, sm: 6, md: 10 },
+          pb: { xs: 4, md: 8 },
         }}
       >
-        <Box
-          component="nav"
+        <Stack
+          spacing={2.5}
+          alignItems="center"
           sx={{
-            px: { xs: 2.5, md: 6 },
-            pt: { xs: 3.5, md: 6 },
-            pb: { xs: 1.5, md: 2 },
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            textAlign: "center",
+            height: { xs: "auto", md: 520 },
+            justifyContent: { xs: "center", md: "space-between" },
           }}
         >
+          <IconButton
+            onClick={handlePrevious}
+            disabled={!hasPrevious}
+            sx={{
+              bgcolor: "rgba(15,23,42,0.6)",
+              color: "#ffffff",
+              border: "1px solid rgba(255,255,255,0.35)",
+              visibility: hasPrevious ? "visible" : "hidden",
+              "&:hover": {
+                bgcolor: "rgba(15,23,42,0.8)",
+              },
+            }}
+          >
+            <KeyboardArrowUpIcon fontSize="large" />
+          </IconButton>
+
           <Box
-            sx={{
-              width: "100%",
-              maxWidth: 540,
-              display: "flex",
-              justifyContent: "center",
-              mx: "auto",
-            }}
+            key={activeIndex}
+            sx={{ width: "100%", maxWidth: { xs: 520, md: 680 } }}
           >
-            <FuzzyText
-              fontSize="clamp(1.6rem, 8vw, 3.8rem)"
-              baseIntensity={0.18}
-              hoverIntensity={0.45}
-              enableHover
-            >
-              Olegário.Dev
-            </FuzzyText>
-          </Box>
-        </Box>
-
-        <Box
-          sx={{
-            flex: 1,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            px: { xs: 2.5, sm: 4, md: 8 },
-            pb: { xs: 3.5, md: 8 },
-          }}
-        >
-          <Stack
-            spacing={{ xs: 2, md: 2.5 }}
-            alignItems="center"
-            sx={{
-              width: "100%",
-              maxWidth: 860,
-              height: { xs: "auto", md: 540 },
-              justifyContent: { xs: "flex-start", md: "space-between" },
-            }}
-          >
-            <Stack
-              direction="row"
-              spacing={1}
-              alignItems="center"
-              justifyContent="center"
-              sx={{ width: "100%", display: { xs: "flex", md: "none" } }}
-            >
-              <IconButton
-                onClick={handlePrevious}
-                disabled={!hasPrevious}
+            <Fade in timeout={400}>
+              <Box
                 sx={{
-                  bgcolor: "rgba(15,23,42,0.65)",
-                  color: "#ffffff",
-                  border: "1px solid rgba(255,255,255,0.32)",
-                  "&:hover": {
-                    bgcolor: "rgba(15,23,42,0.8)",
-                  },
+                  width: "100%",
+                  bgcolor: "rgba(15,23,42,0.72)",
+                  border: "1px solid rgba(255,255,255,0.18)",
+                  borderRadius: 4,
+                  p: { xs: 3, md: 4 },
+                  backdropFilter: "blur(6px)",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: { xs: 1.5, md: 2 },
+                  boxShadow: "0 20px 45px rgba(8,15,35,0.45)",
+                  transition: "transform 0.3s ease",
                 }}
-                size="medium"
               >
-                <KeyboardArrowUpIcon fontSize="medium" />
-              </IconButton>
-
-              <Stack
-                direction="row"
-                spacing={0.8}
-                justifyContent="center"
-                alignItems="center"
-                flexWrap="wrap"
-                sx={{ flex: 1 }}
-              >
-                {sections.map((section, index) => {
-                  const isActive = index === activeIndex;
-
-                  return (
-                    <Box
-                      key={section.title}
-                      component="button"
-                      type="button"
-                      onClick={() => handleSelect(index)}
-                      aria-label={`Ir para a seção ${section.title}`}
-                      disabled={isActive}
-                      sx={{
-                        width: 10,
-                        height: 10,
-                        borderRadius: "50%",
-                        border: "none",
-                        transition: "transform 0.2s ease, background-color 0.2s ease",
-                        backgroundColor: isActive
-                          ? accentColor
-                          : "rgba(255,255,255,0.35)",
-                        opacity: isActive ? 1 : 0.65,
-                        transform: isActive ? "scale(1.25)" : "scale(1)",
-                        cursor: isActive ? "default" : "pointer",
-                        p: 0,
-                        m: 0,
-                        "&:hover": {
-                          backgroundColor: accentColor,
-                          opacity: 0.9,
-                        },
-                      }}
-                    />
-                  );
-                })}
-              </Stack>
-
-              <IconButton
-                onClick={handleNext}
-                disabled={!hasNext}
-                sx={{
-                  bgcolor: "rgba(15,23,42,0.65)",
-                  color: "#ffffff",
-                  border: "1px solid rgba(255,255,255,0.32)",
-                  "&:hover": {
-                    bgcolor: "rgba(15,23,42,0.8)",
-                  },
-                }}
-                size="medium"
-              >
-                <KeyboardArrowDownIcon fontSize="medium" />
-              </IconButton>
-            </Stack>
-
-            <IconButton
-              onClick={handlePrevious}
-              disabled={!hasPrevious}
-              sx={{
-                bgcolor: "rgba(15,23,42,0.6)",
-                color: "#ffffff",
-                border: "1px solid rgba(255,255,255,0.35)",
-                visibility: hasPrevious ? "visible" : "hidden",
-                display: { xs: "none", md: "flex" },
-                "&:hover": {
-                  bgcolor: "rgba(15,23,42,0.8)",
-                },
-              }}
-            >
-              <KeyboardArrowUpIcon fontSize="large" />
-            </IconButton>
-
-            <Box
-              key={activeIndex}
-              sx={{ width: "100%", maxWidth: { xs: 640, md: 700 } }}
-            >
-              <Fade in timeout={400}>
-                <Box
+                <Typography
+                  variant="h3"
+                  component="h1"
                   sx={{
-                    width: "100%",
-                    bgcolor: "rgba(15,23,42,0.78)",
-                    backgroundImage: devBackgrounds[devBackgroundIndex],
-                    backgroundBlendMode: "soft-light",
-                    border: "1px solid rgba(255,255,255,0.18)",
-                    borderRadius: 4,
-                    p: { xs: 2.5, sm: 3, md: 4 },
-                    backdropFilter: "blur(12px)",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: { xs: 1.6, md: 2 },
-                    boxShadow: "0 20px 45px rgba(8,15,35,0.45)",
-                    transition: "transform 0.3s ease, background-image 0.6s ease",
+                    fontSize: { xs: "1.5rem", md: "2.4rem" },
+                    lineHeight: 1.2,
+                    textAlign: "center",
+                    letterSpacing: "0.03em",
                   }}
                 >
-                  <Typography
-                    variant="h3"
-                    component="h1"
-                    sx={{
-                      fontSize: { xs: "1.35rem", sm: "1.6rem", md: "2.4rem" },
-                      lineHeight: 1.25,
-                      textAlign: { xs: "left", md: "center" },
-                      letterSpacing: { xs: "0.01em", md: "0.03em" },
-                    }}
-                  >
-                    {activeSection.title}
-                  </Typography>
+                  {activeSection.title}
+                </Typography>
 
-                  <Typography
-                    variant="subtitle1"
-                    component="h2"
-                    sx={{
-                      textAlign: { xs: "left", md: "center" },
-                      textTransform: "uppercase",
-                      letterSpacing: { xs: "0.2em", md: "0.3em" },
-                      fontSize: { xs: "0.65rem", sm: "0.75rem", md: "0.85rem" },
-                      color: "rgba(255,255,255,0.65)",
-                    }}
-                  >
-                    {activeSection.subtitle}
-                  </Typography>
+                <Typography
+                  variant="subtitle1"
+                  component="h2"
+                  sx={{
+                    textAlign: "center",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.3em",
+                    fontSize: { xs: "0.7rem", md: "0.85rem" },
+                    color: "rgba(255,255,255,0.65)",
+                  }}
+                >
+                  {activeSection.subtitle}
+                </Typography>
 
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: { xs: 1.4, sm: 1.6, md: 2 },
-                    }}
-                  >
-                    {activeSection.body}
-                  </Box>
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                  {activeSection.body}
                 </Box>
-              </Fade>
-            </Box>
+              </Box>
+            </Fade>
+          </Box>
 
-            <Stack
-              direction="row"
-              spacing={0.8}
-              justifyContent="center"
-              flexWrap="wrap"
-              sx={{ width: "100%", display: { xs: "none", md: "flex" } }}
-            >
-              {sections.map((section, index) => {
-                const isActive = index === activeIndex;
-
-                return (
-                  <Box
-                    key={section.title}
-                    component="button"
-                    type="button"
-                    onClick={() => handleSelect(index)}
-                    aria-label={`Ir para a seção ${section.title}`}
-                    disabled={isActive}
-                    sx={{
-                      width: isActive ? 28 : 12,
-                      height: 12,
-                      borderRadius: 999,
-                      border: "1px solid rgba(255,255,255,0.18)",
-                      transition: "all 0.2s ease",
-                      backgroundColor: isActive
-                        ? accentColor
-                        : "rgba(255,255,255,0.25)",
-                      opacity: isActive ? 1 : 0.7,
-                      cursor: isActive ? "default" : "pointer",
-                      p: 0,
-                      m: 0,
-                      "&:hover": {
-                        backgroundColor: accentColor,
-                        opacity: 0.9,
-                      },
-                    }}
-                  />
-                );
-              })}
-            </Stack>
-
-            <IconButton
-              onClick={handleNext}
-              disabled={!hasNext}
-              sx={{
-                bgcolor: "rgba(15,23,42,0.6)",
-                color: "#ffffff",
-                border: "1px solid rgba(255,255,255,0.35)",
-                visibility: hasNext ? "visible" : "hidden",
-                display: { xs: "none", md: "flex" },
-                "&:hover": {
-                  bgcolor: "rgba(15,23,42,0.8)",
-                },
-              }}
-            >
-              <KeyboardArrowDownIcon fontSize="large" />
-            </IconButton>
-          </Stack>
-        </Box>
+          <IconButton
+            onClick={handleNext}
+            disabled={!hasNext}
+            sx={{
+              bgcolor: "rgba(15,23,42,0.6)",
+              color: "#ffffff",
+              border: "1px solid rgba(255,255,255,0.35)",
+              visibility: hasNext ? "visible" : "hidden",
+              "&:hover": {
+                bgcolor: "rgba(15,23,42,0.8)",
+              },
+            }}
+          >
+            <KeyboardArrowDownIcon fontSize="large" />
+          </IconButton>
+        </Stack>
       </Box>
     </Box>
   );
