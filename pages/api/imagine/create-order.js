@@ -3,6 +3,68 @@ import { normalizeMercadoPagoOrder } from "../../../utils/normalizeMercadoPagoOr
 import { reverterConversaoCripto } from "../../../utils/crypto";
 import getDb from "infra/database";
 
+function isChargingEnabled() {
+  const value = process.env.COBRANCA;
+
+  if (value === undefined || value === null) {
+    return true;
+  }
+
+  const normalized = value.toString().trim().toLowerCase();
+
+  return !["false", "0", "off", "no"].includes(normalized);
+}
+
+function createFakeOrder({ externalReference, modelType, email }) {
+  const priceValue = Number.parseFloat(process.env.PRICE);
+  const hasValidAmount = Number.isFinite(priceValue);
+  const normalizedAmount = hasValidAmount
+    ? Number(priceValue.toFixed(2))
+    : 0;
+
+  const now = new Date().toISOString();
+  const orderId = `dev-order-${uuidv4()}`;
+  const paymentId = `dev-payment-${uuidv4()}`;
+  const disabledMessage =
+    "Cobrança desativada neste ambiente. Pagamento aprovado automaticamente.";
+
+  return {
+    id: orderId,
+    status: "paid",
+    status_detail: disabledMessage,
+    external_reference: externalReference,
+    total_amount: normalizedAmount,
+    total_paid_amount: normalizedAmount,
+    currency: "BRL",
+    last_updated_date: now,
+    metadata: {
+      modelType: modelType || null,
+      chargingDisabled: true,
+      email: email || null,
+    },
+    transactions: {
+      payments: [
+        {
+          id: paymentId,
+          amount: normalizedAmount,
+          paid_amount: normalizedAmount,
+          status: "approved",
+          status_detail: disabledMessage,
+          payment_method: {
+            id: "disabled",
+            type: "test",
+            ticket_url: null,
+            qr_code: null,
+            qr_code_base64: null,
+          },
+          paid_at: now,
+          date_of_expiration: null,
+        },
+      ],
+    },
+  };
+}
+
 function parseNumber(value) {
   if (value === null || value === undefined) {
     return null;
@@ -304,11 +366,19 @@ export default async function handler(req, res) {
           ? String(modelType)
           : null;
 
-    const orderResponse = await createMercadoPagoOrder({
-      email: decryptedEmail,
-      externalReference,
-      modelType: normalizedModelType,
-    });
+    const chargingEnabled = isChargingEnabled();
+
+    const orderResponse = chargingEnabled
+      ? await createMercadoPagoOrder({
+          email: decryptedEmail,
+          externalReference,
+          modelType: normalizedModelType,
+        })
+      : createFakeOrder({
+          externalReference,
+          modelType: normalizedModelType,
+          email: decryptedEmail,
+        });
 
     const normalizedOrder = normalizeMercadoPagoOrder(orderResponse);
     const externalReferenceResponse =
@@ -332,6 +402,7 @@ export default async function handler(req, res) {
       externalReference: externalReferenceResponse,
       expirationTime: normalizedOrder.expirationTime,
       order: normalizedOrder,
+      chargingEnabled,
     });
   } catch (error) {
     console.error("Erro ao criar pedido no Mercado Pago:", {

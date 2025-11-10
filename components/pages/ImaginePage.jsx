@@ -69,7 +69,11 @@ export default function ImaginePage() {
   const [qrCodeData, setQrCodeData] = useState("");
   const [statusMessage, setStatusMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [config, setConfig] = useState({ model: "", price: null });
+  const [config, setConfig] = useState({
+    model: "",
+    price: null,
+    chargingEnabled: true,
+  });
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [copyStatus, setCopyStatus] = useState(null);
   const [selectedColor, setSelectedColor] = useState(CLOTHING_COLORS[0]);
@@ -78,6 +82,23 @@ export default function ImaginePage() {
   const [generatedImageUrl, setGeneratedImageUrl] = useState("");
   const [generationStatusMessage, setGenerationStatusMessage] = useState("");
   const [generationError, setGenerationError] = useState("");
+
+  const isChargingEnabled = useMemo(() => {
+    if (typeof config?.chargingEnabled === "boolean") {
+      return config.chargingEnabled;
+    }
+
+    const envValue =
+      process.env.NEXT_PUBLIC_COBRANCA ?? process.env.COBRANCA ?? null;
+
+    if (envValue === null || envValue === undefined) {
+      return true;
+    }
+
+    const normalized = envValue.toString().trim().toLowerCase();
+
+    return !["false", "0", "off", "no"].includes(normalized);
+  }, [config?.chargingEnabled]);
 
   const formattedPrice = useMemo(() => {
     if (!config?.price && config?.price !== 0) return "Valor a definir";
@@ -297,7 +318,7 @@ export default function ImaginePage() {
     setIsColorPickerOpen(false);
   }, []);
 
-  const handleNextToPayment = useCallback(() => {
+  const handleNextToPayment = useCallback(async () => {
     setErrorMessage("");
     if (!emailSaved) {
       setErrorMessage("Confirme o email antes de continuar");
@@ -308,15 +329,36 @@ export default function ImaginePage() {
       return;
     }
     if (!selectedFileDataUrl) {
-      setErrorMessage("A imagem selecionada ainda está sendo carregada. Aguarde alguns segundos e tente novamente.");
+      setErrorMessage(
+        "A imagem selecionada ainda está sendo carregada. Aguarde alguns segundos e tente novamente."
+      );
       return;
     }
     setGenerationRecord(null);
     setGeneratedImageUrl("");
     setGenerationStatusMessage("");
     setGenerationError("");
+
+    if (!isChargingEnabled) {
+      setCurrentStep(3);
+      setStatusMessage(
+        "Cobrança desativada. Iniciamos o processamento da sua imagem."
+      );
+      const result = await handleGenerate();
+      if (!result) {
+        setCurrentStep(1);
+      }
+      return;
+    }
+
     setCurrentStep(2);
-  }, [emailSaved, selectedFile, selectedFileDataUrl]);
+  }, [
+    emailSaved,
+    handleGenerate,
+    isChargingEnabled,
+    selectedFile,
+    selectedFileDataUrl,
+  ]);
 
   const handleBackToConfig = useCallback(() => {
     setOrderId(null);
@@ -395,17 +437,17 @@ export default function ImaginePage() {
     setErrorMessage("");
     if (!emailSaved || !encryptedEmail) {
       setErrorMessage("Informe e confirme o email antes de continuar");
-      return;
+      return null;
     }
     if (!selectedFile) {
       setErrorMessage("Selecione uma imagem para continuar");
-      return;
+      return null;
     }
     if (!selectedFileDataUrl) {
       setErrorMessage(
         "A imagem selecionada ainda está sendo carregada. Aguarde alguns instantes e tente novamente."
       );
-      return;
+      return null;
     }
 
     setIsGenerating(true);
@@ -419,12 +461,15 @@ export default function ImaginePage() {
     setGenerationStatusMessage("");
     setGenerationError("");
 
+    let responseData = null;
+    let isSuccessful = false;
+
     try {
       const generateReference = () => {
         if (typeof crypto !== "undefined" && crypto.randomUUID) {
           return crypto.randomUUID();
         }
-        return `imagine-${Date.now()}-${Math.random()
+        return `imagine-${Date.now()}-${Math.random()`
           .toString(36)
           .slice(2, 10)}`;
       };
@@ -454,6 +499,14 @@ export default function ImaginePage() {
       }
 
       const data = await response.json();
+      if (typeof data?.chargingEnabled === "boolean") {
+        setConfig((prev) => ({
+          ...prev,
+          chargingEnabled: data.chargingEnabled,
+        }));
+      }
+      responseData = data;
+      isSuccessful = true;
       setOrderId(data?.orderId || null);
       setOrderStatus(data?.status || null);
       setStatusMessage(data?.statusDetail || "");
@@ -472,6 +525,8 @@ export default function ImaginePage() {
     } finally {
       setIsGenerating(false);
     }
+
+    return isSuccessful ? responseData : null;
   }, [
     applyQrSources,
     emailSaved,
@@ -603,6 +658,7 @@ export default function ImaginePage() {
 
   // ✅ AGORA SIM: efeito que chama handleGenerate FICA DEPOIS da função
   useEffect(() => {
+    if (!isChargingEnabled) return;
     if (
       currentStep === 2 &&
       !orderId &&
@@ -614,9 +670,10 @@ export default function ImaginePage() {
     }
   }, [
     currentStep,
-    orderId,
-    isGenerating,
     handleGenerate,
+    isChargingEnabled,
+    isGenerating,
+    orderId,
     selectedFile,
     selectedFileDataUrl,
   ]);
