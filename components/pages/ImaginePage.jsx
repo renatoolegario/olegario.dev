@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Alert,
   Box,
@@ -8,7 +8,6 @@ import {
   Card,
   CardContent,
   CircularProgress,
-  Chip,
   Dialog,
   DialogActions,
   DialogContent,
@@ -25,14 +24,7 @@ import {
   Stepper,
   Tab,
   Tabs,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   TextField,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
@@ -88,13 +80,6 @@ export default function ImaginePage() {
   const [generationStatusMessage, setGenerationStatusMessage] = useState("");
   const [generationError, setGenerationError] = useState("");
   const [isUploadingSource, setIsUploadingSource] = useState(false);
-  const [historyRecords, setHistoryRecords] = useState([]);
-  const [isFetchingHistory, setIsFetchingHistory] = useState(false);
-  const [historyError, setHistoryError] = useState("");
-  const [historyFeedback, setHistoryFeedback] = useState(null);
-  const [historyPreviewRecord, setHistoryPreviewRecord] = useState(null);
-  const [retryingOrders, setRetryingOrders] = useState({});
-  const isPollingHistoryRef = useRef(false);
 
   const isChargingEnabled = useMemo(() => {
     if (typeof config?.chargingEnabled === "boolean") {
@@ -141,64 +126,6 @@ export default function ImaginePage() {
   const selectedColorHex = useMemo(() => {
     return selectedColor?.hex || "#2563EB";
   }, [selectedColor]);
-
-  const isProcessingStatus = useCallback((status) => {
-    if (!status) return false;
-    const normalized = status.toString().toLowerCase();
-    return ["processing", "pending", "queued", "in_progress"].includes(
-      normalized
-    );
-  }, []);
-
-  const processingHistoryOrderIds = useMemo(() => {
-    if (!Array.isArray(historyRecords) || historyRecords.length === 0) {
-      return [];
-    }
-
-    return historyRecords
-      .filter((record) => isProcessingStatus(record?.status))
-      .map((record) => record?.orderId)
-      .filter(Boolean);
-  }, [historyRecords, isProcessingStatus]);
-
-  const getHistoryStatusDetails = useCallback((status) => {
-    const normalized = status ? status.toString().toLowerCase() : "";
-
-    if (normalized === "completed") {
-      return { label: "Concluída", color: "success" };
-    }
-
-    if (["failed", "error", "canceled", "cancelled"].includes(normalized)) {
-      return { label: "Erro", color: "error" };
-    }
-
-    if (isProcessingStatus(normalized)) {
-      return { label: "Processando", color: "info" };
-    }
-
-    if (!normalized) {
-      return { label: "Desconhecido", color: "default" };
-    }
-
-    return { label: status, color: "default" };
-  }, [isProcessingStatus]);
-
-  const formatHistoryDate = useCallback((value) => {
-    if (!value) return "-";
-
-    try {
-      return new Date(value).toLocaleString("pt-BR", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    } catch (error) {
-      console.error("Erro ao formatar data do histórico", error);
-      return value;
-    }
-  }, []);
 
   const applyQrSources = useCallback((orderData) => {
     if (!orderData) {
@@ -297,47 +224,6 @@ export default function ImaginePage() {
     return () => clearTimeout(timeoutId);
   }, [copyStatus]);
 
-  useEffect(() => {
-    if (activeTab !== "history") return;
-    if (!emailSaved || !encryptedEmail) return;
-
-    fetchHistory();
-  }, [activeTab, emailSaved, encryptedEmail, fetchHistory]);
-
-  useEffect(() => {
-    if (activeTab !== "history") return;
-    if (!emailSaved || !encryptedEmail) return;
-    if (processingHistoryOrderIds.length === 0) return;
-
-    let isCancelled = false;
-
-    const runPoll = async () => {
-      if (isCancelled) return;
-      await pollProcessingHistory();
-    };
-
-    runPoll();
-
-    const intervalId = setInterval(runPoll, POLLING_INTERVAL);
-
-    return () => {
-      isCancelled = true;
-      clearInterval(intervalId);
-    };
-  }, [
-    activeTab,
-    emailSaved,
-    encryptedEmail,
-    pollProcessingHistory,
-    processingHistoryOrderIds.length,
-  ]);
-
-  useEffect(() => {
-    if (!historyFeedback?.message) return;
-    const timeoutId = setTimeout(() => setHistoryFeedback(null), 4000);
-    return () => clearTimeout(timeoutId);
-  }, [historyFeedback]);
-
   // Sempre que perder o email salvo, reset de steps e refs
   useEffect(() => {
     if (emailSaved) return;
@@ -349,11 +235,6 @@ export default function ImaginePage() {
     setQrCodeUrl("");
     setCopyStatus(null);
     applyQrSources(null);
-    setHistoryRecords([]);
-    setHistoryError("");
-    setHistoryFeedback(null);
-    setHistoryPreviewRecord(null);
-    setRetryingOrders({});
     if (typeof window !== "undefined") {
       window.localStorage.removeItem(ORDER_REFERENCE_STORAGE_KEY);
     }
@@ -958,228 +839,6 @@ export default function ImaginePage() {
     }
     Cookies.remove(EMAIL_TOKEN_STORAGE_KEY);
   }, []);
-
-  const handleHistoryPreviewOpen = useCallback((record) => {
-    if (!record?.resultImageUrl) return;
-    setHistoryPreviewRecord(record);
-  }, []);
-
-  const handleHistoryPreviewClose = useCallback(
-    () => setHistoryPreviewRecord(null),
-    []
-  );
-
-  const handleDownloadHistoryImage = useCallback((record) => {
-    if (!record?.resultImageUrl) return;
-
-    try {
-      if (typeof document === "undefined") {
-        window.open(record.resultImageUrl, "_blank", "noopener,noreferrer");
-        return;
-      }
-
-      const link = document.createElement("a");
-      link.href = record.resultImageUrl;
-      const extension = record.resultImageUrl.split(".").pop() || "png";
-      const safeExtension = extension.split(/[?#]/)[0] || "png";
-      const filename = `imagem-gerada-${record.orderId || Date.now()}.${safeExtension}`;
-      link.download = filename;
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } catch (error) {
-      console.error("Erro ao iniciar download da imagem gerada", error);
-      setHistoryFeedback({
-        message:
-          "Não foi possível baixar a imagem agora. Ela será aberta em uma nova aba.",
-        severity: "warning",
-      });
-      window.open(record.resultImageUrl, "_blank", "noopener,noreferrer");
-    }
-  }, []);
-
-  const handleRetryGeneration = useCallback(
-    async (record) => {
-      if (!record) return;
-      if (!encryptedEmail) {
-        setHistoryFeedback({
-          message: "Confirme o email antes de reenviar a geração.",
-          severity: "error",
-        });
-        return;
-      }
-
-      if (!record.orderId) {
-        setHistoryFeedback({
-          message: "Registro sem identificador válido para reprocessar.",
-          severity: "error",
-        });
-        return;
-      }
-
-      if (!record.sourceImageBlobUrl) {
-        setHistoryFeedback({
-          message:
-            "Não encontramos a imagem original para reenviar. Gere uma nova imagem.",
-          severity: "error",
-        });
-        return;
-      }
-
-      setHistoryError("");
-      setHistoryFeedback(null);
-
-      setRetryingOrders((prev) => ({
-        ...prev,
-        [record.orderId]: true,
-      }));
-
-      try {
-        const response = await fetch("/api/imagine/initiate-generation", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            orderId: record.orderId,
-            encryptedEmail,
-            modelType: record.modelType || modelType,
-            colorName: record.selectedColorName || selectedColor?.name || "",
-            colorHex: record.selectedColorHex || selectedColor?.hex || "",
-            imageBlobUrl: record.sourceImageBlobUrl,
-            originalFileName: record.sourceImageName || null,
-          }),
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(
-            errorData?.message || "Não foi possível reenviar a geração da imagem"
-          );
-        }
-
-        setHistoryFeedback({
-          message: "Reprocessamento iniciado. Vamos atualizar o status em instantes.",
-          severity: "success",
-        });
-
-        await fetchHistory({ silent: true });
-        await pollProcessingHistory();
-      } catch (error) {
-        console.error("Erro ao reenviar geração", error);
-        setHistoryFeedback({
-          message: error.message || "Não foi possível reenviar a geração",
-          severity: "error",
-        });
-      } finally {
-        setRetryingOrders((prev) => {
-          const next = { ...prev };
-          delete next[record.orderId];
-          return next;
-        });
-      }
-    },
-    [
-      encryptedEmail,
-      fetchHistory,
-      modelType,
-      pollProcessingHistory,
-      selectedColor?.hex,
-      selectedColor?.name,
-    ]
-  );
-
-  const fetchHistory = useCallback(
-    async ({ silent = false } = {}) => {
-      if (!emailSaved || !encryptedEmail) {
-        setHistoryRecords([]);
-        return;
-      }
-
-      if (!silent) {
-        setIsFetchingHistory(true);
-      }
-
-      setHistoryError("");
-
-      try {
-        const params = new URLSearchParams();
-        params.set("encryptedEmail", encryptedEmail);
-        params.set("limit", "100");
-
-        if (email) {
-          params.set("playerEmail", email.trim().toLowerCase());
-        }
-
-        const response = await fetch(`/api/imagine/history?${params.toString()}`);
-
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(
-            errorData?.message || "Não foi possível carregar o histórico de imagens"
-          );
-        }
-
-        const data = await response.json();
-        const generations = Array.isArray(data?.generations)
-          ? data.generations
-          : [];
-
-        setHistoryRecords(generations);
-      } catch (error) {
-        console.error("Erro ao carregar histórico de imagens", error);
-        setHistoryError(
-          error.message || "Não foi possível carregar o histórico de imagens"
-        );
-      } finally {
-        if (!silent) {
-          setIsFetchingHistory(false);
-        }
-      }
-    },
-    [email, emailSaved, encryptedEmail]
-  );
-
-  const pollProcessingHistory = useCallback(async () => {
-    if (isPollingHistoryRef.current) {
-      return;
-    }
-
-    if (processingHistoryOrderIds.length === 0) {
-      return;
-    }
-
-    isPollingHistoryRef.current = true;
-
-    try {
-      await Promise.all(
-        processingHistoryOrderIds.map(async (orderId) => {
-          if (!orderId) return;
-
-          try {
-            const response = await fetch(
-              `/api/imagine/check-generation?orderId=${orderId}`
-            );
-
-            if (!response.ok) {
-              const errorData = await response.json().catch(() => ({}));
-              console.warn(
-                "Falha ao atualizar status do histórico",
-                orderId,
-                errorData?.message || response.status
-              );
-            }
-          } catch (error) {
-            console.error("Erro ao atualizar status do histórico", orderId, error);
-          }
-        })
-      );
-
-      await fetchHistory({ silent: true });
-    } finally {
-      isPollingHistoryRef.current = false;
-    }
-  }, [fetchHistory, processingHistoryOrderIds]);
 
   return (
     <Box
@@ -1999,300 +1658,14 @@ export default function ImaginePage() {
               }}
             >
               <CardContent sx={{ p: { xs: 3, md: 4 } }}>
-                <Stack spacing={3}>
-                  <Box>
-                    <Typography variant="h6" fontWeight={600} gutterBottom>
-                      Histórico de gerações
-                    </Typography>
-                    <Typography variant="body2" color="rgba(226,232,240,0.75)">
-                      Acompanhe aqui todas as imagens geradas com o seu email.
-                      Registros com status em processamento são atualizados a
-                      cada poucos segundos.
-                    </Typography>
-                  </Box>
-
-                  {!emailSaved ? (
-                    <Alert severity="info">
-                      Confirme o email de acesso para visualizar o histórico
-                      das suas gerações.
-                    </Alert>
-                  ) : (
-                    <Stack spacing={2}>
-                      {historyFeedback?.message ? (
-                        <Alert severity={historyFeedback.severity || "info"}>
-                          {historyFeedback.message}
-                        </Alert>
-                      ) : null}
-
-                      {historyError ? (
-                        <Alert severity="error">{historyError}</Alert>
-                      ) : null}
-
-                      {isFetchingHistory ? (
-                        <Stack
-                          spacing={2}
-                          alignItems="center"
-                          justifyContent="center"
-                          py={4}
-                        >
-                          <CircularProgress size={32} />
-                          <Typography
-                            variant="body2"
-                            color="rgba(226,232,240,0.75)"
-                            align="center"
-                          >
-                            Carregando histórico de imagens...
-                          </Typography>
-                        </Stack>
-                      ) : historyRecords.length === 0 ? (
-                        <Typography
-                          variant="body2"
-                          color="rgba(226,232,240,0.75)"
-                        >
-                          Nenhuma imagem gerada foi encontrada para este email
-                          até o momento.
-                        </Typography>
-                      ) : (
-                        <TableContainer
-                          sx={{
-                            border: "1px solid rgba(148,163,184,0.1)",
-                            borderRadius: 2,
-                            overflow: "hidden",
-                            backgroundColor: "rgba(15,23,42,0.35)",
-                          }}
-                        >
-                          <Table size="small">
-                            <TableHead>
-                              <TableRow>
-                                <TableCell
-                                  sx={{ color: "rgba(226,232,240,0.85)" }}
-                                >
-                                  Modelo / Pedido
-                                </TableCell>
-                                <TableCell
-                                  sx={{ color: "rgba(226,232,240,0.85)" }}
-                                >
-                                  Criado em
-                                </TableCell>
-                                <TableCell
-                                  sx={{ color: "rgba(226,232,240,0.85)" }}
-                                >
-                                  Status
-                                </TableCell>
-                                <TableCell
-                                  align="right"
-                                  sx={{
-                                    color: "rgba(226,232,240,0.85)",
-                                    minWidth: { xs: 180, md: 220 },
-                                  }}
-                                >
-                                  Ações
-                                </TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {historyRecords.map((record) => {
-                                const statusDetails = getHistoryStatusDetails(
-                                  record?.status
-                                );
-                                const normalizedStatus = record?.status
-                                  ? record.status.toString().toLowerCase()
-                                  : "";
-                                const isProcessing = isProcessingStatus(
-                                  normalizedStatus
-                                );
-                                const isFailed = [
-                                  "failed",
-                                  "error",
-                                  "canceled",
-                                  "cancelled",
-                                ].includes(normalizedStatus);
-                                const isRetrying = Boolean(
-                                  retryingOrders?.[record?.orderId]
-                                );
-
-                                return (
-                                  <TableRow
-                                    key={record?.id || record?.orderId}
-                                    hover
-                                    sx={{
-                                      "&:hover": {
-                                        backgroundColor: "rgba(30,41,59,0.35)",
-                                      },
-                                    }}
-                                  >
-                                    <TableCell>
-                                      <Stack spacing={0.5}>
-                                        <Typography
-                                          variant="subtitle2"
-                                          color="#f8fafc"
-                                          fontWeight={600}
-                                        >
-                                          {record?.modelType ||
-                                            "Modelo não informado"}
-                                        </Typography>
-                                        <Typography
-                                          variant="caption"
-                                          color="rgba(148,163,184,0.75)"
-                                        >
-                                          Pedido: {record?.orderId || "-"}
-                                        </Typography>
-                                      </Stack>
-                                    </TableCell>
-                                    <TableCell>
-                                      <Typography
-                                        variant="body2"
-                                        color="rgba(226,232,240,0.85)"
-                                      >
-                                        {formatHistoryDate(record?.createdAt)}
-                                      </Typography>
-                                    </TableCell>
-                                    <TableCell>
-                                      <Stack spacing={1}>
-                                        <Chip
-                                          size="small"
-                                          label={statusDetails.label}
-                                          color={statusDetails.color}
-                                          variant={
-                                            statusDetails.color === "default"
-                                              ? "outlined"
-                                              : "filled"
-                                          }
-                                          sx={{ alignSelf: "flex-start" }}
-                                        />
-
-                                        {isProcessing ? (
-                                          <Stack
-                                            direction="row"
-                                            spacing={1}
-                                            alignItems="center"
-                                          >
-                                            <CircularProgress size={14} />
-                                            <Typography
-                                              variant="caption"
-                                              color="rgba(148,163,184,0.75)"
-                                            >
-                                              {record?.statusMessage ||
-                                                "Processando..."}
-                                            </Typography>
-                                          </Stack>
-                                        ) : null}
-
-                                        {!isProcessing && record?.statusMessage ? (
-                                          <Typography
-                                            variant="caption"
-                                            color="rgba(148,163,184,0.75)"
-                                          >
-                                            {record.statusMessage}
-                                          </Typography>
-                                        ) : null}
-
-                                        {isFailed && record?.errorMessage ? (
-                                          <Typography
-                                            variant="caption"
-                                            color="#f87171"
-                                          >
-                                            {record.errorMessage}
-                                          </Typography>
-                                        ) : null}
-                                      </Stack>
-                                    </TableCell>
-                                    <TableCell align="right">
-                                      <Stack
-                                        direction="row"
-                                        spacing={1}
-                                        justifyContent="flex-end"
-                                        flexWrap="wrap"
-                                      >
-                                        <Tooltip
-                                          title={
-                                            record?.resultImageUrl
-                                              ? "Pré-visualizar imagem"
-                                              : "Imagem ainda não disponível"
-                                          }
-                                        >
-                                          <span>
-                                            <Button
-                                              size="small"
-                                              variant="outlined"
-                                              onClick={() =>
-                                                handleHistoryPreviewOpen(record)
-                                              }
-                                              disabled={!record?.resultImageUrl}
-                                              sx={{ minWidth: 120 }}
-                                            >
-                                              Pré-visualizar
-                                            </Button>
-                                          </span>
-                                        </Tooltip>
-
-                                        <Tooltip
-                                          title={
-                                            record?.resultImageUrl
-                                              ? "Baixar imagem"
-                                              : "Imagem ainda não disponível"
-                                          }
-                                        >
-                                          <span>
-                                            <Button
-                                              size="small"
-                                              variant="outlined"
-                                              onClick={() =>
-                                                handleDownloadHistoryImage(
-                                                  record
-                                                )
-                                              }
-                                              disabled={!record?.resultImageUrl}
-                                              sx={{ minWidth: 110 }}
-                                            >
-                                              Baixar
-                                            </Button>
-                                          </span>
-                                        </Tooltip>
-
-                                        {isFailed ? (
-                                          <Button
-                                            size="small"
-                                            variant="contained"
-                                            color="warning"
-                                            onClick={() =>
-                                              handleRetryGeneration(record)
-                                            }
-                                            disabled={isRetrying}
-                                            sx={{ minWidth: 150 }}
-                                          >
-                                            {isRetrying ? (
-                                              <Stack
-                                                direction="row"
-                                                spacing={1}
-                                                alignItems="center"
-                                                justifyContent="center"
-                                              >
-                                                <CircularProgress size={16} />
-                                                <Typography
-                                                  component="span"
-                                                  variant="caption"
-                                                  sx={{ color: "inherit" }}
-                                                >
-                                                  Reenviando...
-                                                </Typography>
-                                              </Stack>
-                                            ) : (
-                                              "Tentar novamente"
-                                            )}
-                                          </Button>
-                                        ) : null}
-                                      </Stack>
-                                    </TableCell>
-                                  </TableRow>
-                                );
-                              })}
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
-                      )}
-                    </Stack>
-                  )}
+                <Stack spacing={2}>
+                  <Typography variant="h6" fontWeight={600}>
+                    Histórico de gerações
+                  </Typography>
+                  <Typography variant="body2" color="rgba(226,232,240,0.75)">
+                    Em breve você poderá consultar por aqui todas as imagens
+                    geradas.
+                  </Typography>
                 </Stack>
               </CardContent>
             </Card>
@@ -2346,72 +1719,6 @@ export default function ImaginePage() {
           </Box>
         </Box>
       </Drawer>
-
-      <Dialog
-        open={Boolean(historyPreviewRecord?.resultImageUrl)}
-        onClose={handleHistoryPreviewClose}
-        fullWidth
-        maxWidth="md"
-        PaperProps={{
-          sx: {
-            bgcolor: "rgba(2,6,23,0.92)",
-            color: "#f8fafc",
-            border: "1px solid rgba(148,163,184,0.2)",
-            backdropFilter: "blur(12px)",
-          },
-        }}
-      >
-        <DialogTitle sx={{ fontWeight: 600 }}>
-          Pré-visualização da imagem gerada
-        </DialogTitle>
-        <DialogContent
-          dividers
-          sx={{
-            borderColor: "rgba(148,163,184,0.2)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            bgcolor: "rgba(15,23,42,0.7)",
-          }}
-        >
-          {historyPreviewRecord?.resultImageUrl ? (
-            <Box
-              component="img"
-              src={historyPreviewRecord.resultImageUrl}
-              alt="Imagem gerada"
-              sx={{
-                width: "100%",
-                height: "100%",
-                maxHeight: 600,
-                objectFit: "contain",
-                borderRadius: 2,
-              }}
-            />
-          ) : null}
-        </DialogContent>
-        <DialogActions
-          sx={{
-            borderTop: "1px solid rgba(148,163,184,0.2)",
-            px: 3,
-            py: 1.5,
-          }}
-        >
-          <Button
-            onClick={() => {
-              if (historyPreviewRecord) {
-                handleDownloadHistoryImage(historyPreviewRecord);
-              }
-            }}
-            disabled={!historyPreviewRecord?.resultImageUrl}
-            sx={{ color: historyPreviewRecord?.resultImageUrl ? "#38bdf8" : "#64748b" }}
-          >
-            Baixar imagem
-          </Button>
-          <Button onClick={handleHistoryPreviewClose} sx={{ color: "#94a3b8" }}>
-            Fechar
-          </Button>
-        </DialogActions>
-      </Dialog>
 
       <Dialog
         open={isColorPickerOpen}
