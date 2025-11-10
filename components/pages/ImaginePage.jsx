@@ -315,48 +315,6 @@ export default function ImaginePage() {
     setIsColorPickerOpen(false);
   }, []);
 
-  const handleNextToPayment = useCallback(async () => {
-    setErrorMessage("");
-    if (!emailSaved) {
-      setErrorMessage("Confirme o email antes de continuar");
-      return;
-    }
-    if (!selectedFile) {
-      setErrorMessage("Selecione uma imagem para continuar");
-      return;
-    }
-    if (!selectedFileDataUrl) {
-      setErrorMessage(
-        "A imagem selecionada ainda está sendo carregada. Aguarde alguns segundos e tente novamente."
-      );
-      return;
-    }
-    setGenerationRecord(null);
-    setGeneratedImageUrl("");
-    setGenerationStatusMessage("");
-    setGenerationError("");
-
-    if (!isChargingEnabled) {
-      setCurrentStep(3);
-      setStatusMessage(
-        "Cobrança desativada. Iniciamos o processamento da sua imagem."
-      );
-      const result = await handleGenerate();
-      if (!result) {
-        setCurrentStep(1);
-      }
-      return;
-    }
-
-    setCurrentStep(2);
-  }, [
-    emailSaved,
-    handleGenerate,
-    isChargingEnabled,
-    selectedFile,
-    selectedFileDataUrl,
-  ]);
-
   const handleBackToConfig = useCallback(() => {
     setOrderId(null);
     setOrderStatus(null);
@@ -529,6 +487,48 @@ export default function ImaginePage() {
     emailSaved,
     encryptedEmail,
     modelType,
+    selectedFile,
+    selectedFileDataUrl,
+  ]);
+
+  const handleNextToPayment = useCallback(async () => {
+    setErrorMessage("");
+    if (!emailSaved) {
+      setErrorMessage("Confirme o email antes de continuar");
+      return;
+    }
+    if (!selectedFile) {
+      setErrorMessage("Selecione uma imagem para continuar");
+      return;
+    }
+    if (!selectedFileDataUrl) {
+      setErrorMessage(
+        "A imagem selecionada ainda está sendo carregada. Aguarde alguns segundos e tente novamente."
+      );
+      return;
+    }
+    setGenerationRecord(null);
+    setGeneratedImageUrl("");
+    setGenerationStatusMessage("");
+    setGenerationError("");
+
+    if (!isChargingEnabled) {
+      setCurrentStep(3);
+      setStatusMessage(
+        "Cobrança desativada. Iniciamos o processamento da sua imagem."
+      );
+      const result = await handleGenerate();
+      if (!result) {
+        setCurrentStep(1);
+      }
+      return;
+    }
+
+    setCurrentStep(2);
+  }, [
+    emailSaved,
+    handleGenerate,
+    isChargingEnabled,
     selectedFile,
     selectedFileDataUrl,
   ]);
