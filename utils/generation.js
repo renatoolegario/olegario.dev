@@ -1,3 +1,5 @@
+import { del as deleteBlob, get as getBlob, put as putBlob } from "@vercel/blob";
+
 const BLOB_ENDPOINT = "https://blob.vercel-storage.com";
 
 function parseDataUrl(dataUrl) {
@@ -64,6 +66,31 @@ function normalizeRemoteStatus(status) {
 }
 
 async function fetchBufferFromUrl(url) {
+  if (!url) {
+    throw new Error("URL inválida para download da imagem");
+  }
+
+  const isBlobUrl = typeof url === "string" && url.includes("vercel-storage.com");
+
+  if (isBlobUrl) {
+    try {
+      const token = process.env.BLOB_READ_WRITE_TOKEN;
+      const options = token ? { token } : undefined;
+      const { blob } = await getBlob(url, options);
+
+      if (!blob) {
+        throw new Error("Resposta vazia do blob");
+      }
+
+      const arrayBuffer = await blob.arrayBuffer();
+      const contentType = blob.type || "image/png";
+
+      return { buffer: Buffer.from(arrayBuffer), contentType };
+    } catch (error) {
+      console.warn("Falha ao baixar imagem via SDK do Blob, tentando via fetch", error);
+    }
+  }
+
   const response = await fetch(url);
   if (!response.ok) {
     const message = `Não foi possível baixar a imagem gerada (${response.status})`;
@@ -98,34 +125,53 @@ async function uploadToBlob({
   const safePrefix = rawPrefix || "generated";
   const filename = `${safePrefix}/${safeOrder}-${Date.now()}.${safeExtension}`;
 
-  const response = await fetch(`${BLOB_ENDPOINT}/${filename}`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "x-blob-meta-access": access === "public" ? "public" : "private",
-      "Content-Type": contentType || "image/png",
-    },
-    body: buffer,
-  });
+  try {
+    const payload = await putAsBlob({
+      buffer,
+      contentType,
+      filename,
+      access,
+      token,
+    });
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    const message =
-      errorData?.message ||
-      errorData?.error ||
-      `Falha ao enviar imagem para o blob (${response.status})`;
+    return (
+      payload?.url ||
+      payload?.downloadUrl ||
+      (payload?.pathname
+        ? `${BLOB_ENDPOINT}/${payload.pathname.replace(/^\//, "")}`
+        : null)
+    );
+  } catch (error) {
+    const statusCode = error?.status ?? error?.statusCode ?? "desconhecido";
+    let message =
+      error?.message ||
+      error?.code ||
+      `Falha ao enviar imagem para o blob (${statusCode})`;
+
+    if (typeof message === "object" && message !== null) {
+      try {
+        message = JSON.stringify(message);
+      } catch (stringifyError) {
+        message = `Falha ao enviar imagem para o blob`;
+      }
+    }
+
+    if (typeof message !== "string") {
+      message = String(message);
+    }
+
     throw new Error(message);
   }
+}
 
-  const payload = await response.json();
+async function putAsBlob({ buffer, contentType, filename, access, token }) {
+  const upload = await putBlob(filename, buffer, {
+    access: access === "public" ? "public" : "private",
+    contentType: contentType || "image/png",
+    token,
+  });
 
-  return (
-    payload?.url ||
-    payload?.downloadUrl ||
-    (payload?.pathname
-      ? `${BLOB_ENDPOINT}/${payload.pathname.replace(/^\//, "")}`
-      : null)
-  );
+  return upload;
 }
 
 async function deleteBlobByUrl(url) {
@@ -140,27 +186,21 @@ async function deleteBlobByUrl(url) {
     ? url
     : `${BLOB_ENDPOINT}/${url.replace(/^\/+/, "")}`;
 
-  const response = await fetch(normalizedUrl, {
-    method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  try {
+    await deleteBlob(normalizedUrl, { token });
+    return true;
+  } catch (error) {
+    const statusCode = error?.status ?? error?.statusCode;
+    if (statusCode === 404 || error?.code === "not_found") {
+      return false;
+    }
 
-  if (response.status === 404) {
-    return false;
-  }
-
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
     const message =
-      errorData?.message ||
-      errorData?.error ||
-      `Falha ao remover imagem do blob (${response.status})`;
+      error?.message ||
+      error?.code ||
+      `Falha ao remover imagem do blob (${statusCode || "desconhecido"})`;
     throw new Error(message);
   }
-
-  return true;
 }
 
 export {
