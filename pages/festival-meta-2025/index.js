@@ -92,6 +92,51 @@ const agenda = [
   },
 ];
 
+const presentationBlocks = [
+  {
+    title: "O que a plateia pensa",
+    accent: "primary",
+    points: [
+      "Todos que estão lá me vendo estão no subconsciente perguntando \"o que eu ganho com isso?\"",
+      "Mostre de cara como ajudamos a resolver o problema deles e por que aquela solução vale a nova realidade que desejam.",
+    ],
+  },
+  {
+    title: "Tom e ritmo da narrativa",
+    accent: "secondary",
+    points: [
+      "É um show completo: conquiste o cérebro e o coração com início, meio e fim bem definidos.",
+      "Reforce que informação é barata, mas a solução que entregamos é cara porque transforma a vida.",
+    ],
+  },
+  {
+    title: "Emoção e engajamento",
+    accent: "info",
+    points: [
+      "Faça o público se emocionar e até se frustrar com o problema antes de apresentar o passo a passo da solução.",
+      "Estímulo de angústia seguido por um chamado para participação, sempre com gancho para o próximo tema.",
+    ],
+  },
+];
+
+const closingActions = [
+  {
+    title: "Integridade e conexão",
+    description:
+      "Fale das três pessoas a quem não devemos mentir (esposa, advogado, contador) para reforçar total transparência.",
+  },
+  {
+    title: "Credenciais práticas",
+    description:
+      "Pergunte quem já tem CNPJ aberto, estimule quem ainda não tem a abrir amanhã e liste os benefícios X, Y e Z.",
+  },
+  {
+    title: "Fechamento emocional",
+    description:
+      "No fim, entregue os três livros do Pai Rico, Pai Pobre e mostre que a missão é conquistar cinco vendas de coração.",
+  },
+];
+
 export default function FestivalMeta2025Page() {
   return (
     <>
@@ -242,6 +287,76 @@ export default function FestivalMeta2025Page() {
             </Grid>
           </Container>
         </Box>
+
+        <Container maxWidth="lg" sx={{ py: { xs: 10, md: 14 } }}>
+          <Typography variant="h4" fontWeight={700} gutterBottom>
+            Material de apoio da apresentação
+          </Typography>
+          <Typography variant="body1" color="text.secondary" paragraph>
+            Use este roteiro para transformar a narrativa em um show que coacha o público sobre como o Festival Meta 2025
+            resolve dores reais em linguagem emocional.
+          </Typography>
+          <Grid container spacing={4}>
+            {presentationBlocks.map((block) => (
+              <Grid item xs={12} md={4} key={block.title}>
+                <Card
+                  sx={(theme) => ({
+                    height: "100%",
+                    backgroundColor: "rgba(15,23,42,0.55)",
+                    borderRadius: 4,
+                    border: `1px solid ${theme.palette[block.accent]?.main ?? theme.palette.primary.main}`,
+                    boxShadow: "0 20px 45px rgba(15,23,42,0.55)",
+                    backdropFilter: "blur(10px)",
+                  })}
+                >
+                  <CardContent>
+                    <Typography variant="h6" fontWeight={600} gutterBottom>
+                      {block.title}
+                    </Typography>
+                    <List dense>
+                      {block.points.map((point) => (
+                        <ListItem key={point} sx={{ px: 0 }}>
+                          <ListItemIcon sx={{ minWidth: 40 }}>
+                            <CheckCircleIcon
+                              sx={(theme) => ({
+                                color:
+                                  theme.palette[block.accent]?.main ?? theme.palette.primary.main,
+                              })}
+                            />
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={point}
+                            primaryTypographyProps={{ color: "text.secondary" }}
+                          />
+                        </ListItem>
+                      ))}
+                    </List>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+          <Stack spacing={3} sx={{ mt: 6 }}>
+            {closingActions.map((action) => (
+              <Card
+                key={action.title}
+                sx={{
+                  borderRadius: 3,
+                  border: "1px solid rgba(148,163,184,0.3)",
+                  background:
+                    "linear-gradient(135deg, rgba(14,165,233,0.08), rgba(37,99,235,0.02))",
+                }}
+              >
+                <CardContent>
+                  <Typography variant="h6" fontWeight={600} gutterBottom>
+                    {action.title}
+                  </Typography>
+                  <Typography color="text.secondary">{action.description}</Typography>
+                </CardContent>
+              </Card>
+            ))}
+          </Stack>
+        </Container>
 
         <Container maxWidth="lg" sx={{ py: { xs: 10, md: 14 } }}>
           <Grid container spacing={6}>
