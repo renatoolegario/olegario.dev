@@ -1817,26 +1817,47 @@ export default function ImaginePage() {
           {!emailSaved && (
             <Card
               sx={{
-                bgcolor: "rgba(15,23,42,0.65)",
-                border: "1px solid rgba(148,163,184,0.2)",
-                backdropFilter: "blur(8px)",
+                bgcolor: "rgba(15,23,42,0.55)",
+                border: "1px solid rgba(148,163,184,0.18)",
+                backdropFilter: "blur(6px)",
               }}
             >
-              <CardContent sx={{ p: { xs: 3, md: 4 } }}>
-                <Stack spacing={3}>
-                  <Box>
-                    <Typography variant="h6" fontWeight={600} gutterBottom>
+              <CardContent sx={{ p: { xs: 2, md: 2.5 } }}>
+                <Stack
+                  direction={{ xs: "column", md: "row" }}
+                  spacing={{ xs: 2, md: 3 }}
+                  alignItems={{ md: "center" }}
+                  justifyContent="space-between"
+                  sx={{ flexWrap: "wrap", rowGap: 1.5 }}
+                >
+                  <Box sx={{ minWidth: { md: 260 } }}>
+                    <Typography
+                      variant="subtitle1"
+                      fontWeight={600}
+                      gutterBottom
+                      sx={{ mb: 0.5 }}
+                    >
                       Email de acesso
                     </Typography>
-                    <Typography variant="body2" color="rgba(226,232,240,0.75)">
+                    <Typography
+                      variant="body2"
+                      color="rgba(226,232,240,0.7)"
+                      sx={{ lineHeight: 1.4 }}
+                    >
                       Informe o email para liberar a geração. Ele será utilizado
                       no envio do resultado.
                     </Typography>
                   </Box>
 
-                  <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                  <Stack
+                    direction={{ xs: "column", sm: "row" }}
+                    spacing={{ xs: 1.25, sm: 1.5 }}
+                    alignItems={{ sm: "center" }}
+                    sx={{ width: "100%", maxWidth: 520 }}
+                  >
                     <TextField
                       fullWidth
+                      size="small"
                       variant="outlined"
                       label="Seu email"
                       value={email}
@@ -1850,21 +1871,24 @@ export default function ImaginePage() {
                         "& .MuiOutlinedInput-root": {
                           color: "#f8fafc",
                           "& fieldset": {
-                            borderColor: "rgba(148,163,184,0.4)",
+                            borderColor: "rgba(148,163,184,0.35)",
                           },
                           "&:hover fieldset": { borderColor: "#7dd3fc" },
                           "&.Mui-focused fieldset": { borderColor: "#38bdf8" },
                         },
                         "& .MuiFormHelperText-root": {
-                          color: "rgba(148,163,184,0.8)",
+                          color: "rgba(148,163,184,0.75)",
+                          marginLeft: 0,
                         },
                       }}
                     />
                     <Button
+                      size="small"
                       variant="contained"
                       onClick={handleSaveEmail}
                       sx={{
-                        minWidth: 160,
+                        px: 2.5,
+                        minWidth: { xs: "100%", sm: 140 },
                         bgcolor: emailSaved ? "#22c55e" : "#0ea5e9",
                         "&:hover": {
                           bgcolor: emailSaved ? "#16a34a" : "#0284c7",
