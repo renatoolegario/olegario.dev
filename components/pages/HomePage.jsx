@@ -41,6 +41,31 @@ const badgeSx = {
   },
 };
 
+const panelListItemSx = {
+  borderRadius: 2,
+  px: 1.5,
+  py: 1.1,
+  gap: 1.1,
+  alignItems: "center",
+  justifyContent: "flex-start",
+  color: "rgba(255,255,255,0.85)",
+  textDecoration: "none",
+  bgcolor: "rgba(255,255,255,0.02)",
+  border: "1px solid rgba(255,255,255,0.08)",
+  transition:
+    "transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease",
+  "&:hover": {
+    bgcolor: accentColor,
+    color: "#0f172a",
+    borderColor: "transparent",
+    transform: "translateY(-2px)",
+  },
+  "&:focus-visible": {
+    outline: `2px solid ${accentColor}`,
+    outlineOffset: 2,
+  },
+};
+
 export default function HomePage() {
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
@@ -181,7 +206,7 @@ export default function HomePage() {
               direction="row"
               flexWrap="wrap"
               gap={1.2}
-              justifyContent={{ xs: "center", sm: "flex-start" }}
+              justifyContent="flex-start"
             >
               {technologies.map((item) => (
                 <Box key={item} sx={badgeSx}>
@@ -213,7 +238,7 @@ export default function HomePage() {
               direction="row"
               flexWrap="wrap"
               gap={1.2}
-              justifyContent={{ xs: "center", sm: "flex-start" }}
+              justifyContent="flex-start"
             >
               {frameworks.map((item) => (
                 <Box key={item} sx={badgeSx}>
@@ -262,10 +287,10 @@ export default function HomePage() {
               direction="row"
               flexWrap="wrap"
               gap={1.2}
-              justifyContent={{ xs: "center", sm: "flex-start" }}
+              justifyContent="flex-start"
             >
               {contactMethods.map(({ key, icon: Icon, value, href }) => (
-                <Box
+                <ListItemButton
                   key={key}
                   component={href ? "a" : "div"}
                   href={href}
@@ -274,23 +299,14 @@ export default function HomePage() {
                     href?.startsWith("http") ? "noopener noreferrer" : undefined
                   }
                   sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1,
-                    color: "rgba(255,255,255,0.85)",
-                    borderRadius: 2,
-                    px: 1.5,
-                    py: 1,
-                    textDecoration: "none",
-                    transition:
-                      "transform 0.25s ease, background-color 0.25s ease",
-                    width: { xs: "100%", sm: "auto" },
-                    justifyContent: "center",
-                    "&:hover": {
-                      bgcolor: accentColor,
-                      color: "#0f172a",
-                      transform: "scale(1.02)",
+                    ...panelListItemSx,
+                    width: {
+                      xs: "100%",
+                      sm: "calc(50% - 0.6rem)",
+                      md: "calc(50% - 0.6rem)",
                     },
+                    maxWidth: { sm: 320 },
+                    flex: "1 1 240px",
                   }}
                 >
                   <Icon sx={{ fontSize: "1.4rem" }} />
@@ -299,18 +315,16 @@ export default function HomePage() {
                     sx={{
                       color: "inherit",
                       letterSpacing: "0.05em",
-                      textAlign: { xs: "center", sm: "left" },
+                      textAlign: "left",
+                      width: "100%",
                     }}
                   >
                     {value}
                   </Typography>
-                </Box>
+                </ListItemButton>
               ))}
             </Stack>
-            <Stack
-              spacing={0.8}
-              alignItems={{ xs: "center", sm: "flex-start" }}
-            >
+            <Stack spacing={0.8} alignItems="stretch">
               {companyDetails.map((item, index) => (
                 <Box
                   key={index}
@@ -324,8 +338,8 @@ export default function HomePage() {
                     py: 1,
                     transition:
                       "transform 0.25s ease, background-color 0.25s ease",
-                    width: { xs: "100%", sm: "auto" },
-                    textAlign: "center",
+                    width: "100%",
+                    textAlign: "left",
                     "&:hover": {
                       bgcolor: accentColor,
                       color: "#0f172a",
@@ -339,7 +353,7 @@ export default function HomePage() {
                     sx={{
                       color: "inherit",
                       letterSpacing: "0.05em",
-                      textAlign: { xs: "center", sm: "justify" },
+                      textAlign: { xs: "left", sm: "justify" },
                     }}
                   >
                     {item.text}
@@ -366,10 +380,7 @@ export default function HomePage() {
               Soluções digitais criadas para diferentes segmentos, todas com
               foco em resultados reais e expansão contínua.
             </Typography>
-            <Stack
-              spacing={0.8}
-              alignItems={{ xs: "center", sm: "flex-start" }}
-            >
+            <Stack spacing={0.8} alignItems="stretch">
               {projects.map((item) => (
                 <Box
                   key={item}
@@ -380,8 +391,8 @@ export default function HomePage() {
                     py: 1,
                     transition:
                       "transform 0.25s ease, background-color 0.25s ease",
-                    width: { xs: "100%", sm: "auto" },
-                    textAlign: "center",
+                    width: "100%",
+                    textAlign: "left",
                     "&:hover": {
                       bgcolor: accentColor,
                       color: "#0f172a",
@@ -394,7 +405,7 @@ export default function HomePage() {
                     sx={{
                       color: "inherit",
                       letterSpacing: "0.05em",
-                      textAlign: { xs: "center", sm: "justify" },
+                      textAlign: { xs: "left", sm: "justify" },
                     }}
                   >
                     {item}
