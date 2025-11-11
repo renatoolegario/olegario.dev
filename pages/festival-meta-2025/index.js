@@ -16,6 +16,10 @@ import {
   Typography,
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CreditCardIcon from "@mui/icons-material/CreditCard";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import SmartToyIcon from "@mui/icons-material/SmartToy";
+import PsychologyIcon from "@mui/icons-material/Psychology";
 import InsightsIcon from "@mui/icons-material/Insights";
 import SavingsIcon from "@mui/icons-material/Savings";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
@@ -39,7 +43,7 @@ const pillars = [
   {
     title: "Disciplina com pró-labore",
     description:
-      "Trate-se como funcionária da empresa: salário fixo, contas pessoais ajustadas e nada de retirar extra do caixa.",
+      "Trate-se como colaborador da empresa: salário fixo, contas pessoais ajustadas e nada de retirar extra do caixa.",
     icon: SavingsIcon,
     color: "secondary",
   },
@@ -72,11 +76,29 @@ const topics = [
     actions: [
       "Escolha uma ferramenta simples (planilha ou software) e defina um horário diário para registrar movimentos.",
       "Abra ou dedique uma conta bancária exclusiva da empresa e mova o faturamento para lá.",
+      "Mantenha previsões mensais e revise-as semanalmente para ajustar decisões de compra e investimento.",
+    ],
+  },
+  {
+    title: "Provisão de Contas",
+    intro:
+      "Saber exatamente quais contas existem e quando vencem é o caminho certo para não passar aperto.",
+    keyPoints: [
+      "Ter uma previsão clara do que vai sair permite planejar e evitar surpresas.",
+      "Controlar datas e valores ajuda a entender o impacto de cada gasto e antecipar estratégias.",
+      "Com a provisão feita, você consegue decidir com antecedência como equilibrar o caixa.",
+    ],
+    actions: [
+      "Liste todas as contas fixas e variáveis do mês e registre seus vencimentos.",
+      "Use cores ou categorias para identificar despesas essenciais e adiáveis.",
+      "Crie uma reserva mensal proporcional às contas futuras para não ficar sem caixa.",
+      "Reveja semanalmente os valores previstos e faça ajustes antes que o caixa aperte.",
     ],
   },
   {
     title: "Disciplina com pró-labore",
-    intro: "Proprietária também recebe salário — e ele precisa caber no planejamento.",
+    intro:
+      "Proprietária também recebe salário — e ele precisa caber no planejamento.",
     keyPoints: [
       "Pró-labore é o pagamento pelo seu trabalho, não um saque aleatório do caixa.",
       "Quando o pró-labore falta, a solução é vender mais, não retirar mais.",
@@ -85,6 +107,7 @@ const topics = [
     actions: [
       "Defina um valor fixo para o seu pró-labore e ajuste despesas pessoais a esse montante.",
       "Documente qualquer retirada extra como distribuição de lucros programada.",
+      "Mantenha o pagamento do pró-labore como prioridade, mostrando respeito ao próprio negócio.",
     ],
   },
   {
@@ -99,6 +122,7 @@ const topics = [
     actions: [
       "Agende uma conversa com o contador para revisar impostos, enquadramento e rotinas obrigatórias.",
       "Regularize documentos e contratos para impedir que dívidas empresariais atinjam bens pessoais.",
+      "Mantenha pastas digitais com comprovantes e relatórios mensais de forma organizada.",
     ],
   },
   {
@@ -107,12 +131,12 @@ const topics = [
       "Existe tecnologia gratuita capaz de sustentar o controle financeiro desde o primeiro dia.",
     keyPoints: [
       "MarketUp centraliza vendas, estoque e fluxo de caixa em um único painel.",
-      "Mercado Pago integra cobranças presenciais e online, com relatórios rápidos.",
       "Planilha de gestão pessoal separa o que é da casa e o que é da empresa.",
     ],
     actions: [
       "Reserve 30 minutos para configurar o MarketUp ou a planilha e cadastrar seus produtos.",
       "Compartilhe o link desta página com a equipe ou sócia para manter o alinhamento.",
+      "Revise relatórios semanais para identificar gargalos e oportunidades de economia.",
     ],
   },
 ];
@@ -121,59 +145,93 @@ const resources = [
   {
     title: "MarketUp",
     description:
-      "Software gratuito para controlar estoque, vendas, fluxo de caixa e emitir notas fiscais sem complicação.",
+      "ERP gratuito: vendas, estoque, PDV, emissão de NF-e e fluxo de caixa em um só lugar.",
     href: "https://www.marketup.com/",
     icon: LightbulbIcon,
     color: "primary",
+    tags: ["ERP", "Gestão", "Financeiro"],
+  },
+  {
+    title: "Planilha de gestão pessoal",
+    description:
+      "Planilha simples para separar gastos da casa e da empresa e evitar confusão no caixa.",
+    href: "/downloads/planilha-gestao-pessoal.csv",
+    icon: DownloadIcon,
+    color: "secondary",
+    tags: ["Financeiro", "Pessoal"],
+  },
+  {
+    title: "Asaas",
+    description:
+      "Automatize cobranças com boletos, PIX e cartões. Controle financeiro integrado e notificações automáticas.",
+    href: "https://www.asaas.com/",
+    icon: CreditCardIcon,
+    color: "success",
+    tags: ["Cobranças", "Financeiro", "Automação"],
   },
   {
     title: "Mercado Pago",
     description:
-      "Soluções para pagamentos e recebimentos do dia a dia, integrando vendas presenciais e online.",
-    href: "https://pages.mercadopago.com.br/",
-    icon: PaymentsIcon,
-    color: "secondary",
+      "Plataforma de pagamentos completa com PIX, boletos e cartões. Ideal para lojas e vendas online.",
+    href: "https://www.mercadopago.com.br/",
+    icon: AccountBalanceWalletIcon,
+    color: "info",
+    tags: ["Cobranças", "Vendas", "E-commerce"],
   },
   {
-    title: "Planilha de gestão pessoal (Pai Pobre)",
+    title: "ChatGPT",
     description:
-      "Planilha simples para mapear cada gasto pessoal e não confundir com o caixa da empresa.",
-    href: "/downloads/planilha-gestao-pessoal.csv",
-    icon: DownloadIcon,
-    color: "info",
+      "Ferramenta de inteligência artificial da OpenAI. Gera textos, ideias, códigos e respostas com linguagem natural.",
+    href: "https://chat.openai.com/",
+    icon: SmartToyIcon,
+    color: "primary",
+    tags: ["IA", "Produtividade", "Automação"],
+  },
+  {
+    title: "Gemini",
+    description:
+      "IA generativa do Google que responde, escreve e cria conteúdo de forma integrada com os serviços Google.",
+    href: "https://gemini.google.com/",
+    icon: PsychologyIcon,
+    color: "warning",
+    tags: ["IA", "Conteúdo", "Google"],
   },
 ];
 
 const mindsetHighlights = [
-  "Informação é barata. O que muda o jogo é agir todos os dias sobre o que você registra.",
+  "Informação é barata; consistência diária é o que muda o jogo.",
   "Quem mente para o contador paga imposto sobre dinheiro que nem existe.",
-  "É igual tirar gasolina do carro para acender a churrasqueira: resolve hoje, mas amanhã você fica a pé.",
-  "Abrir empresa não é só para vender mais — é para proteger o que é seu.",
-  "Fluxo de caixa organizado é liberdade para decidir o futuro do seu negócio.",
+  "Provisão de contas evita sustos: contas previstas, caixa protegido.",
+  "Abrir empresa não é só vender mais — é proteger o que é seu.",
+  "Fluxo de caixa organizado é liberdade para decidir o futuro do negócio.",
 ];
 
 const reflectionQuestions = [
-  "Quais gastos da empresa ainda passam pela sua conta pessoal? Como você pode separar isso hoje?",
-  "Seu pró-labore cobre o seu custo de vida atual? O que precisa ser ajustado para caber no planejamento?",
-  "Quando foi a última vez que você revisou impostos e obrigações com o contador?",
+  "Quais gastos da empresa ainda passam pela sua conta pessoal? Como separar isso hoje?",
+  "Seu pró-labore cobre o custo de vida? O que precisa ser ajustado para caber no planejamento?",
+  "Você tem um calendário de vencimentos (provisão) para o mês? O que está sem cobertura?",
   "Qual ferramenta você vai usar a partir de agora para registrar entradas e saídas diariamente?",
 ];
 
 const actionPlan = [
   "Abra ou regularize o CNPJ e crie conta bancária exclusiva da empresa.",
   "Defina um valor mensal de pró-labore e programe o pagamento automático.",
+  "Monte sua Provisão de Contas: liste vencimentos e valores do mês.",
   "Registre entradas e saídas diariamente usando a planilha ou o MarketUp.",
   "Separe o dinheiro em três potes: caixa da empresa, pró-labore e reserva.",
-  "Agende uma conversa com o contador para revisar o cenário atual e alinhar impostos.",
-  "Volte para esta página sempre que precisar de reforço ou novos materiais.",
+  "Agende uma conversa com o contador para revisar enquadramento e impostos.",
 ];
 
 const heroHighlights = [
-  "Revisar os quatro pilares do fluxo de caixa saudável.",
-  "Transformar cada tema em ações aplicáveis ainda esta semana.",
-  "Salvar links de ferramentas gratuitas e materiais extras.",
+  "Revisar os pilares: clareza, provisão de contas, pró-labore e proteção.",
+  "Converter cada tema em ações aplicáveis ainda esta semana.",
+  "Salvar e usar ferramentas gratuitas (ERP, meios de pagamento e planilhas).",
   "Guiar conversas com sócias, equipe e contador.",
 ];
+
+const metade = Math.ceil(topics.length / 2);
+const coluna1 = topics.slice(0, metade);
+const coluna2 = topics.slice(metade);
 
 export default function FestivalMeta2025Page() {
   return (
@@ -230,8 +288,7 @@ export default function FestivalMeta2025Page() {
                     Fluxo de Caixa: o divisor de águas entre quebrar e prosperar
                   </Typography>
                   <Typography variant="h6" color="text.secondary">
-                    Consulte este guia durante e depois da apresentação. Ele
-                    reúne os pontos principais, interpretações simples e ações
+                    Os pontos principais, interpretações simples e ações
                     práticas para fazer o dinheiro da empresa trabalhar a seu
                     favor.
                   </Typography>
@@ -279,92 +336,73 @@ export default function FestivalMeta2025Page() {
                   </Stack>
                 </Stack>
               </Grid>
+
               <Grid item xs={12} md={5}>
-                <Card
-                  sx={{
-                    bgcolor: "rgba(15,23,42,0.75)",
-                    borderRadius: 4,
-                    border: "1px solid rgba(148,163,184,0.2)",
-                    boxShadow: "0 30px 60px rgba(15,23,42,0.65)",
-                    backdropFilter: "blur(12px)",
-                  }}
-                >
-                  <CardContent>
-                    <Stack spacing={3}>
-                      <Typography variant="h6" fontWeight={600}>
-                        Durante a apresentação, consulte para:
-                      </Typography>
-                      <List dense>
-                        {heroHighlights.map((item) => (
-                          <ListItem key={item} sx={{ px: 0 }}>
-                            <ListItemIcon sx={{ minWidth: 36 }}>
-                              <CheckCircleIcon color="primary" />
-                            </ListItemIcon>
-                            <ListItemText
-                              primary={item}
-                              primaryTypographyProps={{
-                                color: "text.secondary",
-                              }}
-                            />
-                          </ListItem>
-                        ))}
-                      </List>
-                      <Typography variant="body2" color="text.secondary">
-                        Salve nos favoritos e compartilhe com outras
-                        empreendedoras que precisam transformar fluxo de caixa
-                        em liberdade.
-                      </Typography>
-                    </Stack>
-                  </CardContent>
-                </Card>
+                {/* "Como usar este material" — sem Card externo e sem padding vertical */}
+                <Container maxWidth="lg" sx={{ py: 0 }}>
+                  <Typography variant="h4" fontWeight={700} gutterBottom>
+                    Como usar este material
+                  </Typography>
+                  <Typography variant="body1" color="text.secondary" paragraph>
+                    Use este guia como um apoio prático no seu dia a dia. Este
+                    material foi feito para te ajudar a colocar cada ideia em
+                    prática, com clareza e organização.
+                  </Typography>
+
+                  <Box
+                    sx={{
+                      display: "grid",
+                      gridTemplateColumns: {
+                        xs: "1fr",
+                        sm: "repeat(2, 1fr)",
+                        md: "repeat(2, 1fr)",
+                        lg: "repeat(4, 1fr)",
+                      },
+                      gap: 4,
+                    }}
+                  >
+                    {pillars.map((pillar) => {
+                      const Icon = pillar.icon;
+                      return (
+                        <Card
+                          key={pillar.title}
+                          sx={{
+                            width: "100%",
+                            height: "100%",
+                            backgroundColor: "rgba(15,23,42,0.55)",
+                            borderRadius: 4,
+                            border: (theme) =>
+                              `1px solid ${
+                                theme.palette[pillar.color]?.main ??
+                                theme.palette.primary.main
+                              }`,
+                            boxShadow: "0 20px 45px rgba(15,23,42,0.55)",
+                            backdropFilter: "blur(10px)",
+                          }}
+                        >
+                          <CardContent>
+                            <Stack spacing={2}>
+                              <Icon
+                                color={pillar.color}
+                                sx={{ fontSize: 36 }}
+                              />
+                              <Typography variant="h6" fontWeight={600}>
+                                {pillar.title}
+                              </Typography>
+                              <Typography color="text.secondary">
+                                {pillar.description}
+                              </Typography>
+                            </Stack>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                  </Box>
+                </Container>
               </Grid>
             </Grid>
           </Container>
         </Box>
-
-        <Container maxWidth="lg" sx={{ py: { xs: 10, md: 12 } }}>
-          <Typography variant="h4" fontWeight={700} gutterBottom>
-            Como usar este material
-          </Typography>
-          <Typography variant="body1" color="text.secondary" paragraph>
-            Releia os pilares antes da palestra, mantenha a página aberta durante
-            a fala e volte aos tópicos sempre que precisar aplicar uma ação
-            específica. Use o conteúdo como apoio visual e como guia de execução
-            no dia a dia.
-          </Typography>
-          <Grid container spacing={4}>
-            {pillars.map((pillar) => {
-              const Icon = pillar.icon;
-              return (
-                <Grid item xs={12} md={6} lg={3} key={pillar.title}>
-                  <Card
-                    sx={{
-                      height: "100%",
-                      backgroundColor: "rgba(15,23,42,0.55)",
-                      borderRadius: 4,
-                      border: (theme) =>
-                        `1px solid ${theme.palette[pillar.color]?.main ?? theme.palette.primary.main}`,
-                      boxShadow: "0 20px 45px rgba(15,23,42,0.55)",
-                      backdropFilter: "blur(10px)",
-                    }}
-                  >
-                    <CardContent>
-                      <Stack spacing={2}>
-                        <Icon color={pillar.color} sx={{ fontSize: 36 }} />
-                        <Typography variant="h6" fontWeight={600}>
-                          {pillar.title}
-                        </Typography>
-                        <Typography color="text.secondary">
-                          {pillar.description}
-                        </Typography>
-                      </Stack>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              );
-            })}
-          </Grid>
-        </Container>
 
         <Container maxWidth="lg" sx={{ py: { xs: 10, md: 12 } }} id="topicos">
           <Stack direction="row" spacing={2} alignItems="center" mb={2}>
@@ -374,70 +412,93 @@ export default function FestivalMeta2025Page() {
             </Typography>
           </Stack>
           <Typography color="text.secondary" paragraph>
-            Cada sessão da fala está organizada aqui como um tópico de estudo.
             Leia o resumo, confira por que ele importa e selecione pelo menos
             uma ação para colocar em prática ainda esta semana.
           </Typography>
-          <Grid container spacing={4}>
+          {/* SUBSTITUIR o <Grid container ...> atual por este Box */}
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "1fr",
+                sm: "1fr 1fr", // 2 colunas a partir do sm
+              },
+              gap: 4,
+              alignItems: "stretch",
+            }}
+          >
             {topics.map((topic) => (
-              <Grid item xs={12} md={6} key={topic.title}>
-                <Card
-                  sx={{
-                    height: "100%",
-                    borderRadius: 4,
-                    border: "1px solid rgba(148,163,184,0.25)",
-                    backgroundColor: "rgba(15,23,42,0.6)",
-                    boxShadow: "0 25px 55px rgba(15,23,42,0.6)",
-                    backdropFilter: "blur(10px)",
-                    display: "flex",
-                  }}
+              <Card
+                key={topic.title}
+                sx={{
+                  height: "100%",
+                  borderRadius: 4,
+                  border: "1px solid rgba(148,163,184,0.25)",
+                  backgroundColor: "rgba(15,23,42,0.6)",
+                  boxShadow: "0 25px 55px rgba(15,23,42,0.6)",
+                  backdropFilter: "blur(10px)",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <CardContent
+                  sx={{ display: "flex", flexDirection: "column", gap: 2 }}
                 >
-                  <CardContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                    <Typography variant="h6" fontWeight={600}>
-                      {topic.title}
+                  <Typography variant="h6" fontWeight={600}>
+                    {topic.title}
+                  </Typography>
+
+                  <Typography color="text.secondary">{topic.intro}</Typography>
+
+                  <Box>
+                    <Typography
+                      variant="subtitle2"
+                      color="primary.light"
+                      gutterBottom
+                    >
+                      Por que importa
                     </Typography>
-                    <Typography color="text.secondary">{topic.intro}</Typography>
-                    <Box>
-                      <Typography variant="subtitle2" color="primary.light" gutterBottom>
-                        Por que importa
-                      </Typography>
-                      <List dense sx={{ py: 0 }}>
-                        {topic.keyPoints.map((item) => (
-                          <ListItem key={item} sx={{ px: 0 }}>
-                            <ListItemIcon sx={{ minWidth: 32 }}>
-                              <CheckCircleIcon color="secondary" />
-                            </ListItemIcon>
-                            <ListItemText
-                              primary={item}
-                              primaryTypographyProps={{ color: "text.secondary" }}
-                            />
-                          </ListItem>
-                        ))}
-                      </List>
-                    </Box>
-                    <Box>
-                      <Typography variant="subtitle2" color="success.light" gutterBottom>
-                        Coloque em prática
-                      </Typography>
-                      <List dense sx={{ py: 0 }}>
-                        {topic.actions.map((item) => (
-                          <ListItem key={item} sx={{ px: 0 }}>
-                            <ListItemIcon sx={{ minWidth: 32 }}>
-                              <CheckCircleIcon color="success" />
-                            </ListItemIcon>
-                            <ListItemText
-                              primary={item}
-                              primaryTypographyProps={{ color: "text.secondary" }}
-                            />
-                          </ListItem>
-                        ))}
-                      </List>
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
+                    <List dense sx={{ py: 0 }}>
+                      {topic.keyPoints.map((item) => (
+                        <ListItem key={item} sx={{ px: 0 }}>
+                          <ListItemIcon sx={{ minWidth: 32 }}>
+                            <CheckCircleIcon color="secondary" />
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={item}
+                            primaryTypographyProps={{ color: "text.secondary" }}
+                          />
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Box>
+
+                  <Box>
+                    <Typography
+                      variant="subtitle2"
+                      color="success.light"
+                      gutterBottom
+                    >
+                      Coloque em prática
+                    </Typography>
+                    <List dense sx={{ py: 0 }}>
+                      {topic.actions.map((item) => (
+                        <ListItem key={item} sx={{ px: 0 }}>
+                          <ListItemIcon sx={{ minWidth: 32 }}>
+                            <CheckCircleIcon color="success" />
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={item}
+                            primaryTypographyProps={{ color: "text.secondary" }}
+                          />
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Box>
+                </CardContent>
+              </Card>
             ))}
-          </Grid>
+          </Box>
         </Container>
 
         <Box
@@ -456,48 +517,94 @@ export default function FestivalMeta2025Page() {
               software ou a planilha, compartilhe com quem trabalha com você e
               mantenha os registros atualizados diariamente.
             </Typography>
-            <Grid container spacing={4}>
+
+            {/* Grid de recursos */}
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: {
+                  xs: "1fr",
+                  sm: "repeat(2, 1fr)",
+                  md: "repeat(3, 1fr)",
+                },
+                gap: 4,
+              }}
+            >
               {resources.map((resource) => {
                 const Icon = resource.icon;
                 return (
-                  <Grid item xs={12} md={4} key={resource.title}>
-                    <Card
+                  <Card
+                    key={resource.title}
+                    sx={{
+                      width: "100%",
+                      height: "100%",
+                      borderRadius: 4,
+                      border: "1px solid rgba(148,163,184,0.2)",
+                      backgroundColor: "rgba(15,23,42,0.6)",
+                      boxShadow: "0 18px 40px rgba(15,23,42,0.55)",
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <CardContent
                       sx={{
-                        height: "100%",
-                        borderRadius: 4,
-                        border: "1px solid rgba(148,163,184,0.2)",
-                        backgroundColor: "rgba(15,23,42,0.6)",
-                        boxShadow: "0 18px 40px rgba(15,23,42,0.55)",
                         display: "flex",
                         flexDirection: "column",
+                        gap: 2,
+                        flexGrow: 1,
                       }}
                     >
-                      <CardContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                        <Icon color={resource.color} sx={{ fontSize: 36 }} />
-                        <Typography variant="h6" fontWeight={600}>
-                          {resource.title}
-                        </Typography>
-                        <Typography color="text.secondary">
-                          {resource.description}
-                        </Typography>
-                        <Button
-                          component="a"
-                          href={resource.href}
-                          target={resource.href.startsWith("http") ? "_blank" : undefined}
-                          rel={resource.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                          variant="outlined"
-                          color={resource.color}
-                          endIcon={<LaunchIcon />}
-                          sx={{ textTransform: "none", mt: "auto" }}
-                        >
-                          Acessar material
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  </Grid>
+                      <Icon color={resource.color} sx={{ fontSize: 36 }} />
+                      <Typography variant="h6" fontWeight={600}>
+                        {resource.title}
+                      </Typography>
+                      <Typography color="text.secondary">
+                        {resource.description}
+                      </Typography>
+
+                      {/* Tags de nicho */}
+                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                        {resource.tags?.map((tag) => (
+                          <Chip
+                            key={tag}
+                            label={tag}
+                            size="small"
+                            color="default"
+                            variant="outlined"
+                            sx={{
+                              borderColor: "rgba(148,163,184,0.3)",
+                              color: "rgba(226,232,240,0.9)",
+                              fontSize: "0.75rem",
+                            }}
+                          />
+                        ))}
+                      </Box>
+
+                      <Button
+                        component="a"
+                        href={resource.href}
+                        target={
+                          resource.href.startsWith("http")
+                            ? "_blank"
+                            : undefined
+                        }
+                        rel={
+                          resource.href.startsWith("http")
+                            ? "noopener noreferrer"
+                            : undefined
+                        }
+                        variant="outlined"
+                        color={resource.color}
+                        endIcon={<LaunchIcon />}
+                        sx={{ textTransform: "none", mt: "auto" }}
+                      >
+                        Acessar material
+                      </Button>
+                    </CardContent>
+                  </Card>
                 );
               })}
-            </Grid>
+            </Box>
           </Container>
         </Box>
 
@@ -588,8 +695,8 @@ export default function FestivalMeta2025Page() {
             </Typography>
           </Stack>
           <Typography color="text.secondary" paragraph>
-            Escolha um passo por dia e marque a conclusão. Ao final da semana, o
-            seu fluxo de caixa estará mais claro e protegido.
+            Escolha um passo por dia e marque a conclusão. Ao final da semana,
+            seu fluxo de caixa estará mais claro, previsível e protegido.
           </Typography>
           <Card
             sx={{
@@ -630,7 +737,10 @@ export default function FestivalMeta2025Page() {
                   href="#topo"
                   variant="outlined"
                   color="primary"
-                  sx={{ textTransform: "none", alignSelf: { xs: "flex-start", sm: "center" } }}
+                  sx={{
+                    textTransform: "none",
+                    alignSelf: { xs: "flex-start", sm: "center" },
+                  }}
                 >
                   Revisar o início do material
                 </Button>
