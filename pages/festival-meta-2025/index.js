@@ -31,6 +31,8 @@ import LightbulbIcon from "@mui/icons-material/Lightbulb";
 import PaymentsIcon from "@mui/icons-material/Payments";
 import DownloadIcon from "@mui/icons-material/Download";
 import LaunchIcon from "@mui/icons-material/Launch";
+import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
+import YouTubeIcon from "@mui/icons-material/YouTube";
 
 const pillars = [
   {
@@ -197,6 +199,19 @@ const reflectionQuestions = [
   "Seu pró-labore cobre o custo de vida? O que precisa ser ajustado para caber no planejamento?",
   "Você tem um calendário de vencimentos (provisão) para o mês? O que está sem cobertura?",
   "Qual ferramenta você vai usar a partir de agora para registrar entradas e saídas diariamente?",
+];
+
+const marketUpVideos = [
+  {
+    title: "1º vídeo",
+    description: "Primeiro passo para configurar o MarketUP na sua rotina.",
+    href: "https://www.youtube.com/watch?v=wGHagqQOZrg",
+  },
+  {
+    title: "2º vídeo",
+    description: "Sequência com recursos essenciais para manter o controle financeiro.",
+    href: "https://www.youtube.com/watch?v=LNinJ9JWjzg",
+  },
 ];
 
 const actionPlan = [
@@ -595,15 +610,25 @@ export default function FestivalMeta2025Page() {
         </Box>
 
         <Container maxWidth="lg" sx={{ py: { xs: 10, md: 12 } }}>
-          <Grid container spacing={6} alignItems="flex-start">
-            <Grid item xs={12} md={6}>
-              <Stack direction="row" spacing={2} alignItems="center" mb={2}>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "1fr",
+                md: "repeat(2, minmax(0, 1fr))",
+              },
+              gap: { xs: 4, md: 6 },
+              alignItems: "stretch",
+            }}
+          >
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <Stack direction="row" spacing={2} alignItems="center">
                 <PsychologyAltIcon color="secondary" sx={{ fontSize: 34 }} />
                 <Typography variant="h4" fontWeight={700}>
                   Mentalidade para sustentar a mudança
                 </Typography>
               </Stack>
-              <Typography color="text.secondary" paragraph>
+              <Typography color="text.secondary">
                 Reforce estas frases ao longo da semana para manter o foco e
                 lembrar por que o fluxo de caixa organizado protege o seu
                 negócio.
@@ -614,9 +639,12 @@ export default function FestivalMeta2025Page() {
                   border: "1px solid rgba(148,163,184,0.3)",
                   background:
                     "linear-gradient(135deg, rgba(14,165,233,0.08), rgba(37,99,235,0.02))",
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
                 }}
               >
-                <CardContent>
+                <CardContent sx={{ flexGrow: 1 }}>
                   <List>
                     {mindsetHighlights.map((item) => (
                       <ListItem key={item} sx={{ px: 0 }}>
@@ -632,15 +660,15 @@ export default function FestivalMeta2025Page() {
                   </List>
                 </CardContent>
               </Card>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Stack direction="row" spacing={2} alignItems="center" mb={2}>
+            </Box>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <Stack direction="row" spacing={2} alignItems="center">
                 <InsightsIcon color="info" sx={{ fontSize: 34 }} />
                 <Typography variant="h4" fontWeight={700}>
                   Perguntas para reflexão
                 </Typography>
               </Stack>
-              <Typography color="text.secondary" paragraph>
+              <Typography color="text.secondary">
                 Use estas questões para revisar decisões com seu contador,
                 mentora ou equipe. Elas ajudam a transformar o aprendizado em
                 rotina.
@@ -651,9 +679,12 @@ export default function FestivalMeta2025Page() {
                   border: "1px solid rgba(148,163,184,0.3)",
                   background:
                     "linear-gradient(135deg, rgba(59,130,246,0.08), rgba(45,212,191,0.08))",
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
                 }}
               >
-                <CardContent>
+                <CardContent sx={{ flexGrow: 1 }}>
                   <List>
                     {reflectionQuestions.map((item) => (
                       <ListItem key={item} sx={{ px: 0 }}>
@@ -669,8 +700,8 @@ export default function FestivalMeta2025Page() {
                   </List>
                 </CardContent>
               </Card>
-            </Grid>
-          </Grid>
+            </Box>
+          </Box>
         </Container>
 
         <Container maxWidth="lg" sx={{ py: { xs: 10, md: 12 } }}>
@@ -731,6 +762,72 @@ export default function FestivalMeta2025Page() {
                   Revisar o início do material
                 </Button>
               </Stack>
+            </CardContent>
+          </Card>
+        </Container>
+
+        <Container maxWidth="lg" sx={{ py: { xs: 10, md: 12 } }}>
+          <Stack direction="row" spacing={2} alignItems="center" mb={2}>
+            <YouTubeIcon color="error" sx={{ fontSize: 34 }} />
+            <Typography variant="h4" fontWeight={700}>
+              Tutoriais MarketUP
+            </Typography>
+          </Stack>
+          <Typography color="text.secondary" paragraph>
+            Continue aprofundando com os materiais oficiais do MarketUP. Assine
+            o canal e siga a sequência de vídeos para colocar a plataforma em
+            prática no dia a dia.
+          </Typography>
+          <Stack direction={{ xs: "column", sm: "row" }} spacing={2} mb={4}>
+            <Button
+              component="a"
+              href="https://www.youtube.com/@MarketUPOficial"
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="contained"
+              color="error"
+              sx={{ textTransform: "none", alignSelf: "flex-start" }}
+              endIcon={<LaunchIcon />}
+            >
+              Canal oficial MarketUP
+            </Button>
+          </Stack>
+          <Card
+            sx={{
+              borderRadius: 4,
+              border: "1px solid rgba(148,163,184,0.25)",
+              background:
+                "linear-gradient(145deg, rgba(220,38,38,0.15) 0%, rgba(59,130,246,0.15) 100%)",
+              maxWidth: 900,
+              mx: "auto",
+            }}
+          >
+            <CardContent>
+              <List>
+                {marketUpVideos.map((video) => (
+                  <ListItem key={video.href} sx={{ px: 0 }}>
+                    <ListItemIcon sx={{ minWidth: 40 }}>
+                      <PlayCircleOutlineIcon color="error" />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={`${video.title} — ${video.description}`}
+                      primaryTypographyProps={{ color: "text.secondary" }}
+                    />
+                    <Button
+                      component="a"
+                      href={video.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      variant="outlined"
+                      color="error"
+                      sx={{ textTransform: "none" }}
+                      endIcon={<LaunchIcon />}
+                    >
+                      Assistir
+                    </Button>
+                  </ListItem>
+                ))}
+              </List>
             </CardContent>
           </Card>
         </Container>
