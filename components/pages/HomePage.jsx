@@ -10,6 +10,7 @@ import {
   Stack,
   Typography,
   useMediaQuery,
+  ListItemButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
@@ -90,7 +91,7 @@ export default function HomePage() {
         key: "phone",
         icon: PhoneIphoneIcon,
         value: "(34) 99239-9036",
-        href: "tel:+5534992399036",
+        href: "https://wa.me/5534992399036",
       },
       {
         key: "email",
@@ -102,29 +103,37 @@ export default function HomePage() {
         key: "instagram",
         icon: InstagramIcon,
         value: "Instagram",
+        href: "https://www.instagram.com/olegario.dev/",
       },
       {
         key: "linkedin",
         icon: LinkedInIcon,
         value: "LinkedIn",
+        href: "https://www.linkedin.com/in/olegariodev/",
       },
       {
         key: "youtube",
         icon: YouTubeIcon,
         value: "YouTube",
+        href: "https://www.youtube.com/@olegario-dev",
       },
       {
         key: "github",
         icon: GitHubIcon,
         value: "GitHub",
+        href: "https://github.com/renatoolegario  ",
       },
     ];
 
     const companyDetails = [
-      "CNPJ: 37.398.466/0001-05",
-      "Multiplasfr Sistema de Cobrança e Informática LTDA",
+      {
+        text: "CNPJ: 37.398.466/0001-05",
+        href: "https://cnpj.biz/37398466000105",
+      },
+      {
+        text: "Multiplasfr Sistema de Cobrança e Informática LTDA",
+      },
     ];
-
     const projects = [
       "FacilitAgro.com.br",
       "FalaUai.com.br",
@@ -135,7 +144,7 @@ export default function HomePage() {
     return [
       {
         title: "Transformando problemas em soluções eficientes!",
-        subtitle: "Frase de impacto",
+        subtitle: "Mais com menos",
         body: (
           <Typography
             variant="body1"
@@ -185,7 +194,7 @@ export default function HomePage() {
       },
       {
         title: "Frameworks e Suporte",
-        subtitle: "Ferramentas que potencializam nossos projetos",
+        subtitle: "Ferramentas que potencializam ",
         body: (
           <Stack spacing={1.5}>
             <Typography
@@ -302,9 +311,12 @@ export default function HomePage() {
               spacing={0.8}
               alignItems={{ xs: "center", sm: "flex-start" }}
             >
-              {companyDetails.map((item) => (
+              {companyDetails.map((item, index) => (
                 <Box
-                  key={item}
+                  key={index}
+                  component={item.href ? "a" : "div"}
+                  href={item.href}
+                  target={item.href?.startsWith("http") ? "_blank" : undefined}
                   sx={{
                     color: "rgba(255,255,255,0.85)",
                     borderRadius: 2,
@@ -319,6 +331,7 @@ export default function HomePage() {
                       color: "#0f172a",
                       transform: "scale(1.02)",
                     },
+                    textDecoration: "none", // remove sublinhado do link
                   }}
                 >
                   <Typography
@@ -329,7 +342,7 @@ export default function HomePage() {
                       textAlign: { xs: "center", sm: "justify" },
                     }}
                   >
-                    {item}
+                    {item.text}
                   </Typography>
                 </Box>
               ))}
@@ -533,75 +546,73 @@ export default function HomePage() {
               Clique para explorar
             </Typography>
           </Stack>
-
           <Box
             sx={{
               width: "100%",
               display: "grid",
-              gap: { xs: 1.5, md: 2.5 },
               gridTemplateColumns: {
                 xs: "1fr",
-                sm: "repeat(2, minmax(0, 1fr))",
-                lg: "repeat(3, minmax(0, 1fr))",
+                sm: "repeat(2, 1fr)",
+                lg: "repeat(3, 1fr)",
               },
+              gap: 1, // bem compacto
             }}
           >
             {sections.map((section, index) => (
-              <ButtonBase
+              <ListItemButton
                 key={section.title}
-                focusRipple
                 onClick={() => setSelectedIndex(index)}
-                aria-label={`Abrir seção ${section.title}`}
                 sx={{
-                  width: "100%",
-                  borderRadius: 3,
-                  textAlign: "left",
-                  p: 0,
-                  overflow: "hidden",
-                  "&:focus-visible > div": {
+                  borderRadius: 2,
+                  minHeight: 56,
+                  px: 1.5,
+                  py: 1,
+                  gap: 1,
+                  alignItems: "center",
+                  border: "1px solid rgba(255,255,255,0.12)",
+                  bgcolor: "rgba(255,255,255,0.02)",
+                  transition:
+                    "background-color .2s ease, border-color .2s ease",
+                  "&:hover": {
                     borderColor: accentColor,
-                    boxShadow: "0 0 0 3px rgba(125,211,252,0.28)",
+                    bgcolor: "rgba(125,211,252,0.06)",
+                  },
+                  // foco acessível e discreto
+                  "&.Mui-focusVisible": {
+                    outline: `2px solid ${accentColor}`,
+                    outlineOffset: 2,
                   },
                 }}
               >
+                {/* índice */}
                 <Box
                   sx={{
-                    height: "100%",
-                    borderRadius: 3,
+                    fontSize: ".75rem",
+                    fontWeight: 600,
+                    letterSpacing: ".14em",
+                    color: "rgba(255,255,255,0.7)",
                     border: "1px solid rgba(255,255,255,0.18)",
-                    bgcolor: "rgba(15,23,42,0.68)",
-                    backdropFilter: "blur(6px)",
-                    px: { xs: 2, md: 2.6 },
-                    py: { xs: 2, md: 2.8 },
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 1,
-                    transition:
-                      "transform 0.25s ease, border-color 0.25s ease, background-color 0.25s ease",
-                    boxShadow: "0 18px 44px rgba(8,15,35,0.4)",
-                    "&:hover": {
-                      transform: "translateY(-4px)",
-                      borderColor: accentColor,
-                      bgcolor: "rgba(15,23,42,0.78)",
-                    },
+                    borderRadius: 1.5,
+                    px: 0.75,
+                    py: 0.25,
+                    flexShrink: 0,
                   }}
                 >
+                  {String(index + 1).padStart(2, "0")}
+                </Box>
+
+                {/* textos */}
+                <Box sx={{ minWidth: 0 }}>
                   <Typography
-                    variant="overline"
+                    variant="subtitle1"
                     sx={{
-                      letterSpacing: "0.32em",
-                      color: "rgba(255,255,255,0.55)",
-                    }}
-                  >
-                    {String(index + 1).padStart(2, "0")}
-                  </Typography>
-                  <Typography
-                    variant="h5"
-                    sx={{
-                      fontSize: { xs: "1.1rem", md: "1.28rem" },
-                      fontWeight: 600,
-                      lineHeight: 1.35,
-                      color: "rgba(255,255,255,0.96)",
+                      fontWeight: 700,
+                      lineHeight: 1.2,
+                      color: "rgba(255,255,255,0.95)",
+                      // uma linha somente
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                      textOverflow: "ellipsis",
                     }}
                   >
                     {section.title}
@@ -609,24 +620,27 @@ export default function HomePage() {
                   <Typography
                     variant="body2"
                     sx={{
-                      color: "rgba(255,255,255,0.72)",
-                      lineHeight: 1.6,
+                      color: "rgba(255,255,255,0.7)",
+                      lineHeight: 1.35,
+                      // cortar em 1 linha também
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                      textOverflow: "ellipsis",
                     }}
                   >
                     {section.subtitle}
                   </Typography>
                 </Box>
-              </ButtonBase>
+
+                {/* seta à direita (opcional) */}
+                <Box sx={{ ml: "auto", opacity: 0.6 }}>▸</Box>
+              </ListItemButton>
             ))}
           </Box>
         </Stack>
       </Box>
 
-      <Fade
-        in={isPanelOpen}
-        timeout={{ enter: 200, exit: 200 }}
-        unmountOnExit
-      >
+      <Fade in={isPanelOpen} timeout={{ enter: 200, exit: 200 }} unmountOnExit>
         <Box
           onClick={() => setSelectedIndex(null)}
           sx={{
@@ -650,7 +664,9 @@ export default function HomePage() {
             role="dialog"
             aria-modal="true"
             aria-labelledby={
-              selectedIndex !== null ? `home-section-title-${selectedIndex}` : undefined
+              selectedIndex !== null
+                ? `home-section-title-${selectedIndex}`
+                : undefined
             }
             sx={{
               position: "fixed",
@@ -721,7 +737,8 @@ export default function HomePage() {
                   textTransform: "uppercase",
                 }}
               >
-                {String(selectedPosition).padStart(2, "0")} / {String(totalSections).padStart(2, "0")}
+                {String(selectedPosition).padStart(2, "0")} /{" "}
+                {String(totalSections).padStart(2, "0")}
               </Typography>
             )}
 

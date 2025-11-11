@@ -1,4 +1,4 @@
-import ImaginePage from "../components/pages/ImaginePage";
+import ImaginePage from "../../components/pages/ImaginePage";
 
 export default function Imagine() {
   return <ImaginePage />;
