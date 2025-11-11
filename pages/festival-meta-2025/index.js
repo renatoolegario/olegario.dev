@@ -200,7 +200,6 @@ const reflectionQuestions = [
   "Você tem um calendário de vencimentos (provisão) para o mês? O que está sem cobertura?",
   "Qual ferramenta você vai usar a partir de agora para registrar entradas e saídas diariamente?",
 ];
-
 const marketUpVideos = [
   {
     title: "1º vídeo",
@@ -209,11 +208,15 @@ const marketUpVideos = [
   },
   {
     title: "2º vídeo",
-    description: "Sequência com recursos essenciais para manter o controle financeiro.",
+    description:
+      "Sequência com recursos essenciais para manter o controle financeiro.",
     href: "https://www.youtube.com/watch?v=LNinJ9JWjzg",
   },
 ];
-
+const toEmbedUrl = (url) => {
+  const videoId = url.split("v=")[1]?.split("&")[0];
+  return `https://www.youtube.com/embed/${videoId}`;
+};
 const actionPlan = [
   "Abra ou regularize o CNPJ e crie conta bancária exclusiva da empresa.",
   "Defina um valor mensal de pró-labore e programe o pagamento automático.",
@@ -625,7 +628,7 @@ export default function FestivalMeta2025Page() {
               <Stack direction="row" spacing={2} alignItems="center">
                 <PsychologyAltIcon color="secondary" sx={{ fontSize: 34 }} />
                 <Typography variant="h4" fontWeight={700}>
-                  Mentalidade para sustentar a mudança
+                  Mentalidade para mudança
                 </Typography>
               </Stack>
               <Typography color="text.secondary">
@@ -711,18 +714,19 @@ export default function FestivalMeta2025Page() {
               Plano de ação rápido
             </Typography>
           </Stack>
+
           <Typography color="text.secondary" paragraph>
             Escolha um passo por dia e marque a conclusão. Ao final da semana,
             seu fluxo de caixa estará mais claro, previsível e protegido.
           </Typography>
+
           <Card
             sx={{
               borderRadius: 4,
               border: "1px solid rgba(148,163,184,0.25)",
               background:
                 "linear-gradient(145deg, rgba(37,99,235,0.15) 0%, rgba(8,145,178,0.2) 100%)",
-              maxWidth: 900,
-              mx: "auto",
+              width: "100%", // ocupa toda a largura do Container
             }}
           >
             <CardContent>
@@ -739,6 +743,7 @@ export default function FestivalMeta2025Page() {
                   </ListItem>
                 ))}
               </List>
+
               <Stack direction={{ xs: "column", sm: "row" }} spacing={2} mt={2}>
                 <Button
                   component={Link}
@@ -749,6 +754,7 @@ export default function FestivalMeta2025Page() {
                 >
                   Voltar para olegario.dev
                 </Button>
+
                 <Button
                   component={Link}
                   href="#topo"
@@ -773,11 +779,13 @@ export default function FestivalMeta2025Page() {
               Tutoriais MarketUP
             </Typography>
           </Stack>
+
           <Typography color="text.secondary" paragraph>
             Continue aprofundando com os materiais oficiais do MarketUP. Assine
             o canal e siga a sequência de vídeos para colocar a plataforma em
             prática no dia a dia.
           </Typography>
+
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2} mb={4}>
             <Button
               component="a"
@@ -792,39 +800,59 @@ export default function FestivalMeta2025Page() {
               Canal oficial MarketUP
             </Button>
           </Stack>
+
           <Card
             sx={{
               borderRadius: 4,
               border: "1px solid rgba(148,163,184,0.25)",
               background:
                 "linear-gradient(145deg, rgba(220,38,38,0.15) 0%, rgba(59,130,246,0.15) 100%)",
-              maxWidth: 900,
-              mx: "auto",
+              width: "100%", // ocupa toda a largura disponível
             }}
           >
             <CardContent>
               <List>
                 {marketUpVideos.map((video) => (
-                  <ListItem key={video.href} sx={{ px: 0 }}>
-                    <ListItemIcon sx={{ minWidth: 40 }}>
-                      <PlayCircleOutlineIcon color="error" />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={`${video.title} — ${video.description}`}
-                      primaryTypographyProps={{ color: "text.secondary" }}
-                    />
-                    <Button
-                      component="a"
-                      href={video.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      variant="outlined"
-                      color="error"
-                      sx={{ textTransform: "none" }}
-                      endIcon={<LaunchIcon />}
+                  <ListItem
+                    key={video.href}
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                      px: 0,
+                      mb: 4,
+                    }}
+                  >
+                    <Stack
+                      direction="row"
+                      spacing={2}
+                      alignItems="center"
+                      mb={1}
                     >
-                      Assistir
-                    </Button>
+                      <ListItemIcon sx={{ minWidth: 40 }}>
+                        <PlayCircleOutlineIcon color="error" />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={`${video.title} — ${video.description}`}
+                        primaryTypographyProps={{
+                          color: "text.secondary",
+                          fontWeight: 500,
+                        }}
+                      />
+                    </Stack>
+
+                    <Box
+                      component="iframe"
+                      src={toEmbedUrl(video.href)}
+                      title={video.title}
+                      allowFullScreen
+                      sx={{
+                        width: "100%",
+                        height: { xs: 220, sm: 360 },
+                        borderRadius: 2,
+                        border: 0,
+                      }}
+                    />
                   </ListItem>
                 ))}
               </List>
