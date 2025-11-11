@@ -125,20 +125,6 @@ const topics = [
       "Mantenha pastas digitais com comprovantes e relatórios mensais de forma organizada.",
     ],
   },
-  {
-    title: "Ferramentas e materiais imediatos",
-    intro:
-      "Existe tecnologia gratuita capaz de sustentar o controle financeiro desde o primeiro dia.",
-    keyPoints: [
-      "MarketUp centraliza vendas, estoque e fluxo de caixa em um único painel.",
-      "Planilha de gestão pessoal separa o que é da casa e o que é da empresa.",
-    ],
-    actions: [
-      "Reserve 30 minutos para configurar o MarketUp ou a planilha e cadastrar seus produtos.",
-      "Compartilhe o link desta página com a equipe ou sócia para manter o alinhamento.",
-      "Revise relatórios semanais para identificar gargalos e oportunidades de economia.",
-    ],
-  },
 ];
 
 const resources = [
