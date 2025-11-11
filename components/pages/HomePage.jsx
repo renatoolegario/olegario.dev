@@ -1,19 +1,23 @@
 "use client";
-import SplitText from "components/SplitText";
 import FuzzyText from "components/FuzzyText";
 import { useEffect, useMemo, useState } from "react";
-import { Box, Fade, IconButton, Stack, Typography } from "@mui/material";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import {
+  Box,
+  ButtonBase,
+  Fade,
+  IconButton,
+  Slide,
+  Stack,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import GitHubIcon from "@mui/icons-material/GitHub";
-import { keyframes } from "@mui/system";
 
 const accentColor = "#7dd3fc";
 
@@ -36,49 +40,8 @@ const badgeSx = {
   },
 };
 
-const navigationButtonSx = {
-  bgcolor: "rgba(15,23,42,0.6)",
-  color: "#ffffff",
-  border: "1px solid rgba(255,255,255,0.35)",
-  transition: "background-color 0.25s ease",
-  "&:hover": {
-    bgcolor: "rgba(15,23,42,0.8)",
-  },
-  "&.Mui-disabled": {
-    bgcolor: "rgba(15,23,42,0.35)",
-    color: "rgba(255,255,255,0.4)",
-  },
-};
-
-const devBackgrounds = [
-  "linear-gradient(135deg, rgba(125, 211, 252, 0.95), rgba(56, 189, 248, 0.6))",
-  "linear-gradient(135deg, rgba(129, 140, 248, 0.9), rgba(14, 165, 233, 0.65))",
-  "linear-gradient(135deg, rgba(236, 72, 153, 0.85), rgba(14, 116, 144, 0.7))",
-  "linear-gradient(135deg, rgba(45, 212, 191, 0.9), rgba(99, 102, 241, 0.7))",
-];
-
-const shimmerAnimation = keyframes`
-  0% { transform: translateX(-120%); }
-  50% { transform: translateX(60%); }
-  100% { transform: translateX(120%); }
-`;
-
-const glowPulse = keyframes`
-  0% { opacity: 0.35; box-shadow: 0 0 18px rgba(125, 211, 252, 0.45); }
-  50% { opacity: 0.7; box-shadow: 0 0 28px rgba(56, 189, 248, 0.65); }
-  100% { opacity: 0.35; box-shadow: 0 0 18px rgba(125, 211, 252, 0.45); }
-`;
-
 export default function HomePage() {
-  const [devBackgroundIndex, setDevBackgroundIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setDevBackgroundIndex((index) => (index + 1) % devBackgrounds.length);
-    }, 3200);
-
-    return () => clearInterval(interval);
-  }, []);
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
   const sections = useMemo(() => {
     const technologies = [
@@ -439,24 +402,53 @@ export default function HomePage() {
     ];
   }, []);
 
-  const [activeIndex, setActiveIndex] = useState(0);
-  const activeSection = sections[activeIndex];
+  const [selectedIndex, setSelectedIndex] = useState(null);
+  const isPanelOpen = selectedIndex !== null;
+  const selectedSection = isPanelOpen ? sections[selectedIndex] : null;
   const totalSections = sections.length;
-  const currentSection = activeIndex + 1;
-  const hasPrevious = activeIndex > 0;
-  const hasNext = activeIndex < sections.length - 1;
+  const selectedPosition =
+    selectedIndex !== null ? selectedIndex + 1 : undefined;
 
-  const handlePrevious = () => {
-    if (hasPrevious) {
-      setActiveIndex((index) => Math.max(index - 1, 0));
+  useEffect(() => {
+    if (!isPanelOpen) {
+      return;
     }
-  };
 
-  const handleNext = () => {
-    if (hasNext) {
-      setActiveIndex((index) => Math.min(index + 1, sections.length - 1));
-    }
-  };
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setSelectedIndex(null);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isPanelOpen]);
+
+  const panelSx = isMobile
+    ? {
+        left: 0,
+        right: 0,
+        bottom: 0,
+        height: "82vh",
+        maxHeight: "640px",
+        borderTopLeftRadius: 28,
+        borderTopRightRadius: 28,
+      }
+    : {
+        top: 0,
+        bottom: 0,
+        right: 0,
+        width: { xs: "100%", sm: "420px", md: "460px", lg: "520px" },
+        borderTopLeftRadius: 28,
+        borderBottomLeftRadius: 28,
+      };
 
   return (
     <Box
@@ -470,234 +462,295 @@ export default function HomePage() {
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
         color: "#ffffff",
+        position: "relative",
+        overflow: "hidden",
       }}
     >
       <Box
-        component="nav"
-        sx={{
-          px: { xs: 2.5, md: 6 },
-          pt: { xs: 3, md: 6 },
-          pb: { xs: 1.5, md: 2 },
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          textAlign: "center",
-          "& canvas": {
-            maxWidth: "min(280px, 90vw)",
-            width: "100%",
-            height: "auto",
-          },
-        }}
-      >
-        {/* <SplitText text="Olegário.Dev" delay={100} duration={0.6} /> */}
-
-        <FuzzyText baseIntensity={0.2} hoverIntensity={0.5} enableHover={true}>
-          Olegário.Dev
-        </FuzzyText>
-      </Box>
-
-      <Box
         sx={{
           flex: 1,
+          width: "100%",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          width: "100%",
-          px: { xs: 2, sm: 4, md: 10 },
-          pb: { xs: 4, md: 8 },
+          px: { xs: 2.5, md: 8 },
+          py: { xs: 6, md: 10 },
         }}
       >
         <Stack
-          spacing={{ xs: 2, md: 2.5 }}
+          spacing={{ xs: 3, md: 4 }}
           alignItems="center"
-          sx={{
-            width: "100%",
-            maxWidth: { xs: 480, sm: 600, md: 720 },
-            minHeight: { md: 520 },
-            justifyContent: { xs: "flex-start", md: "space-between" },
-            py: { xs: 1.5, md: 0 },
-          }}
+          sx={{ width: "100%", maxWidth: 960 }}
         >
           <Box
             sx={{
-              width: "100%",
-              display: { xs: "flex", md: "none" },
+              textAlign: "center",
+              display: "flex",
+              flexDirection: "column",
               alignItems: "center",
-              justifyContent: "space-between",
-              gap: 2,
+              gap: 1.5,
             }}
           >
-            <IconButton
-              onClick={handlePrevious}
-              disabled={!hasPrevious}
-              aria-label="Seção anterior"
-              sx={{ ...navigationButtonSx, flexShrink: 0 }}
+            <FuzzyText
+              baseIntensity={0.12}
+              hoverIntensity={0.3}
+              enableHover={!isMobile}
+              fontSize="clamp(2.6rem, 8vw, 5.2rem)"
             >
-              <KeyboardArrowLeftIcon fontSize="medium" />
-            </IconButton>
-
-            <Stack spacing={0.5} alignItems="center">
-              <Typography
-                variant="caption"
-                sx={{
-                  letterSpacing: "0.3em",
-                  textTransform: "uppercase",
-                  color: "rgba(255,255,255,0.6)",
-                }}
-              >
-                Seções
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{
-                  fontWeight: 600,
-                  letterSpacing: "0.1em",
-                }}
-              >
-                {String(currentSection).padStart(2, "0")} /
-                {" "}
-                {String(totalSections).padStart(2, "0")}
-              </Typography>
-            </Stack>
-
-            <IconButton
-              onClick={handleNext}
-              disabled={!hasNext}
-              aria-label="Próxima seção"
-              sx={{ ...navigationButtonSx, flexShrink: 0 }}
+              Olegário.dev
+            </FuzzyText>
+            <Typography
+              variant="body2"
+              sx={{
+                maxWidth: 520,
+                color: "rgba(255,255,255,0.72)",
+                letterSpacing: "0.05em",
+              }}
             >
-              <KeyboardArrowRightIcon fontSize="medium" />
-            </IconButton>
+              Escolha um tópico no menu abaixo para mergulhar nos detalhes do
+              nosso trabalho.
+            </Typography>
           </Box>
 
-          <IconButton
-            onClick={handlePrevious}
-            disabled={!hasPrevious}
-            aria-label="Seção anterior"
-            sx={{
-              ...navigationButtonSx,
-              display: { xs: "none", md: "inline-flex" },
-              visibility: hasPrevious ? "visible" : "hidden",
-            }}
-          >
-            <KeyboardArrowUpIcon fontSize="large" />
-          </IconButton>
+          <Stack spacing={1} alignItems="center">
+            <Typography
+              variant="overline"
+              sx={{
+                letterSpacing: "0.35em",
+                color: "rgba(255,255,255,0.65)",
+              }}
+            >
+              Menu
+            </Typography>
+            <Typography
+              variant="caption"
+              sx={{
+                letterSpacing: "0.28em",
+                color: "rgba(255,255,255,0.45)",
+                textTransform: "uppercase",
+              }}
+            >
+              Clique para explorar
+            </Typography>
+          </Stack>
 
           <Box
-            key={activeIndex}
-            sx={{ width: "100%", maxWidth: { xs: 520, md: 680 } }}
+            sx={{
+              width: "100%",
+              display: "grid",
+              gap: { xs: 1.5, md: 2.5 },
+              gridTemplateColumns: {
+                xs: "1fr",
+                sm: "repeat(2, minmax(0, 1fr))",
+                lg: "repeat(3, minmax(0, 1fr))",
+              },
+            }}
           >
-            <Fade in timeout={400}>
-              <Box
+            {sections.map((section, index) => (
+              <ButtonBase
+                key={section.title}
+                focusRipple
+                onClick={() => setSelectedIndex(index)}
+                aria-label={`Abrir seção ${section.title}`}
                 sx={{
                   width: "100%",
-                  bgcolor: "rgba(15,23,42,0.72)",
-                  border: "1px solid rgba(255,255,255,0.18)",
-                  borderRadius: 4,
-                  p: { xs: 2.5, md: 4 },
-                  backdropFilter: "blur(6px)",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: { xs: 1.8, md: 2 },
-                  boxShadow: "0 20px 45px rgba(8,15,35,0.45)",
-                  transition: "transform 0.3s ease",
-                  maxHeight: { xs: "70vh", md: "unset" },
-                  overflow: { xs: "auto", md: "visible" },
-                  scrollbarWidth: "thin",
-                  scrollbarColor: "rgba(125,211,252,0.4) transparent",
-                  "&::-webkit-scrollbar": {
-                    width: 6,
-                  },
-                  "&::-webkit-scrollbar-thumb": {
-                    backgroundColor: "rgba(125,211,252,0.4)",
-                    borderRadius: 999,
-                  },
-                  "&::-webkit-scrollbar-track": {
-                    background: "transparent",
+                  borderRadius: 3,
+                  textAlign: "left",
+                  p: 0,
+                  overflow: "hidden",
+                  "&:focus-visible > div": {
+                    borderColor: accentColor,
+                    boxShadow: "0 0 0 3px rgba(125,211,252,0.28)",
                   },
                 }}
               >
-                <Typography
-                  variant="h3"
-                  component="h1"
+                <Box
                   sx={{
-                    fontSize: { xs: "1.5rem", md: "2.4rem" },
+                    height: "100%",
+                    borderRadius: 3,
+                    border: "1px solid rgba(255,255,255,0.18)",
+                    bgcolor: "rgba(15,23,42,0.68)",
+                    backdropFilter: "blur(6px)",
+                    px: { xs: 2, md: 2.6 },
+                    py: { xs: 2, md: 2.8 },
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 1,
+                    transition:
+                      "transform 0.25s ease, border-color 0.25s ease, background-color 0.25s ease",
+                    boxShadow: "0 18px 44px rgba(8,15,35,0.4)",
+                    "&:hover": {
+                      transform: "translateY(-4px)",
+                      borderColor: accentColor,
+                      bgcolor: "rgba(15,23,42,0.78)",
+                    },
+                  }}
+                >
+                  <Typography
+                    variant="overline"
+                    sx={{
+                      letterSpacing: "0.32em",
+                      color: "rgba(255,255,255,0.55)",
+                    }}
+                  >
+                    {String(index + 1).padStart(2, "0")}
+                  </Typography>
+                  <Typography
+                    variant="h5"
+                    sx={{
+                      fontSize: { xs: "1.1rem", md: "1.28rem" },
+                      fontWeight: 600,
+                      lineHeight: 1.35,
+                      color: "rgba(255,255,255,0.96)",
+                    }}
+                  >
+                    {section.title}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "rgba(255,255,255,0.72)",
+                      lineHeight: 1.6,
+                    }}
+                  >
+                    {section.subtitle}
+                  </Typography>
+                </Box>
+              </ButtonBase>
+            ))}
+          </Box>
+        </Stack>
+      </Box>
+
+      <Fade
+        in={isPanelOpen}
+        timeout={{ enter: 200, exit: 200 }}
+        unmountOnExit
+      >
+        <Box
+          onClick={() => setSelectedIndex(null)}
+          sx={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 1290,
+            bgcolor: "rgba(15,23,42,0.65)",
+            backdropFilter: "blur(6px)",
+          }}
+        />
+      </Fade>
+
+      {selectedSection && (
+        <Slide
+          direction={isMobile ? "up" : "left"}
+          in={isPanelOpen}
+          mountOnEnter
+          unmountOnExit
+        >
+          <Box
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={
+              selectedIndex !== null ? `home-section-title-${selectedIndex}` : undefined
+            }
+            sx={{
+              position: "fixed",
+              zIndex: 1400,
+              backgroundColor: "rgba(15,23,42,0.92)",
+              border: "1px solid rgba(255,255,255,0.15)",
+              boxShadow: "0 32px 90px rgba(8,15,35,0.55)",
+              backdropFilter: "blur(14px)",
+              display: "flex",
+              flexDirection: "column",
+              gap: { xs: 1.5, md: 2.5 },
+              p: { xs: 2.5, md: 3.5 },
+              overflow: "hidden",
+              ...panelSx,
+            }}
+          >
+            <Stack
+              direction="row"
+              alignItems="flex-start"
+              spacing={2}
+              sx={{ width: "100%" }}
+            >
+              <Stack spacing={0.75} sx={{ flex: 1, minWidth: 0 }}>
+                <Typography
+                  id={`home-section-title-${selectedIndex}`}
+                  variant="h4"
+                  component="h2"
+                  sx={{
+                    fontSize: { xs: "1.6rem", md: "2rem" },
                     lineHeight: 1.2,
-                    textAlign: "center",
                     letterSpacing: "0.03em",
                   }}
                 >
-                  {activeSection.title}
+                  {selectedSection.title}
                 </Typography>
-
                 <Typography
-                  variant="subtitle1"
-                  component="h2"
+                  variant="overline"
                   sx={{
-                    textAlign: "center",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.3em",
-                    fontSize: { xs: "0.7rem", md: "0.85rem" },
-                    color: "rgba(255,255,255,0.65)",
+                    letterSpacing: "0.28em",
+                    color: "rgba(255,255,255,0.6)",
                   }}
                 >
-                  {activeSection.subtitle}
+                  {selectedSection.subtitle}
                 </Typography>
-
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: { xs: 1.8, md: 2 },
-                  }}
-                >
-                  {activeSection.body}
-                </Box>
-              </Box>
-            </Fade>
-          </Box>
-
-          <Stack
-            direction="row"
-            spacing={0.75}
-            sx={{
-              width: "100%",
-              display: { xs: "flex", md: "none" },
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {sections.map(({ title }, index) => (
-              <Box
-                key={title}
+              </Stack>
+              <IconButton
+                aria-label="Fechar painel"
+                onClick={() => setSelectedIndex(null)}
                 sx={{
-                  width: index === activeIndex ? 24 : 8,
-                  height: 6,
-                  borderRadius: 999,
-                  bgcolor:
-                    index === activeIndex
-                      ? accentColor
-                      : "rgba(255,255,255,0.35)",
-                  transition: "all 0.3s ease",
+                  bgcolor: "rgba(15,23,42,0.65)",
+                  border: "1px solid rgba(255,255,255,0.15)",
+                  color: "#ffffff",
+                  "&:hover": {
+                    bgcolor: "rgba(15,23,42,0.85)",
+                  },
                 }}
-              />
-            ))}
-          </Stack>
+              >
+                <CloseIcon />
+              </IconButton>
+            </Stack>
 
-          <IconButton
-            onClick={handleNext}
-            disabled={!hasNext}
-            aria-label="Próxima seção"
-            sx={{
-              ...navigationButtonSx,
-              display: { xs: "none", md: "inline-flex" },
-              visibility: hasNext ? "visible" : "hidden",
-            }}
-          >
-            <KeyboardArrowDownIcon fontSize="large" />
-          </IconButton>
-        </Stack>
-      </Box>
+            {selectedPosition && (
+              <Typography
+                variant="caption"
+                sx={{
+                  letterSpacing: "0.32em",
+                  color: "rgba(255,255,255,0.45)",
+                  textTransform: "uppercase",
+                }}
+              >
+                {String(selectedPosition).padStart(2, "0")} / {String(totalSections).padStart(2, "0")}
+              </Typography>
+            )}
+
+            <Box
+              sx={{
+                flex: 1,
+                overflowY: "auto",
+                pr: { xs: 0.5, md: 1.5 },
+                color: "rgba(255,255,255,0.92)",
+                mt: { xs: 1, md: 1.5 },
+                scrollbarWidth: "thin",
+                scrollbarColor: "rgba(125,211,252,0.4) transparent",
+                "&::-webkit-scrollbar": {
+                  width: 6,
+                },
+                "&::-webkit-scrollbar-thumb": {
+                  backgroundColor: "rgba(125,211,252,0.4)",
+                  borderRadius: 999,
+                },
+                "&::-webkit-scrollbar-track": {
+                  background: "transparent",
+                },
+              }}
+            >
+              {selectedSection.body}
+            </Box>
+          </Box>
+        </Slide>
+      )}
     </Box>
   );
 }
