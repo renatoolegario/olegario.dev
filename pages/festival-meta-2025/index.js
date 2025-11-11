@@ -21,6 +21,25 @@ import EventIcon from "@mui/icons-material/Event";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
+// Todos os que estão lá me vendo esta no subconciente o que eu ganho com isso!
+// Como eu ajudo essa pessoa a resolver problema ?
+
+// Eu tenho que dar um show
+// Eu tenho que conquistar o celebro dessa pessoa
+// Eu tenho que mostrar os pontos para mudar a VIDA
+// Estrutura Inicio - Meio e Fim
+// Informação é barato
+// Solução é CARO
+// Eu tenho fazer a pessoa ver que tem um problema, mostrar a causa do problema, e dar o passo a passo da solução
+// Faça a pessoa se emocionar se frustar com o problema , logo em seguida apresento a solução
+// Eu tenho que estimular a angustia
+// Chamar para participação engajamento, sempre com encaixe no próximo tema
+// Algo que eu falo é que existe 3 pessoas que não devemos mentir nunca, 1º é sua mulher seu esposo, 2º para o advogado, 3º par ao contador
+// Quem aqui já tem CNPJ aberto ?
+// Quem não tem vai amanhã e abre, e te digo porque seus beneficios são esses: x , y e z
+// No final vou entregar 3 Livros do Pai Rico e Pai Pobre.
+// O objetivo é fazer 5 vendas (tenho que ganhar o coração do povo para que saia 5 vendas sem vender)
+
 const experiences = [
   {
     title: "Metaverse Experience",
@@ -128,9 +147,10 @@ export default function FestivalMeta2025Page() {
                     O futuro imersivo em três dias de experiências híbridas
                   </Typography>
                   <Typography variant="h6" color="text.secondary">
-                    Conecte-se a líderes globais, desenvolvedores visionários e criadores
-                    digitais em uma jornada que combina metaverso, inteligência artificial e
-                    storytelling interativo no mesmo clima neon e futurista da experiência Imagine.
+                    Conecte-se a líderes globais, desenvolvedores visionários e
+                    criadores digitais em uma jornada que combina metaverso,
+                    inteligência artificial e storytelling interativo no mesmo
+                    clima neon e futurista da experiência Imagine.
                   </Typography>
                   <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
                     <Button
@@ -195,7 +215,10 @@ export default function FestivalMeta2025Page() {
                         </Typography>
                       </Stack>
                       <Stack direction="row" spacing={2} alignItems="center">
-                        <LocationOnIcon color="secondary" sx={{ fontSize: 32 }} />
+                        <LocationOnIcon
+                          color="secondary"
+                          sx={{ fontSize: 32 }}
+                        />
                         <Typography color="text.secondary">
                           São Paulo Expo • Transmissão Imersiva Global
                         </Typography>
@@ -208,7 +231,9 @@ export default function FestivalMeta2025Page() {
                       </Stack>
                       <Divider sx={{ borderColor: "rgba(148,163,184,0.2)" }} />
                       <Typography variant="body2" color="text.secondary">
-                        Networking em tempo real com IA, lounges temáticos e experiências exclusivas para quem garantir presença antecipada.
+                        Networking em tempo real com IA, lounges temáticos e
+                        experiências exclusivas para quem garantir presença
+                        antecipada.
                       </Typography>
                     </Stack>
                   </CardContent>
@@ -260,14 +285,19 @@ export default function FestivalMeta2025Page() {
                   <ListItemIcon sx={{ minWidth: 42 }}>
                     <CheckCircleIcon color="primary" />
                   </ListItemIcon>
-                  <ListItemText primary={item} primaryTypographyProps={{ color: "text.secondary" }} />
+                  <ListItemText
+                    primary={item}
+                    primaryTypographyProps={{ color: "text.secondary" }}
+                  />
                 </ListItem>
               ))}
             </List>
           </Box>
         </Container>
 
-        <Box sx={{ backgroundColor: "rgba(15,23,42,0.7)", py: { xs: 10, md: 14 } }}>
+        <Box
+          sx={{ backgroundColor: "rgba(15,23,42,0.7)", py: { xs: 10, md: 14 } }}
+        >
           <Container maxWidth="lg">
             <Typography variant="h4" fontWeight={700} gutterBottom>
               Programação Imersiva
@@ -278,7 +308,8 @@ export default function FestivalMeta2025Page() {
                   <Card
                     sx={{
                       height: "100%",
-                      background: "linear-gradient(160deg, rgba(45,212,191,0.08) 0%, rgba(37,99,235,0.06) 100%)",
+                      background:
+                        "linear-gradient(160deg, rgba(45,212,191,0.08) 0%, rgba(37,99,235,0.06) 100%)",
                       borderRadius: 4,
                       border: "1px solid rgba(148,163,184,0.18)",
                       boxShadow: "0 25px 55px rgba(15,23,42,0.6)",
@@ -293,11 +324,15 @@ export default function FestivalMeta2025Page() {
                         {section.items.map((agendaItem) => (
                           <ListItem key={agendaItem} sx={{ px: 0 }}>
                             <ListItemIcon sx={{ minWidth: 40 }}>
-                              <CheckCircleIcon sx={{ color: "rgba(34,211,238,0.8)" }} />
+                              <CheckCircleIcon
+                                sx={{ color: "rgba(34,211,238,0.8)" }}
+                              />
                             </ListItemIcon>
                             <ListItemText
                               primary={agendaItem}
-                              primaryTypographyProps={{ color: "text.secondary" }}
+                              primaryTypographyProps={{
+                                color: "text.secondary",
+                              }}
                             />
                           </ListItem>
                         ))}
@@ -310,7 +345,11 @@ export default function FestivalMeta2025Page() {
           </Container>
         </Box>
 
-        <Container maxWidth="lg" sx={{ py: { xs: 10, md: 16 } }} id="inscricoes">
+        <Container
+          maxWidth="lg"
+          sx={{ py: { xs: 10, md: 16 } }}
+          id="inscricoes"
+        >
           <Grid container spacing={6} alignItems="center">
             <Grid item xs={12} md={6}>
               <Typography variant="h4" fontWeight={700} gutterBottom>
@@ -320,7 +359,11 @@ export default function FestivalMeta2025Page() {
                 Garanta acesso presencial e digital com benefícios exclusivos:
               </Typography>
               <List>
-                {["Pass all access com meetups privados", "Starter kit com wearables conectados", "Três meses de acesso à comunidade Meta Builders"].map((benefit) => (
+                {[
+                  "Pass all access com meetups privados",
+                  "Starter kit com wearables conectados",
+                  "Três meses de acesso à comunidade Meta Builders",
+                ].map((benefit) => (
                   <ListItem key={benefit} sx={{ px: 0 }}>
                     <ListItemIcon sx={{ minWidth: 42 }}>
                       <CheckCircleIcon color="secondary" />
@@ -338,7 +381,8 @@ export default function FestivalMeta2025Page() {
                 sx={{
                   borderRadius: 4,
                   border: "1px solid rgba(148,163,184,0.2)",
-                  background: "linear-gradient(145deg, rgba(37,99,235,0.15) 0%, rgba(8,145,178,0.2) 100%)",
+                  background:
+                    "linear-gradient(145deg, rgba(37,99,235,0.15) 0%, rgba(8,145,178,0.2) 100%)",
                   boxShadow: "0 25px 65px rgba(15,23,42,0.65)",
                   backdropFilter: "blur(10px)",
                 }}
@@ -348,7 +392,8 @@ export default function FestivalMeta2025Page() {
                     Lote atual — R$ 1.290
                   </Typography>
                   <Typography color="text.secondary" paragraph>
-                    Pagamento facilitado em até 12x com inteligência antifraude e checkout seguro via Imagine Pay.
+                    Pagamento facilitado em até 12x com inteligência antifraude
+                    e checkout seguro via Imagine Pay.
                   </Typography>
                   <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
                     <Button
