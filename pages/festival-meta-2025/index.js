@@ -781,8 +781,8 @@ export default function FestivalMeta2025Page() {
           </Stack>
 
           <Typography color="text.secondary" paragraph>
-            Continue aprofundando com os materiais oficiais do MarketUP. Assine
-            o canal e siga a sequência de vídeos para colocar a plataforma em
+            Continue aprofundando com os materiais oficiais do MarketUP. Siga o
+            canal e siga a sequência de vídeos para colocar a plataforma em
             prática no dia a dia.
           </Typography>
 
