@@ -160,10 +160,18 @@ export default function HomePage() {
       },
     ];
     const projects = [
-      "FacilitAgro.com.br",
-      "FalaUai.com.br",
-      "UaiStack.com.br",
-      "MestreStarlink.com.br",
+      { label: "FacilitAgro.com.br", href: "https://facilitagro.com.br" },
+      { label: "FalaUai.com.br", href: "https://falauai.com.br" },
+      { label: "MestreStarlink.com.br", href: "https://mestrestarlink.com.br" },
+      {
+        label: "NaBrasaHamburgueria.com.br",
+        href: "https://www.nabrasahamburgueria.com.br/",
+      },
+      { label: "Olegario.dev/imagine", href: "https://olegario.dev/imagine" },
+      {
+        label: "Olegario.dev/Festival-Meta",
+        href: "https://olegario.dev/festival-meta-2025",
+      },
     ];
 
     return [
@@ -381,23 +389,16 @@ export default function HomePage() {
               foco em resultados reais e expansão contínua.
             </Typography>
             <Stack spacing={0.8} alignItems="stretch">
-              {projects.map((item) => (
-                <Box
-                  key={item}
+              {projects.map(({ label, href }) => (
+                <ListItemButton
+                  key={label}
+                  component="a"
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   sx={{
-                    color: "rgba(255,255,255,0.88)",
-                    borderRadius: 2,
-                    px: 1.5,
-                    py: 1,
-                    transition:
-                      "transform 0.25s ease, background-color 0.25s ease",
+                    ...panelListItemSx,
                     width: "100%",
-                    textAlign: "left",
-                    "&:hover": {
-                      bgcolor: accentColor,
-                      color: "#0f172a",
-                      transform: "scale(1.02)",
-                    },
                   }}
                 >
                   <Typography
@@ -406,11 +407,12 @@ export default function HomePage() {
                       color: "inherit",
                       letterSpacing: "0.05em",
                       textAlign: { xs: "left", sm: "justify" },
+                      width: "100%",
                     }}
                   >
-                    {item}
+                    {label}
                   </Typography>
-                </Box>
+                </ListItemButton>
               ))}
             </Stack>
             <Typography
