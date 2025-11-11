@@ -17,89 +17,98 @@ import {
   Typography,
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import EventIcon from "@mui/icons-material/Event";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
-// Todos os que estão lá me vendo esta no subconciente o que eu ganho com isso!
-// Como eu ajudo essa pessoa a resolver problema ?
-
-// Eu tenho que dar um show
-// Eu tenho que conquistar o celebro dessa pessoa
-// Eu tenho que mostrar os pontos para mudar a VIDA
-// Estrutura Inicio - Meio e Fim
-// Informação é barato
-// Solução é CARO
-// Eu tenho fazer a pessoa ver que tem um problema, mostrar a causa do problema, e dar o passo a passo da solução
-// Faça a pessoa se emocionar se frustar com o problema , logo em seguida apresento a solução
-// Eu tenho que estimular a angustia
-// Chamar para participação engajamento, sempre com encaixe no próximo tema
-// Algo que eu falo é que existe 3 pessoas que não devemos mentir nunca, 1º é sua mulher seu esposo, 2º para o advogado, 3º par ao contador
-// Quem aqui já tem CNPJ aberto ?
-// Quem não tem vai amanhã e abre, e te digo porque seus beneficios são esses: x , y e z
-// No final vou entregar 3 Livros do Pai Rico e Pai Pobre.
-// O objetivo é fazer 5 vendas (tenho que ganhar o coração do povo para que saia 5 vendas sem vender)
-
-const experiences = [
+const talkSections = [
   {
-    title: "Metaverse Experience",
-    description:
-      "Imersão completa em ambientes digitais com realidade mista e avatares inteligentes para networking e cocriação.",
+    title: "INÍCIO — Conexão, emoção e autoridade",
+    duration: "5 minutos",
+    focus:
+      "Gerar identificação imediata com as empreendedoras e mostrar vulnerabilidade para criar confiança.",
+    highlights: [
+      "Comece celebrando a presença das participantes e pergunte, com sinceridade, quem sente que o dinheiro entra e sai sem controle.",
+      "Compartilhe as quebras de 2014 e 2022 com pausa dramática, destacando que os mesmos erros foram cometidos.",
+      "Evidencie os dois principais erros: misturar finanças pessoais com as da empresa e negligenciar o contador.",
+      "Reforce a lição aprendida: o que quebra não é a falta de dinheiro, e sim a falta de organização e clareza.",
+    ],
   },
   {
-    title: "Innovation Stages",
-    description:
-      "Trilhas temáticas com especialistas em IA, realidade estendida e computação espacial apresentando cases e demos.",
+    title: "MEIO — O aprendizado e a virada",
+    duration: "10 minutos",
+    focus:
+      "Transformar consciência em ação prática, trazendo conceitos, metáforas e ferramentas simples de implementar.",
+    highlights: [
+      "Informação é barata; solução exige mudança de hábito e mentalidade.",
+      "Três pessoas que nunca devemos mentir: cônjuge, advogado e contador — mentir para o contador gera impostos sobre dinheiro que não existe.",
+      "Mostre o contador como médico financeiro, responsável por diagnosticar a saúde do negócio.",
+      "Convide quem ainda não tem CNPJ a abrir o próprio amanhã mesmo, destacando benefícios fiscais, proteção patrimonial e visão empresarial.",
+      "Explique o pró-labore como salário do dono e conecte com a metáfora da gasolina: tirar dinheiro do caixa é ficar sem combustível para crescer.",
+      "Apresente a divisão em três potes: caixa da empresa, pró-labore e reserva.",
+      "Cite ferramentas gratuitas (MarketUp, Mercado Pago) e recursos extras como a planilha de gestão pessoal do Pai Pobre.",
+      "Direcione para a página olegario.dev/festival-meta-2025 onde estão resumos, vídeos e planilhas para baixar.",
+    ],
   },
   {
-    title: "Creator Lab",
-    description:
-      "Espaço dedicado a artistas e developers explorarem ferramentas de criação digital acelerada com suporte técnico.",
+    title: "FINAL — Emoção, engajamento e ação",
+    duration: "5 minutos",
+    focus:
+      "Selar o compromisso emocional com o controle financeiro e gerar interação com a plateia.",
+    highlights: [
+      "Reforce que não controlar o dinheiro é ser controlada por ele: o problema nunca foi a falta de clientes, e sim a ausência de controle.",
+      "Entregue o passo essencial: abra o CNPJ, separe o dinheiro e registre cada movimentação.",
+      "Traga o conceito de liberdade financeira como paz e sono tranquilo.",
+      "Anuncie o sorteio de três exemplares de 'Pai Rico, Pai Pobre' e convide todas a assumirem o compromisso de não misturar contas.",
+      "Finalize com a chamada à ação: informação é barata, ação muda a história — hoje começa a virada.",
+    ],
   },
 ];
 
-const highlights = [
-  "Keynotes internacionais sobre o futuro da presença digital",
-  "Sessões hands-on com plataformas meta-humans e produção volumétrica",
-  "Área de negócios com matchmaking inteligente entre startups e investidores",
-  "Estúdio 360° para experiências gamificadas e transmissão ao vivo",
+const toolkit = [
+  {
+    title: "Ferramentas de Fluxo de Caixa",
+    items: [
+      "MarketUp — controle de estoque, vendas, fluxo de caixa e emissão de notas fiscais.",
+      "Mercado Pago — solução rápida para pagamentos e recebimentos do dia a dia.",
+      "Planilha do Pai Pobre — visão clara das despesas pessoais para não confundir com o caixa da empresa.",
+    ],
+  },
+  {
+    title: "Mudança de Mentalidade",
+    items: [
+      "Se pagar primeiro com pró-labore fixo e tratar a empresa como entidade separada.",
+      "Entender o contador como parceiro estratégico e não apenas responsável pelos impostos.",
+      "Registrar tudo: quem anota controla, quem controla decide com clareza.",
+    ],
+  },
+  {
+    title: "Divisão em Três Potes",
+    items: [
+      "Caixa da empresa — custos, produtos e reinvestimentos.",
+      "Pró-labore — seu salário como gestora.",
+      "Reserva — emergências e oportunidades para não travar o crescimento.",
+    ],
+  },
 ];
 
-const agenda = [
-  {
-    title: "Dia 1 — Vision",
-    items: [
-      "Keynote de abertura com previsões para 2030",
-      "Demo Arena com lançamentos de parceiros de hardware",
-      "Talks sobre identidade digital e privacidade no metaverso",
-    ],
-  },
-  {
-    title: "Dia 2 — Build",
-    items: [
-      "Workshops de criação de mundos persistentes",
-      "Laboratórios de IA generativa aplicada a experiências imersivas",
-      "Painel sobre interoperabilidade e padrões abertos",
-    ],
-  },
-  {
-    title: "Dia 3 — Scale",
-    items: [
-      "Casos reais de adoção corporativa",
-      "Rodadas de pitch com startups XR",
-      "Showcase com performances interativas e artistas digitais",
-    ],
-  },
+const actionChecklist = [
+  "Abrir ou regularizar o CNPJ e criar conta bancária exclusiva da empresa.",
+  "Definir um valor mensal de pró-labore e ajustar o padrão de vida pessoal ao salário definido.",
+  "Mapear entradas e saídas utilizando as planilhas e ferramentas sugeridas.",
+  "Agendar conversa com contador de confiança para revisão do cenário atual.",
+  "Implementar a divisão em três potes e revisá-la semanalmente.",
+  "Voltar à página de apoio para rever os tópicos e baixar os materiais sempre que necessário.",
 ];
 
 export default function FestivalMeta2025Page() {
   return (
     <>
       <Head>
-        <title>Festival Meta 2025 | Olegário.Dev</title>
+        <title>Festival Meta 2025 — Material de Apoio | Olegário.Dev</title>
         <meta
           name="description"
-          content="Festival Meta 2025 — três dias de inovação em metaverso, IA e experiências imersivas com o mesmo visual neon da experiência Imagine."
+          content="Material de apoio da palestra 'Fluxo de Caixa: o divisor de águas entre quebrar e prosperar' — roteiro, ferramentas e checklist de ação."
         />
       </Head>
 
@@ -144,18 +153,18 @@ export default function FestivalMeta2025Page() {
                       textShadow: "0 0 20px rgba(34,211,238,0.45)",
                     }}
                   >
-                    O futuro imersivo em três dias de experiências híbridas
+                    Fluxo de Caixa: o divisor de águas entre quebrar e prosperar
                   </Typography>
                   <Typography variant="h6" color="text.secondary">
-                    Conecte-se a líderes globais, desenvolvedores visionários e
-                    criadores digitais em uma jornada que combina metaverso,
-                    inteligência artificial e storytelling interativo no mesmo
-                    clima neon e futurista da experiência Imagine.
+                    Use este roteiro como material de apoio durante a apresentação. Aqui
+                    estão os gatilhos de conexão, as metáforas que fortalecem a mensagem
+                    e os recursos para as participantes aplicarem o que aprenderam ainda
+                    esta semana.
                   </Typography>
                   <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
                     <Button
                       component={Link}
-                      href="#inscricoes"
+                      href="#roteiro"
                       variant="contained"
                       color="primary"
                       size="large"
@@ -169,11 +178,11 @@ export default function FestivalMeta2025Page() {
                         boxShadow: "0 10px 30px rgba(34,211,238,0.45)",
                       }}
                     >
-                      Garantir ingresso
+                      Revisar roteiro completo
                     </Button>
                     <Button
                       component={Link}
-                      href="/imagine"
+                      href="#recursos"
                       variant="outlined"
                       color="primary"
                       size="large"
@@ -191,7 +200,7 @@ export default function FestivalMeta2025Page() {
                         },
                       }}
                     >
-                      Explorar Imagine
+                      Acessar ferramentas
                     </Button>
                   </Stack>
                 </Stack>
@@ -211,7 +220,7 @@ export default function FestivalMeta2025Page() {
                       <Stack direction="row" spacing={2} alignItems="center">
                         <EventIcon color="primary" sx={{ fontSize: 36 }} />
                         <Typography variant="h6" fontWeight={600}>
-                          12 — 14 de Setembro, 2025
+                          Festival Meta 2025 — Trilha Finanças
                         </Typography>
                       </Stack>
                       <Stack direction="row" spacing={2} alignItems="center">
@@ -220,20 +229,20 @@ export default function FestivalMeta2025Page() {
                           sx={{ fontSize: 32 }}
                         />
                         <Typography color="text.secondary">
-                          São Paulo Expo • Transmissão Imersiva Global
+                          Presencial em São Paulo • Transmissão para todo o Brasil
                         </Typography>
                       </Stack>
                       <Stack direction="row" spacing={2} alignItems="center">
                         <AccessTimeIcon color="info" sx={{ fontSize: 30 }} />
                         <Typography color="text.secondary">
-                          Acesso híbrido com programação 24/7 no hub digital
+                          Duração total: 20 minutos (5 + 10 + 5)
                         </Typography>
                       </Stack>
                       <Divider sx={{ borderColor: "rgba(148,163,184,0.2)" }} />
                       <Typography variant="body2" color="text.secondary">
-                        Networking em tempo real com IA, lounges temáticos e
-                        experiências exclusivas para quem garantir presença
-                        antecipada.
+                        O objetivo é conquistar o coração da audiência para gerar
+                        pelo menos cinco novas clientes sem fazer pitch agressivo —
+                        apenas mostrando clareza, autoridade e caminho.
                       </Typography>
                     </Stack>
                   </CardContent>
@@ -243,10 +252,19 @@ export default function FestivalMeta2025Page() {
           </Container>
         </Box>
 
-        <Container maxWidth="lg" sx={{ py: { xs: 10, md: 14 } }}>
+        <Container maxWidth="lg" sx={{ py: { xs: 10, md: 14 } }} id="roteiro">
+          <Typography variant="h4" fontWeight={700} gutterBottom>
+            Roteiro guiado da apresentação
+          </Typography>
+          <Typography color="text.secondary" sx={{ mb: 6 }}>
+            Use os pontos abaixo como âncoras durante o discurso. Cada bloco traz a
+            intenção principal, frases-chave e lembretes para conectar um tema ao
+            próximo mantendo o ritmo emocional da palestra.
+          </Typography>
+
           <Grid container spacing={6}>
-            {experiences.map((experience) => (
-              <Grid item xs={12} md={4} key={experience.title}>
+            {talkSections.map((section) => (
+              <Grid item xs={12} md={4} key={section.title}>
                 <Card
                   sx={{
                     height: "100%",
@@ -263,48 +281,58 @@ export default function FestivalMeta2025Page() {
                   }}
                 >
                   <CardContent>
-                    <Typography variant="h5" fontWeight={600} gutterBottom>
-                      {experience.title}
-                    </Typography>
-                    <Typography color="text.secondary">
-                      {experience.description}
-                    </Typography>
+                    <Stack spacing={2}>
+                      <Typography variant="h6" fontWeight={600}>
+                        {section.title}
+                      </Typography>
+                      <Stack direction="row" spacing={1} alignItems="center">
+                        <AccessTimeIcon sx={{ fontSize: 20, color: "primary.light" }} />
+                        <Typography variant="body2" color="primary.light">
+                          {section.duration}
+                        </Typography>
+                      </Stack>
+                      <Typography variant="body2" color="text.secondary">
+                        {section.focus}
+                      </Typography>
+                      <List dense>
+                        {section.highlights.map((item) => (
+                          <ListItem key={item} sx={{ px: 0 }}>
+                            <ListItemIcon sx={{ minWidth: 36 }}>
+                              <CheckCircleIcon color="primary" />
+                            </ListItemIcon>
+                            <ListItemText
+                              primary={item}
+                              primaryTypographyProps={{
+                                color: "text.secondary",
+                              }}
+                            />
+                          </ListItem>
+                        ))}
+                      </List>
+                    </Stack>
                   </CardContent>
                 </Card>
               </Grid>
             ))}
           </Grid>
-
-          <Box sx={{ mt: { xs: 10, md: 14 } }}>
-            <Typography variant="h4" fontWeight={700} gutterBottom>
-              Por que participar?
-            </Typography>
-            <List>
-              {highlights.map((item) => (
-                <ListItem key={item} sx={{ px: 0 }}>
-                  <ListItemIcon sx={{ minWidth: 42 }}>
-                    <CheckCircleIcon color="primary" />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={item}
-                    primaryTypographyProps={{ color: "text.secondary" }}
-                  />
-                </ListItem>
-              ))}
-            </List>
-          </Box>
         </Container>
 
         <Box
           sx={{ backgroundColor: "rgba(15,23,42,0.7)", py: { xs: 10, md: 14 } }}
+          id="recursos"
         >
           <Container maxWidth="lg">
             <Typography variant="h4" fontWeight={700} gutterBottom>
-              Programação Imersiva
+              Ferramentas, técnicas e mentalidade
+            </Typography>
+            <Typography color="text.secondary" sx={{ mb: 6 }}>
+              Reforce estes pilares sempre que apresentar soluções. Eles mostram que a
+              transformação depende menos de planilhas e mais de atitude consistente,
+              com apoio das ferramentas certas.
             </Typography>
             <Grid container spacing={6}>
-              {agenda.map((section) => (
-                <Grid item xs={12} md={4} key={section.title}>
+              {toolkit.map((block) => (
+                <Grid item xs={12} md={4} key={block.title}>
                   <Card
                     sx={{
                       height: "100%",
@@ -318,21 +346,17 @@ export default function FestivalMeta2025Page() {
                   >
                     <CardContent>
                       <Typography variant="h6" fontWeight={600} gutterBottom>
-                        {section.title}
+                        {block.title}
                       </Typography>
                       <List dense>
-                        {section.items.map((agendaItem) => (
-                          <ListItem key={agendaItem} sx={{ px: 0 }}>
-                            <ListItemIcon sx={{ minWidth: 40 }}>
-                              <CheckCircleIcon
-                                sx={{ color: "rgba(34,211,238,0.8)" }}
-                              />
+                        {block.items.map((item) => (
+                          <ListItem key={item} sx={{ px: 0 }}>
+                            <ListItemIcon sx={{ minWidth: 36 }}>
+                              <CheckCircleIcon sx={{ color: "rgba(34,211,238,0.8)" }} />
                             </ListItemIcon>
                             <ListItemText
-                              primary={agendaItem}
-                              primaryTypographyProps={{
-                                color: "text.secondary",
-                              }}
+                              primary={item}
+                              primaryTypographyProps={{ color: "text.secondary" }}
                             />
                           </ListItem>
                         ))}
@@ -345,31 +369,25 @@ export default function FestivalMeta2025Page() {
           </Container>
         </Box>
 
-        <Container
-          maxWidth="lg"
-          sx={{ py: { xs: 10, md: 16 } }}
-          id="inscricoes"
-        >
+        <Container maxWidth="lg" sx={{ py: { xs: 10, md: 16 } }}>
           <Grid container spacing={6} alignItems="center">
             <Grid item xs={12} md={6}>
               <Typography variant="h4" fontWeight={700} gutterBottom>
-                Ingressos limitados
+                Checklist pós-palestra
               </Typography>
               <Typography color="text.secondary" paragraph>
-                Garanta acesso presencial e digital com benefícios exclusivos:
+                Entregue este passo a passo para que cada empreendedora saiba exatamente
+                por onde começar. Reforce que execução simples vence planos complexos
+                que nunca saem do papel.
               </Typography>
               <List>
-                {[
-                  "Pass all access com meetups privados",
-                  "Starter kit com wearables conectados",
-                  "Três meses de acesso à comunidade Meta Builders",
-                ].map((benefit) => (
-                  <ListItem key={benefit} sx={{ px: 0 }}>
+                {actionChecklist.map((item) => (
+                  <ListItem key={item} sx={{ px: 0 }}>
                     <ListItemIcon sx={{ minWidth: 42 }}>
                       <CheckCircleIcon color="secondary" />
                     </ListItemIcon>
                     <ListItemText
-                      primary={benefit}
+                      primary={item}
                       primaryTypographyProps={{ color: "text.secondary" }}
                     />
                   </ListItem>
@@ -389,14 +407,19 @@ export default function FestivalMeta2025Page() {
               >
                 <CardContent>
                   <Typography variant="h5" fontWeight={600} gutterBottom>
-                    Lote atual — R$ 1.290
+                    Recursos imediatos
                   </Typography>
                   <Typography color="text.secondary" paragraph>
-                    Pagamento facilitado em até 12x com inteligência antifraude
-                    e checkout seguro via Imagine Pay.
+                    Todos os materiais citados estão reunidos nesta página. Utilize os
+                    botões abaixo para compartilhar durante a transmissão ou enviar no
+                    grupo da comunidade após o evento.
                   </Typography>
                   <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
                     <Button
+                      component="a"
+                      href="https://www.marketup.com/"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       variant="contained"
                       color="secondary"
                       size="large"
@@ -409,9 +432,13 @@ export default function FestivalMeta2025Page() {
                         boxShadow: "0 15px 40px rgba(236,72,153,0.45)",
                       }}
                     >
-                      Comprar agora
+                      Abrir MarketUp
                     </Button>
                     <Button
+                      component="a"
+                      href="https://pages.mercadopago.com.br/"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       variant="outlined"
                       color="secondary"
                       size="large"
@@ -428,9 +455,18 @@ export default function FestivalMeta2025Page() {
                         },
                       }}
                     >
-                      Falar com o time
+                      Soluções Mercado Pago
                     </Button>
                   </Stack>
+                  <Button
+                    component={Link}
+                    href="/"
+                    variant="text"
+                    color="inherit"
+                    sx={{ mt: 2, textTransform: "none" }}
+                  >
+                    Voltar para olegario.dev
+                  </Button>
                 </CardContent>
               </Card>
             </Grid>
