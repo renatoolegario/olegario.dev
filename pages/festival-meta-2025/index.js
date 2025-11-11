@@ -20,130 +20,142 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import EventIcon from "@mui/icons-material/Event";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
+import InsightsIcon from "@mui/icons-material/Insights";
+import SavingsIcon from "@mui/icons-material/Savings";
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+import PlayCircleFilledWhiteIcon from "@mui/icons-material/PlayCircleFilledWhite";
+import PsychologyAltIcon from "@mui/icons-material/PsychologyAlt";
+import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
+import AutoStoriesIcon from "@mui/icons-material/AutoStories";
+import LightbulbIcon from "@mui/icons-material/Lightbulb";
+import PaymentsIcon from "@mui/icons-material/Payments";
+import DownloadIcon from "@mui/icons-material/Download";
+import LaunchIcon from "@mui/icons-material/Launch";
 
-const talkSections = [
+const pillars = [
+  {
+    title: "Clareza e organização",
+    description:
+      "Fluxo de caixa controlado revela para onde o dinheiro vai e te permite decidir com consciência.",
+    icon: InsightsIcon,
+    color: "primary",
+  },
+  {
+    title: "Disciplina com pró-labore",
+    description:
+      "Trate-se como funcionária da empresa: salário fixo, contas pessoais ajustadas e nada de retirar extra do caixa.",
+    icon: SavingsIcon,
+    color: "secondary",
+  },
+  {
+    title: "Proteção empresarial",
+    description:
+      "CNPJ ativo, contas separadas e contador parceiro criam a barreira jurídica que protege o seu patrimônio.",
+    icon: AccountBalanceIcon,
+    color: "info",
+  },
+];
+
+const timeline = [
   {
     title: "INÍCIO — Conexão, emoção e autoridade",
     duration: "5 minutos",
-    focus:
+    objective:
       "Gerar identificação imediata com as empreendedoras e mostrar vulnerabilidade para criar confiança.",
     highlights: [
-      "Comece celebrando a presença das participantes e pergunte, com sinceridade, quem sente que o dinheiro entra e sai sem controle.",
-      "Compartilhe as quebras de 2014 e 2022 com pausa dramática, destacando que os mesmos erros foram cometidos.",
-      "Evidencie os dois principais erros: misturar finanças pessoais com as da empresa e negligenciar o contador.",
-      "Reforce a lição aprendida: o que quebra não é a falta de dinheiro, e sim a falta de organização e clareza.",
+      "Cumprimente com energia, celebre a presença e faça a pergunta sobre o dinheiro que some levantando a mão junto.",
+      "Compartilhe as quebras de 2014 e 2022 com pausa dramática, destacando os dois erros: misturar finanças e dispensar o contador.",
+      "Reforce que a queda não foi por falta de clientes, e sim por falta de organização e clareza.",
     ],
+    quote:
+      "O que quebra a gente não é a falta de dinheiro — é a falta de organização e clareza.",
   },
   {
     title: "MEIO — O aprendizado e a virada",
     duration: "10 minutos",
-    focus:
-      "Transformar consciência em ação prática, trazendo conceitos, metáforas e ferramentas simples de implementar.",
+    objective:
+      "Transformar consciência em ação prática com técnicas simples, mudança de hábito e ferramentas acessíveis.",
     highlights: [
-      "Informação é barata; solução exige mudança de hábito e mentalidade.",
-      "Três pessoas que nunca devemos mentir: cônjuge, advogado e contador — mentir para o contador gera impostos sobre dinheiro que não existe.",
-      "Mostre o contador como médico financeiro, responsável por diagnosticar a saúde do negócio.",
-      "Convide quem ainda não tem CNPJ a abrir o próprio amanhã mesmo, destacando benefícios fiscais, proteção patrimonial e visão empresarial.",
-      "Explique o pró-labore como salário do dono e conecte com a metáfora da gasolina: tirar dinheiro do caixa é ficar sem combustível para crescer.",
-      "Apresente a divisão em três potes: caixa da empresa, pró-labore e reserva.",
-      "Cite ferramentas gratuitas (MarketUp, Mercado Pago) e recursos extras como a planilha de gestão pessoal do Pai Pobre.",
-      "Direcione para a página olegario.dev/festival-meta-2025 onde estão resumos, vídeos e planilhas para baixar.",
+      "Explique que informação é barata, mas solução exige mudança de mentalidade e rotina.",
+      "Apresente as três pessoas para quem nunca devemos mentir (cônjuge, advogado e contador) e conecte com impostos indevidos.",
+      "Mostre o contador como médico financeiro da empresa e convide quem não tem CNPJ a abrir amanhã, listando os benefícios.",
+      "Conte o segredo do pró-labore: salário fixo para a dona, metáfora da gasolina e divisão em três potes (caixa, pró-labore, reserva).",
+      "Indique MarketUp, Mercado Pago e a planilha do Pai Pobre como ferramentas gratuitas e direcione para esta página.",
     ],
+    quote:
+      "É igual tirar gasolina do carro para acender a churrasqueira: resolve hoje, mas amanhã você fica a pé.",
   },
   {
     title: "FINAL — Emoção, engajamento e ação",
     duration: "5 minutos",
-    focus:
-      "Selar o compromisso emocional com o controle financeiro e gerar interação com a plateia.",
+    objective:
+      "Selar o compromisso emocional com o controle financeiro e gerar participação da plateia.",
     highlights: [
-      "Reforce que não controlar o dinheiro é ser controlada por ele: o problema nunca foi a falta de clientes, e sim a ausência de controle.",
-      "Entregue o passo essencial: abra o CNPJ, separe o dinheiro e registre cada movimentação.",
-      "Traga o conceito de liberdade financeira como paz e sono tranquilo.",
-      "Anuncie o sorteio de três exemplares de 'Pai Rico, Pai Pobre' e convide todas a assumirem o compromisso de não misturar contas.",
-      "Finalize com a chamada à ação: informação é barata, ação muda a história — hoje começa a virada.",
+      "Confesse que quebrou por falta de controle e mostre que quem não controla o dinheiro é controlado por ele.",
+      "Entregue o primeiro passo: abrir o CNPJ, separar o dinheiro e anotar cada movimento.",
+      "Descreva a sensação de liberdade e sono tranquilo quando o fluxo de caixa está em ordem.",
+      "Anuncie o sorteio de três exemplares de Pai Rico, Pai Pobre e peça que levantem a mão prometendo não misturar mais as contas.",
+      "Finalize reforçando que a ação muda a história e repita o link olegario.dev/festival-meta-2025.",
     ],
+    quote: "Quem controla o dinheiro é quem decide o rumo da própria liberdade.",
   },
 ];
 
-const toolkit = [
+const metaphors = [
+  "Quem mente para o contador paga imposto sobre dinheiro que nem existe.",
+  "O pró-labore é o seu salário — sem ele, você tira combustível do crescimento.",
+  "Separar conta pessoal da empresarial constrói a muralha jurídica que protege família e patrimônio.",
+  "Informação é barata. O que muda o jogo é agir todos os dias sobre o que você registra.",
+];
+
+const resources = [
   {
-    title: "Ferramentas de Fluxo de Caixa",
-    items: [
-      "MarketUp — controle de estoque, vendas, fluxo de caixa e emissão de notas fiscais.",
-      "Mercado Pago — solução rápida para pagamentos e recebimentos do dia a dia.",
-      "Planilha do Pai Pobre — visão clara das despesas pessoais para não confundir com o caixa da empresa.",
-    ],
+    title: "MarketUp",
+    description:
+      "Software gratuito para controlar estoque, vendas, fluxo de caixa e emitir notas fiscais sem complicação.",
+    href: "https://www.marketup.com/",
+    icon: LightbulbIcon,
+    color: "primary",
   },
   {
-    title: "Mudança de Mentalidade",
-    items: [
-      "Se pagar primeiro com pró-labore fixo e tratar a empresa como entidade separada.",
-      "Entender o contador como parceiro estratégico e não apenas responsável pelos impostos.",
-      "Registrar tudo: quem anota controla, quem controla decide com clareza.",
-    ],
+    title: "Mercado Pago",
+    description:
+      "Soluções para pagamentos e recebimentos do dia a dia, integrando vendas presenciais e online.",
+    href: "https://pages.mercadopago.com.br/",
+    icon: PaymentsIcon,
+    color: "secondary",
   },
   {
-    title: "Divisão em Três Potes",
-    items: [
-      "Caixa da empresa — custos, produtos e reinvestimentos.",
-      "Pró-labore — seu salário como gestora.",
-      "Reserva — emergências e oportunidades para não travar o crescimento.",
-    ],
+    title: "Planilha de gestão pessoal (Pai Pobre)",
+    description:
+      "Planilha simples para mapear cada gasto pessoal e não confundir com o caixa da empresa.",
+    href: "/downloads/planilha-gestao-pessoal.csv",
+    icon: DownloadIcon,
+    color: "info",
   },
 ];
 
-const actionChecklist = [
+const participantChecklist = [
   "Abrir ou regularizar o CNPJ e criar conta bancária exclusiva da empresa.",
-  "Definir um valor mensal de pró-labore e ajustar o padrão de vida pessoal ao salário definido.",
-  "Mapear entradas e saídas utilizando as planilhas e ferramentas sugeridas.",
-  "Agendar conversa com contador de confiança para revisão do cenário atual.",
-  "Implementar a divisão em três potes e revisá-la semanalmente.",
-  "Voltar à página de apoio para rever os tópicos e baixar os materiais sempre que necessário.",
+  "Definir um valor mensal de pró-labore e ajustar o padrão de vida pessoal a esse salário.",
+  "Registrar entradas e saídas diariamente usando a planilha ou o MarketUp.",
+  "Separar o dinheiro em três potes: caixa da empresa, pró-labore e reserva.",
+  "Agendar uma conversa com o contador para revisar o cenário atual e alinhar impostos.",
+  "Voltar para esta página sempre que precisar de reforço ou novos materiais.",
 ];
 
-const presentationBlocks = [
-  {
-    title: "O que a plateia pensa",
-    accent: "primary",
-    points: [
-      'Todos que estão lá me vendo estão no subconsciente perguntando "o que eu ganho com isso?"',
-      "Mostre de cara como ajudamos a resolver o problema deles e por que aquela solução vale a nova realidade que desejam.",
-    ],
-  },
-  {
-    title: "Tom e ritmo da narrativa",
-    accent: "secondary",
-    points: [
-      "É um show completo: conquiste o cérebro e o coração com início, meio e fim bem definidos.",
-      "Reforce que informação é barata, mas a solução que entregamos é cara porque transforma a vida.",
-    ],
-  },
-  {
-    title: "Emoção e engajamento",
-    accent: "info",
-    points: [
-      "Faça o público se emocionar e até se frustrar com o problema antes de apresentar o passo a passo da solução.",
-      "Estímulo de angústia seguido por um chamado para participação, sempre com gancho para o próximo tema.",
-    ],
-  },
+const presenterReminders = [
+  "Entre com sorriso, postura aberta e contato visual. Energia alta desde o primeiro segundo.",
+  "Use as pausas dramáticas após contar as quebras para que a mensagem assente.",
+  "Levante a mão junto com a plateia e ria com elas para quebrar a tensão.",
+  "Reforce o link olegario.dev/festival-meta-2025 em cada transição importante.",
+  "Feche comemorando quem se comprometeu a separar contas: peça energia e celebre.",
 ];
 
-const closingActions = [
-  {
-    title: "Integridade e conexão",
-    description:
-      "Fale das três pessoas a quem não devemos mentir (esposa, advogado, contador) para reforçar total transparência.",
-  },
-  {
-    title: "Credenciais práticas",
-    description:
-      "Pergunte quem já tem CNPJ aberto, estimule quem ainda não tem a abrir amanhã e liste os benefícios X, Y e Z.",
-  },
-  {
-    title: "Fechamento emocional",
-    description:
-      "No fim, entregue os três livros do Pai Rico, Pai Pobre e mostre que a missão é conquistar cinco vendas de coração.",
-  },
+const impactPhrases = [
+  "Quem não controla o dinheiro é controlado por ele.",
+  "Abrir empresa não é só para vender mais — é para proteger o que é seu.",
+  "Fluxo de caixa organizado é liberdade para decidir o futuro do seu negócio.",
 ];
 
 export default function FestivalMeta2025Page() {
@@ -176,12 +188,12 @@ export default function FestivalMeta2025Page() {
                linear-gradient(135deg, ${theme.palette.background.default} 0%, #0f172a 45%, rgba(34,211,238,0.25) 100%)`,
           }}
         >
-          <Container maxWidth="lg">
+          <Container maxWidth="lg" id="topo">
             <Grid container spacing={6} alignItems="center">
               <Grid item xs={12} md={7}>
                 <Stack spacing={3}>
                   <Chip
-                    label="Festival Meta 2025"
+                    label="Material de apoio — Festival Meta 2025"
                     color="primary"
                     sx={{
                       alignSelf: { xs: "flex-start", md: "flex-start" },
@@ -201,15 +213,14 @@ export default function FestivalMeta2025Page() {
                     Fluxo de Caixa: o divisor de águas entre quebrar e prosperar
                   </Typography>
                   <Typography variant="h6" color="text.secondary">
-                    Use este roteiro como material de apoio durante a
-                    apresentação. Aqui estão os gatilhos de conexão, as
-                    metáforas que fortalecem a mensagem e os recursos para as
-                    participantes aplicarem o que aprenderam ainda esta semana.
+                    Use esta página como teleprompter de bolso: roteiro completo,
+                    metáforas, ferramentas e checklists para conduzir a palestra
+                    com segurança e gerar ação imediata nas participantes.
                   </Typography>
                   <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
                     <Button
                       component={Link}
-                      href="#roteiro"
+                      href="#estrutura"
                       variant="contained"
                       color="primary"
                       size="large"
@@ -223,7 +234,7 @@ export default function FestivalMeta2025Page() {
                         boxShadow: "0 10px 30px rgba(34,211,238,0.45)",
                       }}
                     >
-                      Revisar roteiro completo
+                      Ver roteiro minuto a minuto
                     </Button>
                     <Button
                       component={Link}
@@ -245,7 +256,7 @@ export default function FestivalMeta2025Page() {
                         },
                       }}
                     >
-                      Acessar ferramentas
+                      Abrir ferramentas sugeridas
                     </Button>
                   </Stack>
                 </Stack>
@@ -274,8 +285,7 @@ export default function FestivalMeta2025Page() {
                           sx={{ fontSize: 32 }}
                         />
                         <Typography color="text.secondary">
-                          Presencial em São Paulo • Transmissão para todo o
-                          Brasil
+                          Presencial em São Paulo • Transmissão Brasil inteiro
                         </Typography>
                       </Stack>
                       <Stack direction="row" spacing={2} alignItems="center">
@@ -286,10 +296,10 @@ export default function FestivalMeta2025Page() {
                       </Stack>
                       <Divider sx={{ borderColor: "rgba(148,163,184,0.2)" }} />
                       <Typography variant="body2" color="text.secondary">
-                        O objetivo é conquistar o coração da audiência para
-                        gerar pelo menos cinco novas clientes sem fazer pitch
-                        agressivo — apenas mostrando clareza, autoridade e
-                        caminho.
+                        Objetivo: conquistar a confiança de pelo menos cinco
+                        novas clientes mostrando clareza, autoridade e caminho,
+                        sem pitch agressivo — apenas educação que gera desejo de
+                        contratação.
                       </Typography>
                     </Stack>
                   </CardContent>
@@ -299,83 +309,67 @@ export default function FestivalMeta2025Page() {
           </Container>
         </Box>
 
-        <Container maxWidth="lg" sx={{ py: { xs: 10, md: 14 } }}>
+        <Container maxWidth="lg" sx={{ py: { xs: 10, md: 12 } }}>
           <Typography variant="h4" fontWeight={700} gutterBottom>
-            Material de apoio da apresentação
+            Resumo rápido para o apresentador
           </Typography>
           <Typography variant="body1" color="text.secondary" paragraph>
-            Use este roteiro para transformar a narrativa em um show que coacha
-            o público sobre como o Festival Meta 2025 resolve dores reais em
-            linguagem emocional.
+            Passe os olhos por estes pilares antes de subir ao palco. Eles
+            lembram a essência da mensagem: organização financeira traz
+            liberdade, pró-labore garante disciplina e o CNPJ protege o seu
+            legado.
           </Typography>
           <Grid container spacing={4}>
-            {presentationBlocks.map((block) => (
-              <Grid item xs={12} md={4} key={block.title}>
-                <Card
-                  sx={(theme) => ({
-                    height: "100%",
-                    backgroundColor: "rgba(15,23,42,0.55)",
-                    borderRadius: 4,
-                    border: `1px solid ${theme.palette[block.accent]?.main ?? theme.palette.primary.main}`,
-                    boxShadow: "0 20px 45px rgba(15,23,42,0.55)",
-                    backdropFilter: "blur(10px)",
-                  })}
-                >
-                  <CardContent>
-                    <Typography variant="h6" fontWeight={600} gutterBottom>
-                      {block.title}
-                    </Typography>
-                    <List dense>
-                      {block.points.map((point) => (
-                        <ListItem key={point} sx={{ px: 0 }}>
-                          <ListItemIcon sx={{ minWidth: 40 }}>
-                            <CheckCircleIcon
-                              sx={(theme) => ({
-                                color:
-                                  theme.palette[block.accent]?.main ??
-                                  theme.palette.primary.main,
-                              })}
-                            />
-                          </ListItemIcon>
-                          <ListItemText
-                            primary={point}
-                            primaryTypographyProps={{ color: "text.secondary" }}
-                          />
-                        </ListItem>
-                      ))}
-                    </List>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
+            {pillars.map((pillar) => {
+              const Icon = pillar.icon;
+              return (
+                <Grid item xs={12} md={4} key={pillar.title}>
+                  <Card
+                    sx={{
+                      height: "100%",
+                      backgroundColor: "rgba(15,23,42,0.55)",
+                      borderRadius: 4,
+                      border: (theme) =>
+                        `1px solid ${theme.palette[pillar.color]?.main ?? theme.palette.primary.main}`,
+                      boxShadow: "0 20px 45px rgba(15,23,42,0.55)",
+                      backdropFilter: "blur(10px)",
+                    }}
+                  >
+                    <CardContent>
+                      <Stack spacing={2}>
+                        <Icon
+                          color={pillar.color}
+                          sx={{ fontSize: 36 }}
+                        />
+                        <Typography variant="h6" fontWeight={600}>
+                          {pillar.title}
+                        </Typography>
+                        <Typography color="text.secondary">
+                          {pillar.description}
+                        </Typography>
+                      </Stack>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              );
+            })}
           </Grid>
-          <Stack spacing={3} sx={{ mt: 6 }}>
-            {closingActions.map((action) => (
-              <Card
-                key={action.title}
-                sx={{
-                  borderRadius: 3,
-                  border: "1px solid rgba(148,163,184,0.3)",
-                  background:
-                    "linear-gradient(135deg, rgba(14,165,233,0.08), rgba(37,99,235,0.02))",
-                }}
-              >
-                <CardContent>
-                  <Typography variant="h6" fontWeight={600} gutterBottom>
-                    {action.title}
-                  </Typography>
-                  <Typography color="text.secondary">
-                    {action.description}
-                  </Typography>
-                </CardContent>
-              </Card>
-            ))}
-          </Stack>
         </Container>
 
-        <Container maxWidth="lg" sx={{ py: { xs: 10, md: 14 } }}>
-          <Grid container spacing={6}>
-            {talkSections.map((section) => (
+        <Container maxWidth="lg" sx={{ py: { xs: 10, md: 12 } }} id="estrutura">
+          <Stack direction="row" spacing={2} alignItems="center" mb={2}>
+            <PlayCircleFilledWhiteIcon color="primary" sx={{ fontSize: 36 }} />
+            <Typography variant="h4" fontWeight={700}>
+              Estrutura minuto a minuto
+            </Typography>
+          </Stack>
+          <Typography color="text.secondary" paragraph>
+            Tenha à mão os gatilhos de cada bloco. Leia o objetivo, percorra os
+            destaques e finalize com a frase de impacto sugerida para fixar a
+            mensagem.
+          </Typography>
+          <Grid container spacing={4}>
+            {timeline.map((section) => (
               <Grid item xs={12} md={4} key={section.title}>
                 <Card
                   sx={{
@@ -385,45 +379,44 @@ export default function FestivalMeta2025Page() {
                     border: "1px solid rgba(148,163,184,0.18)",
                     boxShadow: "0 20px 45px rgba(15,23,42,0.55)",
                     backdropFilter: "blur(10px)",
-                    transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                    "&:hover": {
-                      transform: "translateY(-6px)",
-                      boxShadow: "0 30px 60px rgba(14,116,144,0.35)",
-                    },
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 2,
                   }}
                 >
-                  <CardContent>
-                    <Stack spacing={2}>
-                      <Typography variant="h6" fontWeight={600}>
-                        {section.title}
+                  <CardContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                    <Stack direction="row" spacing={1} alignItems="center">
+                      <AccessTimeIcon sx={{ fontSize: 20, color: "primary.light" }} />
+                      <Typography variant="body2" color="primary.light">
+                        {section.duration}
                       </Typography>
-                      <Stack direction="row" spacing={1} alignItems="center">
-                        <AccessTimeIcon
-                          sx={{ fontSize: 20, color: "primary.light" }}
-                        />
-                        <Typography variant="body2" color="primary.light">
-                          {section.duration}
-                        </Typography>
-                      </Stack>
-                      <Typography variant="body2" color="text.secondary">
-                        {section.focus}
-                      </Typography>
-                      <List dense>
-                        {section.highlights.map((item) => (
-                          <ListItem key={item} sx={{ px: 0 }}>
-                            <ListItemIcon sx={{ minWidth: 36 }}>
-                              <CheckCircleIcon color="primary" />
-                            </ListItemIcon>
-                            <ListItemText
-                              primary={item}
-                              primaryTypographyProps={{
-                                color: "text.secondary",
-                              }}
-                            />
-                          </ListItem>
-                        ))}
-                      </List>
                     </Stack>
+                    <Typography variant="h6" fontWeight={600}>
+                      {section.title}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {section.objective}
+                    </Typography>
+                    <List dense>
+                      {section.highlights.map((item) => (
+                        <ListItem key={item} sx={{ px: 0 }}>
+                          <ListItemIcon sx={{ minWidth: 32 }}>
+                            <CheckCircleIcon color="primary" />
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={item}
+                            primaryTypographyProps={{ color: "text.secondary" }}
+                          />
+                        </ListItem>
+                      ))}
+                    </List>
+                    <Typography
+                      variant="subtitle2"
+                      color="secondary.light"
+                      sx={{ fontStyle: "italic" }}
+                    >
+                      “{section.quote}”
+                    </Typography>
                   </CardContent>
                 </Card>
               </Grid>
@@ -431,86 +424,179 @@ export default function FestivalMeta2025Page() {
           </Grid>
         </Container>
 
+        <Container maxWidth="lg" sx={{ py: { xs: 10, md: 12 } }}>
+          <Grid container spacing={6} alignItems="flex-start">
+            <Grid item xs={12} md={6}>
+              <Stack direction="row" spacing={2} alignItems="center" mb={2}>
+                <PsychologyAltIcon color="secondary" sx={{ fontSize: 34 }} />
+                <Typography variant="h4" fontWeight={700}>
+                  Gatilhos e metáforas
+                </Typography>
+              </Stack>
+              <Typography color="text.secondary" paragraph>
+                Utilize estas frases para reforçar a mudança de mentalidade. Elas
+                ajudam a plateia a visualizar o problema e a solução de forma
+                simples.
+              </Typography>
+              <Card
+                sx={{
+                  borderRadius: 4,
+                  border: "1px solid rgba(148,163,184,0.3)",
+                  background:
+                    "linear-gradient(135deg, rgba(14,165,233,0.08), rgba(37,99,235,0.02))",
+                }}
+              >
+                <CardContent>
+                  <List>
+                    {metaphors.map((item) => (
+                      <ListItem key={item} sx={{ px: 0 }}>
+                        <ListItemIcon sx={{ minWidth: 40 }}>
+                          <CheckCircleIcon color="secondary" />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={item}
+                          primaryTypographyProps={{ color: "text.secondary" }}
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Stack direction="row" spacing={2} alignItems="center" mb={2}>
+                <AssignmentTurnedInIcon color="info" sx={{ fontSize: 34 }} />
+                <Typography variant="h4" fontWeight={700}>
+                  Lembretes para condução
+                </Typography>
+              </Stack>
+              <Typography color="text.secondary" paragraph>
+                Antes de subir ao palco, revise estes pontos para manter ritmo,
+                emoção e clareza durante toda a apresentação.
+              </Typography>
+              <Card
+                sx={{
+                  borderRadius: 4,
+                  border: "1px solid rgba(148,163,184,0.3)",
+                  background:
+                    "linear-gradient(135deg, rgba(59,130,246,0.08), rgba(45,212,191,0.08))",
+                }}
+              >
+                <CardContent>
+                  <List>
+                    {presenterReminders.map((item) => (
+                      <ListItem key={item} sx={{ px: 0 }}>
+                        <ListItemIcon sx={{ minWidth: 40 }}>
+                          <CheckCircleIcon color="info" />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={item}
+                          primaryTypographyProps={{ color: "text.secondary" }}
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+        </Container>
+
         <Box
-          sx={{ backgroundColor: "rgba(15,23,42,0.7)", py: { xs: 10, md: 14 } }}
+          sx={{ backgroundColor: "rgba(15,23,42,0.7)", py: { xs: 10, md: 12 } }}
           id="recursos"
         >
           <Container maxWidth="lg">
-            <Typography variant="h4" fontWeight={700} gutterBottom>
-              Ferramentas, técnicas e mentalidade
+            <Stack direction="row" spacing={2} alignItems="center" mb={2}>
+              <AutoStoriesIcon color="primary" sx={{ fontSize: 34 }} />
+              <Typography variant="h4" fontWeight={700}>
+                Ferramentas e materiais imediatos
+              </Typography>
+            </Stack>
+            <Typography color="text.secondary" paragraph>
+              Compartilhe estes links durante a transmissão ou no grupo pós-evento.
+              São gratuitos e permitem que o público comece a mudar o fluxo de
+              caixa ainda esta semana.
             </Typography>
-            <Typography color="text.secondary" sx={{ mb: 6 }}>
-              Reforce estes pilares sempre que apresentar soluções. Eles mostram
-              que a transformação depende menos de planilhas e mais de atitude
-              consistente, com apoio das ferramentas certas.
-            </Typography>
-            <Grid container spacing={6}>
-              {toolkit.map((block) => (
-                <Grid item xs={12} md={4} key={block.title}>
-                  <Card
-                    sx={{
-                      height: "100%",
-                      background:
-                        "linear-gradient(160deg, rgba(45,212,191,0.08) 0%, rgba(37,99,235,0.06) 100%)",
-                      borderRadius: 4,
-                      border: "1px solid rgba(148,163,184,0.18)",
-                      boxShadow: "0 25px 55px rgba(15,23,42,0.6)",
-                      backdropFilter: "blur(12px)",
-                    }}
-                  >
-                    <CardContent>
-                      <Typography variant="h6" fontWeight={600} gutterBottom>
-                        {block.title}
-                      </Typography>
-                      <List dense>
-                        {block.items.map((item) => (
-                          <ListItem key={item} sx={{ px: 0 }}>
-                            <ListItemIcon sx={{ minWidth: 36 }}>
-                              <CheckCircleIcon
-                                sx={{ color: "rgba(34,211,238,0.8)" }}
-                              />
-                            </ListItemIcon>
-                            <ListItemText
-                              primary={item}
-                              primaryTypographyProps={{
-                                color: "text.secondary",
-                              }}
-                            />
-                          </ListItem>
-                        ))}
-                      </List>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              ))}
+            <Grid container spacing={4}>
+              {resources.map((resource) => {
+                const Icon = resource.icon;
+                return (
+                  <Grid item xs={12} md={4} key={resource.title}>
+                    <Card
+                      sx={{
+                        height: "100%",
+                        background:
+                          "linear-gradient(160deg, rgba(45,212,191,0.08) 0%, rgba(37,99,235,0.06) 100%)",
+                        borderRadius: 4,
+                        border: "1px solid rgba(148,163,184,0.18)",
+                        boxShadow: "0 25px 55px rgba(15,23,42,0.6)",
+                        backdropFilter: "blur(12px)",
+                      }}
+                    >
+                      <CardContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                        <Icon color={resource.color} sx={{ fontSize: 36 }} />
+                        <Typography variant="h6" fontWeight={600}>
+                          {resource.title}
+                        </Typography>
+                        <Typography color="text.secondary">
+                          {resource.description}
+                        </Typography>
+                        <Button
+                          component="a"
+                          href={resource.href}
+                          target={resource.href.startsWith("http") ? "_blank" : undefined}
+                          rel={resource.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                          variant="outlined"
+                          color={resource.color}
+                          endIcon={<LaunchIcon />}
+                          sx={{ textTransform: "none", mt: "auto" }}
+                        >
+                          Acessar agora
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                );
+              })}
             </Grid>
           </Container>
         </Box>
 
-        <Container maxWidth="lg" sx={{ py: { xs: 10, md: 16 } }}>
+        <Container maxWidth="lg" sx={{ py: { xs: 10, md: 12 } }}>
           <Grid container spacing={6} alignItems="center">
             <Grid item xs={12} md={6}>
               <Typography variant="h4" fontWeight={700} gutterBottom>
-                Checklist pós-palestra
+                Checklist para as participantes
               </Typography>
               <Typography color="text.secondary" paragraph>
-                Entregue este passo a passo para que cada empreendedora saiba
-                exatamente por onde começar. Reforce que execução simples vence
-                planos complexos que nunca saem do papel.
+                Entregue estes passos ao final para que cada empreendedora saiba
+                por onde começar imediatamente após a palestra.
               </Typography>
-              <List>
-                {actionChecklist.map((item) => (
-                  <ListItem key={item} sx={{ px: 0 }}>
-                    <ListItemIcon sx={{ minWidth: 42 }}>
-                      <CheckCircleIcon color="secondary" />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={item}
-                      primaryTypographyProps={{ color: "text.secondary" }}
-                    />
-                  </ListItem>
-                ))}
-              </List>
+              <Card
+                sx={{
+                  borderRadius: 4,
+                  border: "1px solid rgba(148,163,184,0.25)",
+                  background:
+                    "linear-gradient(145deg, rgba(37,99,235,0.15) 0%, rgba(8,145,178,0.2) 100%)",
+                }}
+              >
+                <CardContent>
+                  <List>
+                    {participantChecklist.map((item) => (
+                      <ListItem key={item} sx={{ px: 0 }}>
+                        <ListItemIcon sx={{ minWidth: 42 }}>
+                          <CheckCircleIcon color="secondary" />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={item}
+                          primaryTypographyProps={{ color: "text.secondary" }}
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
+                </CardContent>
+              </Card>
             </Grid>
             <Grid item xs={12} md={6}>
               <Card
@@ -518,73 +604,52 @@ export default function FestivalMeta2025Page() {
                   borderRadius: 4,
                   border: "1px solid rgba(148,163,184,0.2)",
                   background:
-                    "linear-gradient(145deg, rgba(37,99,235,0.15) 0%, rgba(8,145,178,0.2) 100%)",
+                    "linear-gradient(135deg, rgba(14,165,233,0.12) 0%, rgba(37,99,235,0.08) 100%)",
                   boxShadow: "0 25px 65px rgba(15,23,42,0.65)",
                   backdropFilter: "blur(10px)",
                 }}
               >
                 <CardContent>
                   <Typography variant="h5" fontWeight={600} gutterBottom>
-                    Recursos imediatos
+                    Frases para reforçar o chamado à ação
                   </Typography>
                   <Typography color="text.secondary" paragraph>
-                    Todos os materiais citados estão reunidos nesta página.
-                    Utilize os botões abaixo para compartilhar durante a
-                    transmissão ou enviar no grupo da comunidade após o evento.
+                    Utilize-as nos momentos de transição e no fechamento para
+                    deixar o compromisso ainda mais forte.
                   </Typography>
-                  <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                  <List>
+                    {impactPhrases.map((item) => (
+                      <ListItem key={item} sx={{ px: 0 }}>
+                        <ListItemIcon sx={{ minWidth: 40 }}>
+                          <CheckCircleIcon color="primary" />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={item}
+                          primaryTypographyProps={{ color: "text.secondary" }}
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
+                  <Stack spacing={2} mt={2}>
                     <Button
-                      component="a"
-                      href="https://www.marketup.com/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      variant="contained"
-                      color="secondary"
-                      size="large"
-                      sx={{
-                        flex: 1,
-                        py: 1.5,
-                        borderRadius: 999,
-                        textTransform: "none",
-                        fontWeight: 600,
-                        boxShadow: "0 15px 40px rgba(236,72,153,0.45)",
-                      }}
+                      component={Link}
+                      href="/"
+                      variant="text"
+                      color="inherit"
+                      sx={{ textTransform: "none" }}
                     >
-                      Abrir MarketUp
+                      Voltar para olegario.dev
                     </Button>
                     <Button
-                      component="a"
-                      href="https://pages.mercadopago.com.br/"
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      component={Link}
+                      href="#topo"
                       variant="outlined"
-                      color="secondary"
-                      size="large"
-                      sx={{
-                        flex: 1,
-                        py: 1.5,
-                        borderRadius: 999,
-                        textTransform: "none",
-                        fontWeight: 600,
-                        borderWidth: 2,
-                        "&:hover": {
-                          borderWidth: 2,
-                          backgroundColor: "rgba(244,143,177,0.12)",
-                        },
-                      }}
+                      color="primary"
+                      sx={{ textTransform: "none", alignSelf: "flex-start" }}
                     >
-                      Soluções Mercado Pago
+                      Revisar o início do roteiro
                     </Button>
                   </Stack>
-                  <Button
-                    component={Link}
-                    href="/"
-                    variant="text"
-                    color="inherit"
-                    sx={{ mt: 2, textTransform: "none" }}
-                  >
-                    Voltar para olegario.dev
-                  </Button>
                 </CardContent>
               </Card>
             </Grid>
