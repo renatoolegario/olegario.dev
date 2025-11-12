@@ -4,7 +4,7 @@ const IMAGINE_MODELS = {
     label: "Foto de Perfil",
     preview: "/imagine/foto_perfil/1.jpg",
     prompt: `
-     ✅ O personagem da imagem de referência deve manter todas as características faciais idênticas, com sorriso natural, expressão gentil e tom de pele realista.
+✅ O personagem da imagem de referência deve manter todas as características faciais idênticas, com sorriso natural, expressão gentil e tom da pele deve ser da mesma da foto de maneira realista, os olhos precisam manter a mesma cor.
 A imagem deve ter foco nítido e iluminação suave, destacando reflexos sutis no cabelo (se houver).
 Se o personagem não tiver cabelo, essa característica deve ser mantida.
 
