@@ -143,7 +143,7 @@ const resources = [
     title: "Planilha de gestão pessoal",
     description:
       "Planilha simples para separar gastos da casa e da empresa e evitar confusão no caixa.",
-    href: "/downloads/planilha-gestao-pessoal.csv",
+    href: "https://docs.google.com/spreadsheets/d/1NRhIN0dJpCkCHIEU9eJlZEcwkzj75ibRha3MYTm1HcY/edit?usp=sharing",
     icon: DownloadIcon,
     color: "secondary",
     tags: ["Financeiro", "Pessoal"],
