@@ -38,21 +38,21 @@ const pillars = [
   {
     title: "Clareza e organização",
     description:
-      "Fluxo de caixa controlado revela para onde o dinheiro vai e te permite decidir com consciência.",
+      "A separação do PF do PJ é o ponto chave mas não podemos esquecer da provisão dos custos é organização do caixa.",
     icon: InsightsIcon,
     color: "primary",
   },
   {
-    title: "Disciplina com pró-labore",
+    title: "Pró-labore",
     description:
-      "Trate-se como colaborador da empresa: salário fixo, contas pessoais ajustadas e nada de retirar extra do caixa.",
+      "Você é um colaborador da sua empresa: salário fixo, contas pessoais separada e toda retirada tem que passar pelo contador.",
     icon: SavingsIcon,
     color: "secondary",
   },
   {
     title: "Proteção empresarial",
     description:
-      "CNPJ ativo, contas separadas e contador parceiro criam a barreira jurídica que protege o seu patrimônio.",
+      "Misturar o caixa pessoal com o da empresa anula a proteção jurídica do CNPJ e permite que processos empresariais atinjam seu patrimônio pessoal.",
     icon: AccountBalanceIcon,
     color: "info",
   },
@@ -188,17 +188,19 @@ const resources = [
 
 const mindsetHighlights = [
   "Informação é barata; consistência diária é o que muda o jogo.",
-  "Quem mente para o contador paga imposto sobre dinheiro que nem existe.",
+  "Quem mente para o contador paga caro.",
   "Provisão de contas evita sustos: contas previstas, caixa protegido.",
   "Abrir empresa não é só vender mais — é proteger o que é seu.",
   "Fluxo de caixa organizado é liberdade para decidir o futuro do negócio.",
 ];
 
 const reflectionQuestions = [
-  "Quais gastos da empresa ainda passam pela sua conta pessoal? Como separar isso hoje?",
+  "Quais gastos da empresa ainda passam pela sua conta pessoal?",
   "Seu pró-labore cobre o custo de vida? O que precisa ser ajustado para caber no planejamento?",
-  "Você tem um calendário de vencimentos (provisão) para o mês? O que está sem cobertura?",
-  "Qual ferramenta você vai usar a partir de agora para registrar entradas e saídas diariamente?",
+  "Você tem um calendário de vencimentos (provisão) para o mês? ",
+  "Você sabe os custos reais de um colaborador (13º, férias, 1/3 de férias, aviso prévio, 40% FGTS) ?",
+  "Você tem um pote para cada conta futura (IPTU, IPVA, direitos trabalhistas, manutenções)?",
+  "Qual ferramenta você vai usar para registrar entradas e saídas diariamente?",
 ];
 const marketUpVideos = [
   {
@@ -219,11 +221,10 @@ const toEmbedUrl = (url) => {
 };
 const actionPlan = [
   "Abra ou regularize o CNPJ e crie conta bancária exclusiva da empresa.",
-  "Defina um valor mensal de pró-labore e programe o pagamento automático.",
-  "Monte sua Provisão de Contas: liste vencimentos e valores do mês.",
-  "Registre entradas e saídas diariamente usando a planilha ou o MarketUp.",
-  "Separe o dinheiro em três potes: caixa da empresa, pró-labore e reserva.",
   "Agende uma conversa com o contador para revisar enquadramento e impostos.",
+  "Defina um valor mensal de pró-labore baseado na planilha de custos pessoais.",
+  "Monte sua Provisão de Contas empresarial: liste vencimentos e valores do mês.",
+  "Registre entradas e saídas diariamente usando a planilha e o MarketUp.",
 ];
 
 const heroHighlights = [
@@ -244,7 +245,7 @@ export default function FestivalMeta2025Page() {
         <title>Festival Meta 2025 — Material de Apoio | Olegário.Dev</title>
         <meta
           name="description"
-          content="Material de apoio da palestra 'Fluxo de Caixa: o divisor de águas entre quebrar e prosperar' — guia explicativo com pilares, ferramentas e plano de ação."
+          content="Material de apoio do 'Fluxo de Caixa: o divisor de águas entre quebrar e prosperar' — guia explicativo com pilares, ferramentas e plano de ação."
         />
       </Head>
 
@@ -343,9 +344,115 @@ export default function FestivalMeta2025Page() {
 
               <Grid item xs={12} md={5}>
                 {/* "Como usar este material" — sem Card externo e sem padding vertical */}
+                <Container maxWidth="lg" sx={{ py: { xs: 10, md: 12 } }}>
+                  <Box
+                    sx={{
+                      display: "grid",
+                      gridTemplateColumns: {
+                        xs: "1fr",
+                        md: "repeat(2, minmax(0, 1fr))",
+                      },
+                      gap: { xs: 4, md: 6 },
+                      alignItems: "stretch",
+                    }}
+                  >
+                    {" "}
+                    <Box
+                      sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+                    >
+                      <Stack direction="row" spacing={2} alignItems="center">
+                        <InsightsIcon color="info" sx={{ fontSize: 34 }} />
+                        <Typography variant="h4" fontWeight={700}>
+                          Reflexão
+                        </Typography>
+                      </Stack>
+                      <Typography color="text.secondary">
+                        Use estas questões para revisar decisões com seu
+                        contador, mentora ou equipe. Elas ajudam a transformar o
+                        aprendizado em rotina.
+                      </Typography>
+                      <Card
+                        sx={{
+                          borderRadius: 4,
+                          border: "1px solid rgba(148,163,184,0.3)",
+                          background:
+                            "linear-gradient(135deg, rgba(59,130,246,0.08), rgba(45,212,191,0.08))",
+                          height: "100%",
+                          display: "flex",
+                          flexDirection: "column",
+                        }}
+                      >
+                        <CardContent sx={{ flexGrow: 1 }}>
+                          <List>
+                            {reflectionQuestions.map((item) => (
+                              <ListItem key={item} sx={{ px: 0 }}>
+                                <ListItemIcon sx={{ minWidth: 40 }}>
+                                  <CheckCircleIcon color="info" />
+                                </ListItemIcon>
+                                <ListItemText
+                                  primary={item}
+                                  primaryTypographyProps={{
+                                    color: "text.secondary",
+                                  }}
+                                />
+                              </ListItem>
+                            ))}
+                          </List>
+                        </CardContent>
+                      </Card>
+                    </Box>
+                    <Box
+                      sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+                    >
+                      <Stack direction="row" spacing={2} alignItems="center">
+                        <PsychologyAltIcon
+                          color="secondary"
+                          sx={{ fontSize: 34 }}
+                        />
+                        <Typography variant="h4" fontWeight={700}>
+                          Mentalidade para mudança
+                        </Typography>
+                      </Stack>
+                      <Typography color="text.secondary">
+                        Reforce estas frases ao longo da semana para manter o
+                        foco e lembrar por que o fluxo de caixa organizado
+                        protege o seu negócio.
+                      </Typography>
+                      <Card
+                        sx={{
+                          borderRadius: 4,
+                          border: "1px solid rgba(148,163,184,0.3)",
+                          background:
+                            "linear-gradient(135deg, rgba(14,165,233,0.08), rgba(37,99,235,0.02))",
+                          height: "100%",
+                          display: "flex",
+                          flexDirection: "column",
+                        }}
+                      >
+                        <CardContent sx={{ flexGrow: 1 }}>
+                          <List>
+                            {mindsetHighlights.map((item) => (
+                              <ListItem key={item} sx={{ px: 0 }}>
+                                <ListItemIcon sx={{ minWidth: 40 }}>
+                                  <CheckCircleIcon color="secondary" />
+                                </ListItemIcon>
+                                <ListItemText
+                                  primary={item}
+                                  primaryTypographyProps={{
+                                    color: "text.secondary",
+                                  }}
+                                />
+                              </ListItem>
+                            ))}
+                          </List>
+                        </CardContent>
+                      </Card>
+                    </Box>
+                  </Box>
+                </Container>
                 <Container maxWidth="lg" sx={{ py: 0 }}>
                   <Typography variant="h4" fontWeight={700} gutterBottom>
-                    Como usar este material
+                    Guia prático
                   </Typography>
                   <Typography variant="body1" color="text.secondary" paragraph>
                     Use este guia como um apoio prático no seu dia a dia. Este
@@ -412,7 +519,7 @@ export default function FestivalMeta2025Page() {
           <Stack direction="row" spacing={2} alignItems="center" mb={2}>
             <AutoStoriesIcon color="primary" sx={{ fontSize: 34 }} />
             <Typography variant="h4" fontWeight={700}>
-              Tópicos aprofundados da palestra
+              Tópicos aprofundados
             </Typography>
           </Stack>
           <Typography color="text.secondary" paragraph>
@@ -611,101 +718,6 @@ export default function FestivalMeta2025Page() {
             </Box>
           </Container>
         </Box>
-
-        <Container maxWidth="lg" sx={{ py: { xs: 10, md: 12 } }}>
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: {
-                xs: "1fr",
-                md: "repeat(2, minmax(0, 1fr))",
-              },
-              gap: { xs: 4, md: 6 },
-              alignItems: "stretch",
-            }}
-          >
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              <Stack direction="row" spacing={2} alignItems="center">
-                <PsychologyAltIcon color="secondary" sx={{ fontSize: 34 }} />
-                <Typography variant="h4" fontWeight={700}>
-                  Mentalidade para mudança
-                </Typography>
-              </Stack>
-              <Typography color="text.secondary">
-                Reforce estas frases ao longo da semana para manter o foco e
-                lembrar por que o fluxo de caixa organizado protege o seu
-                negócio.
-              </Typography>
-              <Card
-                sx={{
-                  borderRadius: 4,
-                  border: "1px solid rgba(148,163,184,0.3)",
-                  background:
-                    "linear-gradient(135deg, rgba(14,165,233,0.08), rgba(37,99,235,0.02))",
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <List>
-                    {mindsetHighlights.map((item) => (
-                      <ListItem key={item} sx={{ px: 0 }}>
-                        <ListItemIcon sx={{ minWidth: 40 }}>
-                          <CheckCircleIcon color="secondary" />
-                        </ListItemIcon>
-                        <ListItemText
-                          primary={item}
-                          primaryTypographyProps={{ color: "text.secondary" }}
-                        />
-                      </ListItem>
-                    ))}
-                  </List>
-                </CardContent>
-              </Card>
-            </Box>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              <Stack direction="row" spacing={2} alignItems="center">
-                <InsightsIcon color="info" sx={{ fontSize: 34 }} />
-                <Typography variant="h4" fontWeight={700}>
-                  Perguntas para reflexão
-                </Typography>
-              </Stack>
-              <Typography color="text.secondary">
-                Use estas questões para revisar decisões com seu contador,
-                mentora ou equipe. Elas ajudam a transformar o aprendizado em
-                rotina.
-              </Typography>
-              <Card
-                sx={{
-                  borderRadius: 4,
-                  border: "1px solid rgba(148,163,184,0.3)",
-                  background:
-                    "linear-gradient(135deg, rgba(59,130,246,0.08), rgba(45,212,191,0.08))",
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <List>
-                    {reflectionQuestions.map((item) => (
-                      <ListItem key={item} sx={{ px: 0 }}>
-                        <ListItemIcon sx={{ minWidth: 40 }}>
-                          <CheckCircleIcon color="info" />
-                        </ListItemIcon>
-                        <ListItemText
-                          primary={item}
-                          primaryTypographyProps={{ color: "text.secondary" }}
-                        />
-                      </ListItem>
-                    ))}
-                  </List>
-                </CardContent>
-              </Card>
-            </Box>
-          </Box>
-        </Container>
 
         <Container maxWidth="lg" sx={{ py: { xs: 10, md: 12 } }}>
           <Stack direction="row" spacing={2} alignItems="center" mb={2}>
