@@ -1,5 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -12,7 +13,9 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  Modal,
   Stack,
+  TextField,
   Typography,
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -239,6 +242,50 @@ const coluna1 = topics.slice(0, metade);
 const coluna2 = topics.slice(metade);
 
 export default function FestivalMeta2025Page() {
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [hasAccess, setHasAccess] = useState(false);
+  const [hasCheckedAccess, setHasCheckedAccess] = useState(false);
+
+  const STORAGE_KEY = "meta2025";
+  const SECRET_VALUE = "meta2025";
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const storedPassword =
+      window.localStorage.getItem(STORAGE_KEY) ||
+      document.cookie
+        .split(";")
+        .map((cookie) => cookie.trim())
+        .find((cookie) => cookie.startsWith(`${STORAGE_KEY}=`))
+        ?.split("=")[1];
+
+    if (storedPassword === SECRET_VALUE) {
+      setHasAccess(true);
+    }
+
+    setHasCheckedAccess(true);
+  }, []);
+
+  const handleSubmitPassword = (event) => {
+    event.preventDefault();
+    if (password.trim() !== SECRET_VALUE) {
+      setError("Senha incorreta");
+      return;
+    }
+
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(STORAGE_KEY, SECRET_VALUE);
+      document.cookie = `${STORAGE_KEY}=${SECRET_VALUE}; path=/; max-age=31536000`;
+    }
+
+    setError("");
+    setHasAccess(true);
+  };
+
+  const isLocked = !hasAccess || !hasCheckedAccess;
+
   return (
     <>
       <Head>
@@ -255,6 +302,10 @@ export default function FestivalMeta2025Page() {
           minHeight: "100vh",
           bgcolor: "background.default",
           color: "text.primary",
+          filter: isLocked ? "blur(8px)" : "none",
+          pointerEvents: isLocked ? "none" : "auto",
+          userSelect: isLocked ? "none" : "auto",
+          transition: "filter 200ms ease, opacity 200ms ease",
         }}
       >
         <Box
@@ -872,6 +923,81 @@ export default function FestivalMeta2025Page() {
           </Card>
         </Container>
       </Box>
+
+      <Modal
+        open={isLocked}
+        aria-labelledby="festival-meta-2025-auth-title"
+        aria-describedby="festival-meta-2025-auth-description"
+        disableEscapeKeyDown
+      >
+        <Box
+          sx={{
+            position: "fixed",
+            inset: 0,
+            bgcolor: "rgba(15,23,42,0.75)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backdropFilter: "blur(6px)",
+            px: 2,
+          }}
+        >
+          <Box
+            component="form"
+            onSubmit={handleSubmitPassword}
+            sx={{
+              bgcolor: "background.paper",
+              borderRadius: 3,
+              width: "100%",
+              maxWidth: 420,
+              p: 4,
+              boxShadow: "0 25px 65px rgba(0,0,0,0.45)",
+              display: "flex",
+              flexDirection: "column",
+              gap: 3,
+            }}
+          >
+            <Stack spacing={1}>
+              <Typography
+                id="festival-meta-2025-auth-title"
+                variant="h5"
+                fontWeight={700}
+              >
+                Qual a senha?
+              </Typography>
+              <Typography
+                id="festival-meta-2025-auth-description"
+                color="text.secondary"
+              >
+                Digite a senha para visualizar o conteúdo do material.
+              </Typography>
+            </Stack>
+
+            <Stack spacing={1}>
+              <TextField
+                label="Senha"
+                type="password"
+                value={password}
+                autoFocus
+                onChange={(event) => setPassword(event.target.value)}
+                error={Boolean(error)}
+                helperText={error}
+                fullWidth
+              />
+            </Stack>
+
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              size="large"
+              sx={{ textTransform: "none" }}
+            >
+              Entrar
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
     </>
   );
 }
