@@ -250,20 +250,28 @@ export default function FestivalMeta2025Page() {
   const STORAGE_KEY = "meta2025";
   const SECRET_VALUE = "meta2025";
 
+  // useEffect(() => {
+  //   if (typeof window === "undefined") return;
+
+  //   const storedPassword =
+  //     window.localStorage.getItem(STORAGE_KEY) ||
+  //     document.cookie
+  //       .split(";")
+  //       .map((cookie) => cookie.trim())
+  //       .find((cookie) => cookie.startsWith(`${STORAGE_KEY}=`))
+  //       ?.split("=")[1];
+
+  //   if (storedPassword === SECRET_VALUE) {
+  //     setHasAccess(true);
+  //   }
+
+  //   setHasCheckedAccess(true);
+  // }, []);
+
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const storedPassword =
-      window.localStorage.getItem(STORAGE_KEY) ||
-      document.cookie
-        .split(";")
-        .map((cookie) => cookie.trim())
-        .find((cookie) => cookie.startsWith(`${STORAGE_KEY}=`))
-        ?.split("=")[1];
-
-    if (storedPassword === SECRET_VALUE) {
-      setHasAccess(true);
-    }
+    setHasAccess(true);
 
     setHasCheckedAccess(true);
   }, []);
@@ -534,9 +542,8 @@ export default function FestivalMeta2025Page() {
                             backgroundColor: "rgba(15,23,42,0.55)",
                             borderRadius: 4,
                             border: (theme) =>
-                              `1px solid ${
-                                theme.palette[pillar.color]?.main ??
-                                theme.palette.primary.main
+                              `1px solid ${theme.palette[pillar.color]?.main ??
+                              theme.palette.primary.main
                               }`,
                             boxShadow: "0 20px 45px rgba(15,23,42,0.55)",
                             backdropFilter: "blur(10px)",
