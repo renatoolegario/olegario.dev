@@ -3,7 +3,6 @@ import FuzzyText from "components/FuzzyText";
 import { useEffect, useMemo, useState } from "react";
 import {
   Box,
-  ButtonBase,
   Fade,
   IconButton,
   Slide,
@@ -20,24 +19,25 @@ import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import GitHubIcon from "@mui/icons-material/GitHub";
 
-const accentColor = "#7dd3fc";
+const accentColor = "#1cb5e0";
+const accentGradient = "linear-gradient(135deg, #1cb5e0 0%, #7c3aed 100%)";
 
 const badgeSx = {
   px: 1.5,
   py: 0.5,
   borderRadius: 999,
-  border: "1px solid rgba(255,255,255,0.35)",
-  bgcolor: "rgba(15,23,42,0.6)",
+  border: "1px solid rgba(12,74,110,0.16)",
+  bgcolor: "rgba(28,181,224,0.1)",
   fontSize: "0.75rem",
   letterSpacing: "0.08em",
   textTransform: "uppercase",
-  color: "rgba(255,255,255,0.92)",
+  color: "#0f172a",
   transition: "transform 0.25s ease, background-color 0.25s ease",
   cursor: "default",
   "&:hover": {
-    bgcolor: accentColor,
-    color: "#0f172a",
-    transform: "scale(1.05)",
+    bgcolor: "rgba(28,181,224,0.18)",
+    color: "#0b1f3c",
+    transform: "translateY(-1px)",
   },
 };
 
@@ -48,17 +48,18 @@ const panelListItemSx = {
   gap: 1.1,
   alignItems: "center",
   justifyContent: "flex-start",
-  color: "rgba(255,255,255,0.85)",
+  color: "rgba(15,23,42,0.9)",
   textDecoration: "none",
-  bgcolor: "rgba(255,255,255,0.02)",
-  border: "1px solid rgba(255,255,255,0.08)",
+  bgcolor: "rgba(255,255,255,0.92)",
+  border: "1px solid rgba(15,23,42,0.08)",
   transition:
-    "transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease",
+    "transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease",
   "&:hover": {
-    bgcolor: accentColor,
-    color: "#0f172a",
-    borderColor: "transparent",
+    bgcolor: "rgba(255,255,255,1)",
+    color: "#0b1f3c",
+    borderColor: "rgba(28,181,224,0.5)",
     transform: "translateY(-2px)",
+    boxShadow: "0 12px 38px rgba(12,74,110,0.14)",
   },
   "&:focus-visible": {
     outline: `2px solid ${accentColor}`,
@@ -182,7 +183,7 @@ export default function HomePage() {
           <Typography
             variant="body1"
             sx={{
-              color: "rgba(255,255,255,0.92)",
+              color: "rgba(15,23,42,0.9)",
               lineHeight: 1.6,
               textAlign: { xs: "left", sm: "justify" },
             }}
@@ -201,7 +202,7 @@ export default function HomePage() {
             <Typography
               variant="body2"
               sx={{
-                color: "rgba(255,255,255,0.8)",
+                color: "rgba(15,23,42,0.8)",
                 lineHeight: 1.6,
                 textAlign: { xs: "left", sm: "justify" },
               }}
@@ -233,7 +234,7 @@ export default function HomePage() {
             <Typography
               variant="body2"
               sx={{
-                color: "rgba(255,255,255,0.8)",
+                color: "rgba(15,23,42,0.8)",
                 lineHeight: 1.6,
                 textAlign: { xs: "left", sm: "justify" },
               }}
@@ -264,7 +265,7 @@ export default function HomePage() {
           <Typography
             variant="body1"
             sx={{
-              color: "rgba(255,255,255,0.9)",
+              color: "rgba(15,23,42,0.9)",
               lineHeight: 1.6,
               textAlign: { xs: "left", sm: "justify" },
             }}
@@ -283,7 +284,7 @@ export default function HomePage() {
             <Typography
               variant="body2"
               sx={{
-                color: "rgba(255,255,255,0.8)",
+                color: "rgba(15,23,42,0.82)",
                 lineHeight: 1.6,
                 textAlign: { xs: "left", sm: "justify" },
               }}
@@ -340,7 +341,7 @@ export default function HomePage() {
                   href={item.href}
                   target={item.href?.startsWith("http") ? "_blank" : undefined}
                   sx={{
-                    color: "rgba(255,255,255,0.85)",
+                    color: "rgba(15,23,42,0.86)",
                     borderRadius: 2,
                     px: 1.5,
                     py: 1,
@@ -349,9 +350,9 @@ export default function HomePage() {
                     width: "100%",
                     textAlign: "left",
                     "&:hover": {
-                      bgcolor: accentColor,
-                      color: "#0f172a",
-                      transform: "scale(1.02)",
+                      backgroundImage: accentGradient,
+                      color: "#0b1f3c",
+                      transform: "translateY(-1px)",
                     },
                     textDecoration: "none", // remove sublinhado do link
                   }}
@@ -380,7 +381,7 @@ export default function HomePage() {
             <Typography
               variant="body2"
               sx={{
-                color: "rgba(255,255,255,0.8)",
+                color: "rgba(15,23,42,0.82)",
                 lineHeight: 1.6,
                 textAlign: { xs: "left", sm: "justify" },
               }}
@@ -417,7 +418,7 @@ export default function HomePage() {
             </Stack>
             <Typography
               variant="caption"
-              sx={{ color: "rgba(255,255,255,0.6)", letterSpacing: "0.1em" }}
+              sx={{ color: "rgba(15,23,42,0.6)", letterSpacing: "0.1em" }}
             >
               Novos projetos podem ser adicionados facilmente conforme o
               portfólio evolui.
@@ -483,11 +484,12 @@ export default function HomePage() {
         width: "100%",
         display: "flex",
         flexDirection: "column",
-        backgroundImage: "url(/olegario.png)",
+        backgroundImage:
+          "radial-gradient(circle at 18% 18%, rgba(28,181,224,0.18), transparent 34%), radial-gradient(circle at 78% 12%, rgba(124,58,237,0.12), transparent 30%), linear-gradient(180deg, #f8fbff 0%, #f3f7fb 40%, #eef3ff 100%)",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
-        color: "#ffffff",
+        color: "#0f172a",
         position: "relative",
         overflow: "hidden",
       }}
@@ -522,6 +524,7 @@ export default function HomePage() {
               hoverIntensity={0.3}
               enableHover={!isMobile}
               fontSize="clamp(2.6rem, 8vw, 5.2rem)"
+              color="#0b1f42"
             >
               Olegário.dev
             </FuzzyText>
@@ -529,7 +532,7 @@ export default function HomePage() {
               variant="body2"
               sx={{
                 maxWidth: 520,
-                color: "rgba(255,255,255,0.72)",
+                color: "rgba(15,23,42,0.74)",
                 letterSpacing: "0.05em",
               }}
             >
@@ -543,7 +546,7 @@ export default function HomePage() {
               variant="overline"
               sx={{
                 letterSpacing: "0.35em",
-                color: "rgba(255,255,255,0.65)",
+                color: "rgba(15,23,42,0.65)",
               }}
             >
               Menu
@@ -552,7 +555,7 @@ export default function HomePage() {
               variant="caption"
               sx={{
                 letterSpacing: "0.28em",
-                color: "rgba(255,255,255,0.45)",
+                color: "rgba(15,23,42,0.55)",
                 textTransform: "uppercase",
               }}
             >
@@ -582,13 +585,14 @@ export default function HomePage() {
                   py: 1,
                   gap: 1,
                   alignItems: "center",
-                  border: "1px solid rgba(255,255,255,0.12)",
-                  bgcolor: "rgba(255,255,255,0.02)",
+                  border: "1px solid rgba(12,74,110,0.12)",
+                  bgcolor: "rgba(255,255,255,0.88)",
                   transition:
-                    "background-color .2s ease, border-color .2s ease",
+                    "background-color .2s ease, border-color .2s ease, box-shadow .2s ease",
                   "&:hover": {
-                    borderColor: accentColor,
-                    bgcolor: "rgba(125,211,252,0.06)",
+                    borderColor: "rgba(28,181,224,0.5)",
+                    bgcolor: "rgba(255,255,255,1)",
+                    boxShadow: "0 18px 38px rgba(12,74,110,0.12)",
                   },
                   // foco acessível e discreto
                   "&.Mui-focusVisible": {
@@ -603,8 +607,8 @@ export default function HomePage() {
                     fontSize: ".75rem",
                     fontWeight: 600,
                     letterSpacing: ".14em",
-                    color: "rgba(255,255,255,0.7)",
-                    border: "1px solid rgba(255,255,255,0.18)",
+                    color: "rgba(15,23,42,0.72)",
+                    border: "1px solid rgba(12,74,110,0.16)",
                     borderRadius: 1.5,
                     px: 0.75,
                     py: 0.25,
@@ -621,7 +625,7 @@ export default function HomePage() {
                     sx={{
                       fontWeight: 700,
                       lineHeight: 1.2,
-                      color: "rgba(255,255,255,0.95)",
+                      color: "rgba(15,23,42,0.98)",
                       // uma linha somente
                       overflow: "hidden",
                       whiteSpace: "nowrap",
@@ -633,7 +637,7 @@ export default function HomePage() {
                   <Typography
                     variant="body2"
                     sx={{
-                      color: "rgba(255,255,255,0.7)",
+                      color: "rgba(15,23,42,0.7)",
                       lineHeight: 1.35,
                       // cortar em 1 linha também
                       overflow: "hidden",
@@ -660,8 +664,8 @@ export default function HomePage() {
             position: "fixed",
             inset: 0,
             zIndex: 1290,
-            bgcolor: "rgba(15,23,42,0.65)",
-            backdropFilter: "blur(6px)",
+            bgcolor: "rgba(12,74,110,0.18)",
+            backdropFilter: "blur(4px)",
           }}
         />
       </Fade>
@@ -684,10 +688,10 @@ export default function HomePage() {
             sx={{
               position: "fixed",
               zIndex: 1400,
-              backgroundColor: "rgba(15,23,42,0.92)",
-              border: "1px solid rgba(255,255,255,0.15)",
-              boxShadow: "0 32px 90px rgba(8,15,35,0.55)",
-              backdropFilter: "blur(14px)",
+              backgroundColor: "rgba(255,255,255,0.98)",
+              border: "1px solid rgba(12,74,110,0.12)",
+              boxShadow: "0 28px 80px rgba(15,23,42,0.16)",
+              backdropFilter: "blur(10px)",
               display: "flex",
               flexDirection: "column",
               gap: { xs: 1.5, md: 2.5 },
@@ -719,7 +723,7 @@ export default function HomePage() {
                   variant="overline"
                   sx={{
                     letterSpacing: "0.28em",
-                    color: "rgba(255,255,255,0.6)",
+                    color: "rgba(15,23,42,0.65)",
                   }}
                 >
                   {selectedSection.subtitle}
@@ -729,11 +733,11 @@ export default function HomePage() {
                 aria-label="Fechar painel"
                 onClick={() => setSelectedIndex(null)}
                 sx={{
-                  bgcolor: "rgba(15,23,42,0.65)",
-                  border: "1px solid rgba(255,255,255,0.15)",
-                  color: "#ffffff",
+                  bgcolor: "rgba(28,181,224,0.12)",
+                  border: "1px solid rgba(12,74,110,0.14)",
+                  color: "#0b1f42",
                   "&:hover": {
-                    bgcolor: "rgba(15,23,42,0.85)",
+                    bgcolor: "rgba(28,181,224,0.2)",
                   },
                 }}
               >
@@ -746,7 +750,7 @@ export default function HomePage() {
                 variant="caption"
                 sx={{
                   letterSpacing: "0.32em",
-                  color: "rgba(255,255,255,0.45)",
+                  color: "rgba(15,23,42,0.55)",
                   textTransform: "uppercase",
                 }}
               >
@@ -760,15 +764,15 @@ export default function HomePage() {
                 flex: 1,
                 overflowY: "auto",
                 pr: { xs: 0.5, md: 1.5 },
-                color: "rgba(255,255,255,0.92)",
+                color: "rgba(15,23,42,0.9)",
                 mt: { xs: 1, md: 1.5 },
                 scrollbarWidth: "thin",
-                scrollbarColor: "rgba(125,211,252,0.4) transparent",
+                scrollbarColor: "rgba(28,181,224,0.5) transparent",
                 "&::-webkit-scrollbar": {
                   width: 6,
                 },
                 "&::-webkit-scrollbar-thumb": {
-                  backgroundColor: "rgba(125,211,252,0.4)",
+                  backgroundColor: "rgba(28,181,224,0.5)",
                   borderRadius: 999,
                 },
                 "&::-webkit-scrollbar-track": {
