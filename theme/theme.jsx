@@ -3,46 +3,46 @@ import { red } from '@mui/material/colors';
 
 const theme = createTheme({
   palette: {
-    mode: 'light',
+    mode: 'dark',
     primary: {
-      main: '#1cb5e0', // azul inspirado na logo
+      main: '#22d3ee', // cyan-400
     },
     secondary: {
-      main: '#7c3aed', // roxo inspirado na logo
+      main: '#f48fb1', // pink-400
     },
     error: {
       main: red.A400,
     },
     background: {
-      default: '#f6f9ff',
-      paper: '#ffffff',
+      default: '#000000',
+      paper: '#111827', // gray-900
     },
     text: {
-      primary: '#0f172a',
-      secondary: '#334155',
+        primary: '#ffffff',
+        secondary: '#d1d5db' // gray-300
     },
     grey: {
-      800: '#1f2937',
+        800: '#1f2937', // gray-800
     },
     green: {
-      500: '#22c55e',
-      600: '#16a34a',
+        500: '#22c55e',
+        600: '#16a34a'
     },
     orange: {
-      main: '#fb923c',
+        main: '#fb923c' // orange-400
     },
     blue: {
-      main: '#1cb5e0',
+        main: '#60a5fa' // blue-400
     },
     yellow: {
-      main: '#facc15',
+        main: '#facc15' // yellow-400
     },
     indigo: {
-      main: '#818cf8',
+        main: '#818cf8' // indigo-400
     },
     teal: {
-      main: '#14b8a6',
-    },
+        main: '#2dd4bf' // teal-400
+    }
   },
 });
 
