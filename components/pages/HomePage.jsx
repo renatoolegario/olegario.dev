@@ -18,6 +18,8 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import GitHubIcon from "@mui/icons-material/GitHub";
+import Image from "next/image";
+
 
 const accentColor = "#1cb5e0";
 const accentGradient = "linear-gradient(135deg, #1cb5e0 0%, #7c3aed 100%)";
@@ -460,22 +462,22 @@ export default function HomePage() {
 
   const panelSx = isMobile
     ? {
-        left: 0,
-        right: 0,
-        bottom: 0,
-        height: "82vh",
-        maxHeight: "640px",
-        borderTopLeftRadius: 28,
-        borderTopRightRadius: 28,
-      }
+      left: 0,
+      right: 0,
+      bottom: 0,
+      height: "82vh",
+      maxHeight: "640px",
+      borderTopLeftRadius: 28,
+      borderTopRightRadius: 28,
+    }
     : {
-        top: 0,
-        bottom: 0,
-        right: 0,
-        width: { xs: "100%", sm: "420px", md: "460px", lg: "520px" },
-        borderTopLeftRadius: 28,
-        borderBottomLeftRadius: 28,
-      };
+      top: 0,
+      bottom: 0,
+      right: 0,
+      width: { xs: "100%", sm: "420px", md: "460px", lg: "520px" },
+      borderTopLeftRadius: 28,
+      borderBottomLeftRadius: 28,
+    };
 
   return (
     <Box
@@ -513,33 +515,49 @@ export default function HomePage() {
           <Box
             sx={{
               textAlign: "center",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 1.5,
+              position: "relative",
+              width: "100%",
+              maxWidth: 520,
+              // reserva só um espacinho pro texto, não pro logo
+              pt: { xs: 2, md: 3 },
             }}
           >
-            <FuzzyText
-              baseIntensity={0.12}
-              hoverIntensity={0.3}
-              enableHover={!isMobile}
-              fontSize="clamp(2.6rem, 8vw, 5.2rem)"
-              color="#0b1f42"
+            {/* Logo flutuante (não afeta o layout) */}
+            <Box
+              sx={{
+                position: "absolute",
+                top: { xs: -90, md: -120 },
+                left: "50%",
+                transform: "translateX(-50%)",
+                pointerEvents: "none",
+                opacity: 0.95,
+                zIndex: 1,
+                filter: "drop-shadow(0 12px 26px rgba(12,74,110,0.14))",
+              }}
             >
-              Olegário.dev
-            </FuzzyText>
+              <Image
+                src="/logotipo.png"
+                alt="Logotipo"
+                width={isMobile ? 250 : 350}
+                height={isMobile ? 250 : 350}
+                priority
+                style={{ objectFit: "contain" }}
+              />
+            </Box>
+
+            {/* Conteúdo normal */}
             <Typography
               variant="body2"
               sx={{
-                maxWidth: 520,
+                mt: { xs: 10, md: 12 }, // espaço só pra não ficar por cima do texto
                 color: "rgba(15,23,42,0.74)",
                 letterSpacing: "0.05em",
               }}
             >
-              Escolha um tópico no menu abaixo para mergulhar nos detalhes do
-              nosso trabalho.
+              Transformando problemas em soluções eficientes!
             </Typography>
           </Box>
+
 
           <Stack spacing={1} alignItems="center">
             <Typography
@@ -655,7 +673,7 @@ export default function HomePage() {
             ))}
           </Box>
         </Stack>
-      </Box>
+      </Box >
 
       <Fade in={isPanelOpen} timeout={{ enter: 200, exit: 200 }} unmountOnExit>
         <Box
@@ -670,121 +688,123 @@ export default function HomePage() {
         />
       </Fade>
 
-      {selectedSection && (
-        <Slide
-          direction={isMobile ? "up" : "left"}
-          in={isPanelOpen}
-          mountOnEnter
-          unmountOnExit
-        >
-          <Box
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby={
-              selectedIndex !== null
-                ? `home-section-title-${selectedIndex}`
-                : undefined
-            }
-            sx={{
-              position: "fixed",
-              zIndex: 1400,
-              backgroundColor: "rgba(255,255,255,0.98)",
-              border: "1px solid rgba(12,74,110,0.12)",
-              boxShadow: "0 28px 80px rgba(15,23,42,0.16)",
-              backdropFilter: "blur(10px)",
-              display: "flex",
-              flexDirection: "column",
-              gap: { xs: 1.5, md: 2.5 },
-              p: { xs: 2.5, md: 3.5 },
-              overflow: "hidden",
-              ...panelSx,
-            }}
+      {
+        selectedSection && (
+          <Slide
+            direction={isMobile ? "up" : "left"}
+            in={isPanelOpen}
+            mountOnEnter
+            unmountOnExit
           >
-            <Stack
-              direction="row"
-              alignItems="flex-start"
-              spacing={2}
-              sx={{ width: "100%" }}
+            <Box
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby={
+                selectedIndex !== null
+                  ? `home-section-title-${selectedIndex}`
+                  : undefined
+              }
+              sx={{
+                position: "fixed",
+                zIndex: 1400,
+                backgroundColor: "rgba(255,255,255,0.98)",
+                border: "1px solid rgba(12,74,110,0.12)",
+                boxShadow: "0 28px 80px rgba(15,23,42,0.16)",
+                backdropFilter: "blur(10px)",
+                display: "flex",
+                flexDirection: "column",
+                gap: { xs: 1.5, md: 2.5 },
+                p: { xs: 2.5, md: 3.5 },
+                overflow: "hidden",
+                ...panelSx,
+              }}
             >
-              <Stack spacing={0.75} sx={{ flex: 1, minWidth: 0 }}>
-                <Typography
-                  id={`home-section-title-${selectedIndex}`}
-                  variant="h4"
-                  component="h2"
+              <Stack
+                direction="row"
+                alignItems="flex-start"
+                spacing={2}
+                sx={{ width: "100%" }}
+              >
+                <Stack spacing={0.75} sx={{ flex: 1, minWidth: 0 }}>
+                  <Typography
+                    id={`home-section-title-${selectedIndex}`}
+                    variant="h4"
+                    component="h2"
+                    sx={{
+                      fontSize: { xs: "1.6rem", md: "2rem" },
+                      lineHeight: 1.2,
+                      letterSpacing: "0.03em",
+                    }}
+                  >
+                    {selectedSection.title}
+                  </Typography>
+                  <Typography
+                    variant="overline"
+                    sx={{
+                      letterSpacing: "0.28em",
+                      color: "rgba(15,23,42,0.65)",
+                    }}
+                  >
+                    {selectedSection.subtitle}
+                  </Typography>
+                </Stack>
+                <IconButton
+                  aria-label="Fechar painel"
+                  onClick={() => setSelectedIndex(null)}
                   sx={{
-                    fontSize: { xs: "1.6rem", md: "2rem" },
-                    lineHeight: 1.2,
-                    letterSpacing: "0.03em",
+                    bgcolor: "rgba(28,181,224,0.12)",
+                    border: "1px solid rgba(12,74,110,0.14)",
+                    color: "#0b1f42",
+                    "&:hover": {
+                      bgcolor: "rgba(28,181,224,0.2)",
+                    },
                   }}
                 >
-                  {selectedSection.title}
-                </Typography>
-                <Typography
-                  variant="overline"
-                  sx={{
-                    letterSpacing: "0.28em",
-                    color: "rgba(15,23,42,0.65)",
-                  }}
-                >
-                  {selectedSection.subtitle}
-                </Typography>
+                  <CloseIcon />
+                </IconButton>
               </Stack>
-              <IconButton
-                aria-label="Fechar painel"
-                onClick={() => setSelectedIndex(null)}
+
+              {selectedPosition && (
+                <Typography
+                  variant="caption"
+                  sx={{
+                    letterSpacing: "0.32em",
+                    color: "rgba(15,23,42,0.55)",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {String(selectedPosition).padStart(2, "0")} /{" "}
+                  {String(totalSections).padStart(2, "0")}
+                </Typography>
+              )}
+
+              <Box
                 sx={{
-                  bgcolor: "rgba(28,181,224,0.12)",
-                  border: "1px solid rgba(12,74,110,0.14)",
-                  color: "#0b1f42",
-                  "&:hover": {
-                    bgcolor: "rgba(28,181,224,0.2)",
+                  flex: 1,
+                  overflowY: "auto",
+                  pr: { xs: 0.5, md: 1.5 },
+                  color: "rgba(15,23,42,0.9)",
+                  mt: { xs: 1, md: 1.5 },
+                  scrollbarWidth: "thin",
+                  scrollbarColor: "rgba(28,181,224,0.5) transparent",
+                  "&::-webkit-scrollbar": {
+                    width: 6,
+                  },
+                  "&::-webkit-scrollbar-thumb": {
+                    backgroundColor: "rgba(28,181,224,0.5)",
+                    borderRadius: 999,
+                  },
+                  "&::-webkit-scrollbar-track": {
+                    background: "transparent",
                   },
                 }}
               >
-                <CloseIcon />
-              </IconButton>
-            </Stack>
-
-            {selectedPosition && (
-              <Typography
-                variant="caption"
-                sx={{
-                  letterSpacing: "0.32em",
-                  color: "rgba(15,23,42,0.55)",
-                  textTransform: "uppercase",
-                }}
-              >
-                {String(selectedPosition).padStart(2, "0")} /{" "}
-                {String(totalSections).padStart(2, "0")}
-              </Typography>
-            )}
-
-            <Box
-              sx={{
-                flex: 1,
-                overflowY: "auto",
-                pr: { xs: 0.5, md: 1.5 },
-                color: "rgba(15,23,42,0.9)",
-                mt: { xs: 1, md: 1.5 },
-                scrollbarWidth: "thin",
-                scrollbarColor: "rgba(28,181,224,0.5) transparent",
-                "&::-webkit-scrollbar": {
-                  width: 6,
-                },
-                "&::-webkit-scrollbar-thumb": {
-                  backgroundColor: "rgba(28,181,224,0.5)",
-                  borderRadius: 999,
-                },
-                "&::-webkit-scrollbar-track": {
-                  background: "transparent",
-                },
-              }}
-            >
-              {selectedSection.body}
+                {selectedSection.body}
+              </Box>
             </Box>
-          </Box>
-        </Slide>
-      )}
-    </Box>
+          </Slide>
+        )
+      }
+    </Box >
   );
 }
