@@ -9,7 +9,7 @@ function MyApp({ Component, pageProps }) {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Head>
-        <title>Olegário.Dev</title>
+        <title>Olegario — Automação no WhatsApp com IA | Founder Técnico</title>
         <link rel="icon" href="/favicon/favicon.ico" type="image/x-icon" />
         <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
         <link rel="icon" type="image/png" sizes="192x192" href="/favicon/android-chrome-192x192.png" />
