@@ -1,637 +1,810 @@
 "use client";
-
-import Head from "next/head";
+import FuzzyText from "components/FuzzyText";
+import { useEffect, useMemo, useState } from "react";
 import {
-  AppBar,
   Box,
-  Button,
-  Container,
-  Divider,
-  Grid,
+  Fade,
   IconButton,
-  MenuItem,
+  Slide,
   Stack,
-  TextField,
-  Toolbar,
   Typography,
+  useMediaQuery,
+  ListItemButton,
 } from "@mui/material";
-import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import CloseIcon from "@mui/icons-material/Close";
+import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import InstagramIcon from "@mui/icons-material/Instagram";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import YouTubeIcon from "@mui/icons-material/YouTube";
 import GitHubIcon from "@mui/icons-material/GitHub";
-import TwitterIcon from "@mui/icons-material/Twitter";
+import Image from "next/image";
 
-const whatsappLink = "https://wa.me/5534992399036";
-const emailLink = "mailto:multiplas.fr@gmail.com";
-const callLink = "https://cal.com";
-const xLink = "https://x.com/olegario_dev";
-const linkedInLink = "https://www.linkedin.com/in/olegariodev/";
-const githubLink = "https://github.com/renatoolegario";
 
-const sections = [
-  { id: "inicio", label: "Início" },
-  { id: "solucao", label: "Solução" },
-  { id: "como-funciona", label: "Como funciona" },
-  { id: "provas", label: "Provas" },
-  { id: "projetos", label: "Projetos" },
-  { id: "conteudo", label: "Conteúdo" },
-  { id: "contato", label: "Contato" },
-];
+const accentColor = "#1cb5e0";
+const accentGradient = "linear-gradient(135deg, #1cb5e0 0%, #7c3aed 100%)";
 
-const cardSx = {
-  border: "1px solid rgba(15, 23, 42, 0.08)",
-  borderRadius: 3,
-  p: { xs: 2.5, md: 3 },
-  bgcolor: "#fff",
-  boxShadow: "0 20px 50px rgba(15, 23, 42, 0.06)",
+const badgeSx = {
+  px: 1.5,
+  py: 0.5,
+  borderRadius: 999,
+  border: "1px solid rgba(12,74,110,0.16)",
+  bgcolor: "rgba(28,181,224,0.1)",
+  fontSize: "0.75rem",
+  letterSpacing: "0.08em",
+  textTransform: "uppercase",
+  color: "#0f172a",
+  transition: "transform 0.25s ease, background-color 0.25s ease",
+  cursor: "default",
+  "&:hover": {
+    bgcolor: "rgba(28,181,224,0.18)",
+    color: "#0b1f3c",
+    transform: "translateY(-1px)",
+  },
 };
 
-const sectionTitleSx = {
-  fontWeight: 700,
-  letterSpacing: "-0.01em",
-  color: "#0f172a",
+const panelListItemSx = {
+  borderRadius: 2,
+  px: 1.5,
+  py: 1.1,
+  gap: 1.1,
+  alignItems: "center",
+  justifyContent: "flex-start",
+  color: "rgba(15,23,42,0.9)",
+  textDecoration: "none",
+  bgcolor: "rgba(255,255,255,0.92)",
+  border: "1px solid rgba(15,23,42,0.08)",
+  transition:
+    "transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease",
+  "&:hover": {
+    bgcolor: "rgba(255,255,255,1)",
+    color: "#0b1f3c",
+    borderColor: "rgba(28,181,224,0.5)",
+    transform: "translateY(-2px)",
+    boxShadow: "0 12px 38px rgba(12,74,110,0.14)",
+  },
+  "&:focus-visible": {
+    outline: `2px solid ${accentColor}`,
+    outlineOffset: 2,
+  },
 };
 
 export default function HomePage() {
-  return (
-    <Box sx={{ bgcolor: "#f6f9ff", color: "#0f172a" }}>
-      <Head>
-        <title>
-          Olegario — Automação no WhatsApp com IA | Founder Técnico
-        </title>
-        <meta
-          name="description"
-          content="Automação inteligente no WhatsApp com IA para vender mais e reduzir trabalho manual. Founder técnico e arquiteto de sistemas focado em soluções de produção."
-        />
-        <meta
-          property="og:title"
-          content="Olegario — Automação no WhatsApp com IA | Founder Técnico"
-        />
-        <meta
-          property="og:description"
-          content="Automação inteligente no WhatsApp com IA para vender mais e reduzir trabalho manual. Founder técnico e arquiteto de sistemas focado em soluções de produção."
-        />
-        <meta property="og:type" content="website" />
-        <meta property="og:image" content="/olegario.png" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta
-          name="twitter:title"
-          content="Olegario — Automação no WhatsApp com IA | Founder Técnico"
-        />
-        <meta
-          name="twitter:description"
-          content="Automação inteligente no WhatsApp com IA para vender mais e reduzir trabalho manual. Founder técnico e arquiteto de sistemas focado em soluções de produção."
-        />
-        <meta name="twitter:image" content="/olegario.png" />
-      </Head>
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
-      <AppBar
-        position="sticky"
-        color="transparent"
-        elevation={0}
+  const sections = useMemo(() => {
+    const technologies = [
+      "PHP",
+      "React",
+      "Next.js",
+      "MySQL",
+      "PostgreSQL",
+      "BlobStorage",
+      "Docker",
+      "VPS",
+      "Extensões Web",
+      "IA (Gemini / ChatGPT)",
+      "Vercel",
+      "Neon",
+      "Checkouts (Asaas / Kirvano)",
+      "Migrations",
+      "REST API",
+      "GitHub",
+      "Facebook",
+      "API WhatsApp Oficial",
+      "Google Cloud",
+      "Cloudflare",
+    ];
+
+    const frameworks = [
+      "Turf",
+      "Mapbox",
+      "Resend",
+      "Crypto",
+      "Codex",
+      "Jules",
+      "node-pg-migrate",
+      "MUI",
+      "Zustand",
+      "ESLint",
+      "Prettier",
+      "wa-js",
+      "whaticket",
+      "whiskey baileys",
+      "ticketz",
+    ];
+
+    const contactMethods = [
+      {
+        key: "phone",
+        icon: PhoneIphoneIcon,
+        value: "(34) 99239-9036",
+        href: "https://wa.me/5534992399036",
+      },
+      {
+        key: "email",
+        icon: MailOutlineIcon,
+        value: "multiplas.fr@gmail.com",
+        href: "mailto:multiplas.fr@gmail.com",
+      },
+      {
+        key: "instagram",
+        icon: InstagramIcon,
+        value: "Instagram",
+        href: "https://www.instagram.com/olegario.dev/",
+      },
+      {
+        key: "linkedin",
+        icon: LinkedInIcon,
+        value: "LinkedIn",
+        href: "https://www.linkedin.com/in/olegariodev/",
+      },
+      {
+        key: "youtube",
+        icon: YouTubeIcon,
+        value: "YouTube",
+        href: "https://www.youtube.com/@olegario-dev",
+      },
+      {
+        key: "github",
+        icon: GitHubIcon,
+        value: "GitHub",
+        href: "https://github.com/renatoolegario  ",
+      },
+    ];
+
+    const companyDetails = [
+      {
+        text: "CNPJ: 37.398.466/0001-05",
+        href: "https://cnpj.biz/37398466000105",
+      },
+      {
+        text: "Multiplasfr Sistema de Cobrança e Informática LTDA",
+      },
+    ];
+    const projects = [
+      { label: "FacilitAgro.com.br", href: "https://facilitagro.com.br" },
+      { label: "FalaUai.com.br", href: "https://falauai.com.br" },
+      { label: "MestreStarlink.com.br", href: "https://mestrestarlink.com.br" },
+      {
+        label: "NaBrasaHamburgueria.com.br",
+        href: "https://www.nabrasahamburgueria.com.br/",
+      },
+      { label: "Olegario.dev/imagine", href: "https://olegario.dev/imagine" },
+      {
+        label: "Olegario.dev/Festival-Meta",
+        href: "https://olegario.dev/festival-meta-2025",
+      },
+    ];
+
+    return [
+      {
+        title: "Transformando problemas em soluções eficientes!",
+        subtitle: "Mais com menos",
+        body: (
+          <Typography
+            variant="body1"
+            sx={{
+              color: "rgba(15,23,42,0.9)",
+              lineHeight: 1.6,
+              textAlign: { xs: "left", sm: "justify" },
+            }}
+          >
+            Cada projeto nasce com o objetivo de entregar mais com menos no
+            menor tempo possível. Unimos estratégia, tecnologia e execução
+            enxuta para transformar desafios em resultados mensuráveis.
+          </Typography>
+        ),
+      },
+      {
+        title: "Tecnologias",
+        subtitle: "Stack principal",
+        body: (
+          <Stack spacing={1.5}>
+            <Typography
+              variant="body2"
+              sx={{
+                color: "rgba(15,23,42,0.8)",
+                lineHeight: 1.6,
+                textAlign: { xs: "left", sm: "justify" },
+              }}
+            >
+              Construímos soluções sob medida utilizando uma base moderna e
+              flexível que garante performance, escalabilidade e integrações
+              rápidas.
+            </Typography>
+            <Stack
+              direction="row"
+              flexWrap="wrap"
+              gap={1.2}
+              justifyContent="flex-start"
+            >
+              {technologies.map((item) => (
+                <Box key={item} sx={badgeSx}>
+                  {item}
+                </Box>
+              ))}
+            </Stack>
+          </Stack>
+        ),
+      },
+      {
+        title: "Frameworks e Suporte",
+        subtitle: "Ferramentas que potencializam ",
+        body: (
+          <Stack spacing={1.5}>
+            <Typography
+              variant="body2"
+              sx={{
+                color: "rgba(15,23,42,0.8)",
+                lineHeight: 1.6,
+                textAlign: { xs: "left", sm: "justify" },
+              }}
+            >
+              Integramos bibliotecas e serviços especializados para acelerar a
+              entrega e manter a qualidade em cada etapa do ciclo de vida dos
+              produtos digitais.
+            </Typography>
+            <Stack
+              direction="row"
+              flexWrap="wrap"
+              gap={1.2}
+              justifyContent="flex-start"
+            >
+              {frameworks.map((item) => (
+                <Box key={item} sx={badgeSx}>
+                  {item}
+                </Box>
+              ))}
+            </Stack>
+          </Stack>
+        ),
+      },
+      {
+        title: "Objetivo",
+        subtitle: "Entregar mais com menos",
+        body: (
+          <Typography
+            variant="body1"
+            sx={{
+              color: "rgba(15,23,42,0.9)",
+              lineHeight: 1.6,
+              textAlign: { xs: "left", sm: "justify" },
+            }}
+          >
+            Nosso foco é transformar a visão do cliente em realidade de forma
+            pragmática, combinando automação, inteligência e design funcional
+            para acelerar operações e gerar valor imediato.
+          </Typography>
+        ),
+      },
+      {
+        title: "Contato",
+        subtitle: "Vamos construir algo juntos?",
+        body: (
+          <Stack spacing={1.2}>
+            <Typography
+              variant="body2"
+              sx={{
+                color: "rgba(15,23,42,0.82)",
+                lineHeight: 1.6,
+                textAlign: { xs: "left", sm: "justify" },
+              }}
+            >
+              Estamos prontos para discutir novos desafios, parcerias e
+              consultorias especializadas.
+            </Typography>
+            <Stack
+              direction="row"
+              flexWrap="wrap"
+              gap={1.2}
+              justifyContent="flex-start"
+            >
+              {contactMethods.map(({ key, icon: Icon, value, href }) => (
+                <ListItemButton
+                  key={key}
+                  component={href ? "a" : "div"}
+                  href={href}
+                  target={href?.startsWith("http") ? "_blank" : undefined}
+                  rel={
+                    href?.startsWith("http") ? "noopener noreferrer" : undefined
+                  }
+                  sx={{
+                    ...panelListItemSx,
+                    width: {
+                      xs: "100%",
+                      sm: "calc(50% - 0.6rem)",
+                      md: "calc(50% - 0.6rem)",
+                    },
+                    maxWidth: { sm: 320 },
+                    flex: "1 1 240px",
+                  }}
+                >
+                  <Icon sx={{ fontSize: "1.4rem" }} />
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "inherit",
+                      letterSpacing: "0.05em",
+                      textAlign: "left",
+                      width: "100%",
+                    }}
+                  >
+                    {value}
+                  </Typography>
+                </ListItemButton>
+              ))}
+            </Stack>
+            <Stack spacing={0.8} alignItems="stretch">
+              {companyDetails.map((item, index) => (
+                <Box
+                  key={index}
+                  component={item.href ? "a" : "div"}
+                  href={item.href}
+                  target={item.href?.startsWith("http") ? "_blank" : undefined}
+                  sx={{
+                    color: "rgba(15,23,42,0.86)",
+                    borderRadius: 2,
+                    px: 1.5,
+                    py: 1,
+                    transition:
+                      "transform 0.25s ease, background-color 0.25s ease",
+                    width: "100%",
+                    textAlign: "left",
+                    "&:hover": {
+                      backgroundImage: accentGradient,
+                      color: "#0b1f3c",
+                      transform: "translateY(-1px)",
+                    },
+                    textDecoration: "none", // remove sublinhado do link
+                  }}
+                >
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "inherit",
+                      letterSpacing: "0.05em",
+                      textAlign: { xs: "left", sm: "justify" },
+                    }}
+                  >
+                    {item.text}
+                  </Typography>
+                </Box>
+              ))}
+            </Stack>
+          </Stack>
+        ),
+      },
+      {
+        title: "Projetos em destaque",
+        subtitle: "Experiências que impulsionam negócios",
+        body: (
+          <Stack spacing={1.5}>
+            <Typography
+              variant="body2"
+              sx={{
+                color: "rgba(15,23,42,0.82)",
+                lineHeight: 1.6,
+                textAlign: { xs: "left", sm: "justify" },
+              }}
+            >
+              Soluções digitais criadas para diferentes segmentos, todas com
+              foco em resultados reais e expansão contínua.
+            </Typography>
+            <Stack spacing={0.8} alignItems="stretch">
+              {projects.map(({ label, href }) => (
+                <ListItemButton
+                  key={label}
+                  component="a"
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{
+                    ...panelListItemSx,
+                    width: "100%",
+                  }}
+                >
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "inherit",
+                      letterSpacing: "0.05em",
+                      textAlign: { xs: "left", sm: "justify" },
+                      width: "100%",
+                    }}
+                  >
+                    {label}
+                  </Typography>
+                </ListItemButton>
+              ))}
+            </Stack>
+            <Typography
+              variant="caption"
+              sx={{ color: "rgba(15,23,42,0.6)", letterSpacing: "0.1em" }}
+            >
+              Novos projetos podem ser adicionados facilmente conforme o
+              portfólio evolui.
+            </Typography>
+          </Stack>
+        ),
+      },
+    ];
+  }, []);
+
+  const [selectedIndex, setSelectedIndex] = useState(null);
+  const isPanelOpen = selectedIndex !== null;
+  const selectedSection = isPanelOpen ? sections[selectedIndex] : null;
+  const totalSections = sections.length;
+  const selectedPosition =
+    selectedIndex !== null ? selectedIndex + 1 : undefined;
+
+  useEffect(() => {
+    if (!isPanelOpen) {
+      return;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setSelectedIndex(null);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isPanelOpen]);
+
+  const panelSx = isMobile
+    ? {
+      left: 0,
+      right: 0,
+      bottom: 0,
+      height: "82vh",
+      maxHeight: "640px",
+      borderTopLeftRadius: 28,
+      borderTopRightRadius: 28,
+    }
+    : {
+      top: 0,
+      bottom: 0,
+      right: 0,
+      width: { xs: "100%", sm: "420px", md: "460px", lg: "520px" },
+      borderTopLeftRadius: 28,
+      borderBottomLeftRadius: 28,
+    };
+
+  return (
+    <Box
+      sx={{
+        minHeight: "100vh",
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        backgroundImage:
+          "radial-gradient(circle at 18% 18%, rgba(28,181,224,0.18), transparent 34%), radial-gradient(circle at 78% 12%, rgba(124,58,237,0.12), transparent 30%), linear-gradient(180deg, #f8fbff 0%, #f3f7fb 40%, #eef3ff 100%)",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        color: "#0f172a",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      <Box
         sx={{
-          backdropFilter: "blur(12px)",
-          borderBottom: "1px solid rgba(15, 23, 42, 0.08)",
+          flex: 1,
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          px: { xs: 2.5, md: 8 },
+          py: { xs: 6, md: 10 },
         }}
       >
-        <Toolbar
-          sx={{
-            minHeight: { xs: 64, md: 72 },
-            display: "flex",
-            justifyContent: "space-between",
-          }}
+        <Stack
+          spacing={{ xs: 3, md: 4 }}
+          alignItems="center"
+          sx={{ width: "100%", maxWidth: 960 }}
         >
-          <Typography
-            variant="subtitle1"
-            sx={{ fontWeight: 700, letterSpacing: "0.08em" }}
-          >
-            OLEGARIO
-          </Typography>
-          <Stack
-            direction="row"
-            spacing={2}
-            sx={{ display: { xs: "none", md: "flex" } }}
-          >
-            {sections.map((section) => (
-              <Button
-                key={section.id}
-                href={`#${section.id}`}
-                sx={{
-                  color: "#0f172a",
-                  fontWeight: 600,
-                  textTransform: "none",
-                }}
-              >
-                {section.label}
-              </Button>
-            ))}
-          </Stack>
-          <Button
-            variant="contained"
-            color="primary"
-            href={whatsappLink}
-            target="_blank"
-            rel="noreferrer"
+          <Box
             sx={{
-              bgcolor: "#0f172a",
-              textTransform: "none",
-              fontWeight: 600,
-              px: 2.5,
-              "&:hover": { bgcolor: "#111827" },
+              textAlign: "center",
+              position: "relative",
+              width: "100%",
+              maxWidth: 520,
+              // reserva só um espacinho pro texto, não pro logo
+              pt: { xs: 2, md: 3 },
             }}
           >
-            Falar no WhatsApp
-          </Button>
-        </Toolbar>
-        <Box
-          sx={{
-            display: { xs: "block", md: "none" },
-            px: 2,
-            pb: 1.5,
-          }}
-        >
-          <Stack
-            direction="row"
-            spacing={1.2}
-            sx={{
-              overflowX: "auto",
-              pb: 1,
-              "&::-webkit-scrollbar": { height: 4 },
-              "&::-webkit-scrollbar-thumb": {
-                backgroundColor: "rgba(15, 23, 42, 0.2)",
-                borderRadius: 999,
-              },
-            }}
-          >
-            {sections.map((section) => (
-              <Button
-                key={section.id}
-                href={`#${section.id}`}
-                size="small"
-                sx={{
-                  color: "#0f172a",
-                  fontWeight: 600,
-                  textTransform: "none",
-                  border: "1px solid rgba(15, 23, 42, 0.12)",
-                  borderRadius: 999,
-                  px: 2,
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {section.label}
-              </Button>
-            ))}
-          </Stack>
-        </Box>
-      </AppBar>
+            {/* Logo flutuante (não afeta o layout) */}
+            <Box
+              sx={{
+                position: "absolute",
+                top: { xs: -90, md: -120 },
+                left: "50%",
+                transform: "translateX(-50%)",
+                pointerEvents: "none",
+                opacity: 0.95,
+                zIndex: 1,
+                filter: "drop-shadow(0 12px 26px rgba(12,74,110,0.14))",
+              }}
+            >
+              <Image
+                src="/logotipo.png"
+                alt="Logotipo"
+                width={isMobile ? 250 : 350}
+                height={isMobile ? 250 : 350}
+                priority
+                style={{ objectFit: "contain" }}
+              />
+            </Box>
 
-      <Container maxWidth="lg" sx={{ pt: { xs: 6, md: 9 }, pb: { xs: 8, md: 10 } }}>
-        <Stack spacing={{ xs: 6, md: 10 }}>
-          <Stack id="inicio" spacing={3} sx={{ scrollMarginTop: 120 }}>
-            <Grid container spacing={{ xs: 3, md: 6 }} alignItems="center">
-              <Grid item xs={12} md={7}>
-                <Stack spacing={2.5}>
-                  <Typography variant="h1" sx={{ fontSize: { xs: "2.2rem", md: "3.4rem" }, fontWeight: 700, lineHeight: 1.1 }}>
-                    Automação inteligente no WhatsApp com IA — para vender mais e reduzir trabalho manual.
+            {/* Conteúdo normal */}
+            <Typography
+              variant="body2"
+              sx={{
+                mt: { xs: 10, md: 12 }, // espaço só pra não ficar por cima do texto
+                color: "rgba(15,23,42,0.74)",
+                letterSpacing: "0.05em",
+              }}
+            >
+              Transformando problemas em soluções eficientes!
+            </Typography>
+          </Box>
+
+
+          <Stack spacing={1} alignItems="center">
+            <Typography
+              variant="overline"
+              sx={{
+                letterSpacing: "0.35em",
+                color: "rgba(15,23,42,0.65)",
+              }}
+            >
+              Menu
+            </Typography>
+            <Typography
+              variant="caption"
+              sx={{
+                letterSpacing: "0.28em",
+                color: "rgba(15,23,42,0.55)",
+                textTransform: "uppercase",
+              }}
+            >
+              Clique para explorar
+            </Typography>
+          </Stack>
+          <Box
+            sx={{
+              width: "100%",
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "1fr",
+                sm: "repeat(2, 1fr)",
+                lg: "repeat(3, 1fr)",
+              },
+              gap: 1, // bem compacto
+            }}
+          >
+            {sections.map((section, index) => (
+              <ListItemButton
+                key={section.title}
+                onClick={() => setSelectedIndex(index)}
+                sx={{
+                  borderRadius: 2,
+                  minHeight: 56,
+                  px: 1.5,
+                  py: 1,
+                  gap: 1,
+                  alignItems: "center",
+                  border: "1px solid rgba(12,74,110,0.12)",
+                  bgcolor: "rgba(255,255,255,0.88)",
+                  transition:
+                    "background-color .2s ease, border-color .2s ease, box-shadow .2s ease",
+                  "&:hover": {
+                    borderColor: "rgba(28,181,224,0.5)",
+                    bgcolor: "rgba(255,255,255,1)",
+                    boxShadow: "0 18px 38px rgba(12,74,110,0.12)",
+                  },
+                  // foco acessível e discreto
+                  "&.Mui-focusVisible": {
+                    outline: `2px solid ${accentColor}`,
+                    outlineOffset: 2,
+                  },
+                }}
+              >
+                {/* índice */}
+                <Box
+                  sx={{
+                    fontSize: ".75rem",
+                    fontWeight: 600,
+                    letterSpacing: ".14em",
+                    color: "rgba(15,23,42,0.72)",
+                    border: "1px solid rgba(12,74,110,0.16)",
+                    borderRadius: 1.5,
+                    px: 0.75,
+                    py: 0.25,
+                    flexShrink: 0,
+                  }}
+                >
+                  {String(index + 1).padStart(2, "0")}
+                </Box>
+
+                {/* textos */}
+                <Box sx={{ minWidth: 0 }}>
+                  <Typography
+                    variant="subtitle1"
+                    sx={{
+                      fontWeight: 700,
+                      lineHeight: 1.2,
+                      color: "rgba(15,23,42,0.98)",
+                      // uma linha somente
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {section.title}
                   </Typography>
-                  <Typography variant="h6" sx={{ color: "rgba(15, 23, 42, 0.75)", fontWeight: 400 }}>
-                    Sou founder técnico e arquiteto de sistemas. Construo produtos e automações que organizam o atendimento, criam follow-ups e transformam conversas em processo.
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "rgba(15,23,42,0.7)",
+                      lineHeight: 1.35,
+                      // cortar em 1 linha também
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {section.subtitle}
                   </Typography>
-                  <Stack spacing={1}>
-                    {[
-                      "Funis e follow-up automáticos (sem planilha e sem caos)",
-                      "IA aplicada com contexto: classifica, prioriza e sugere ações",
-                      "Arquitetura robusta: integrações, eventos, webhooks e escalabilidade",
-                    ].map((item) => (
-                      <Typography key={item} variant="body1" sx={{ color: "rgba(15, 23, 42, 0.85)" }}>
-                        • {item}
-                      </Typography>
-                    ))}
-                  </Stack>
-                  <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                    <Button
-                      variant="contained"
-                      size="large"
-                      href={whatsappLink}
-                      target="_blank"
-                      rel="noreferrer"
-                      sx={{ textTransform: "none", fontWeight: 600, bgcolor: "#0f172a", "&:hover": { bgcolor: "#111827" } }}
-                    >
-                      Falar no WhatsApp
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      size="large"
-                      href="#projetos"
-                      sx={{ textTransform: "none", fontWeight: 600, borderColor: "#0f172a", color: "#0f172a" }}
-                    >
-                      Ver projetos
-                    </Button>
-                  </Stack>
-                  <Typography variant="caption" sx={{ color: "rgba(15, 23, 42, 0.6)", letterSpacing: "0.04em" }}>
-                    Sem hype: foco em sistemas que funcionam todos os dias, em produção.
+                </Box>
+
+                {/* seta à direita (opcional) */}
+                <Box sx={{ ml: "auto", opacity: 0.6 }}>▸</Box>
+              </ListItemButton>
+            ))}
+          </Box>
+        </Stack>
+      </Box >
+
+      <Fade in={isPanelOpen} timeout={{ enter: 200, exit: 200 }} unmountOnExit>
+        <Box
+          onClick={() => setSelectedIndex(null)}
+          sx={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 1290,
+            bgcolor: "rgba(12,74,110,0.18)",
+            backdropFilter: "blur(4px)",
+          }}
+        />
+      </Fade>
+
+      {
+        selectedSection && (
+          <Slide
+            direction={isMobile ? "up" : "left"}
+            in={isPanelOpen}
+            mountOnEnter
+            unmountOnExit
+          >
+            <Box
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby={
+                selectedIndex !== null
+                  ? `home-section-title-${selectedIndex}`
+                  : undefined
+              }
+              sx={{
+                position: "fixed",
+                zIndex: 1400,
+                backgroundColor: "rgba(255,255,255,0.98)",
+                border: "1px solid rgba(12,74,110,0.12)",
+                boxShadow: "0 28px 80px rgba(15,23,42,0.16)",
+                backdropFilter: "blur(10px)",
+                display: "flex",
+                flexDirection: "column",
+                gap: { xs: 1.5, md: 2.5 },
+                p: { xs: 2.5, md: 3.5 },
+                overflow: "hidden",
+                ...panelSx,
+              }}
+            >
+              <Stack
+                direction="row"
+                alignItems="flex-start"
+                spacing={2}
+                sx={{ width: "100%" }}
+              >
+                <Stack spacing={0.75} sx={{ flex: 1, minWidth: 0 }}>
+                  <Typography
+                    id={`home-section-title-${selectedIndex}`}
+                    variant="h4"
+                    component="h2"
+                    sx={{
+                      fontSize: { xs: "1.6rem", md: "2rem" },
+                      lineHeight: 1.2,
+                      letterSpacing: "0.03em",
+                    }}
+                  >
+                    {selectedSection.title}
+                  </Typography>
+                  <Typography
+                    variant="overline"
+                    sx={{
+                      letterSpacing: "0.28em",
+                      color: "rgba(15,23,42,0.65)",
+                    }}
+                  >
+                    {selectedSection.subtitle}
                   </Typography>
                 </Stack>
-              </Grid>
-              <Grid item xs={12} md={5}>
-                <Box sx={{ ...cardSx, bgcolor: "#fdfdfd" }}>
-                  <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2 }}>
-                    Antes x Depois
-                  </Typography>
-                  <Stack spacing={2}>
-                    <Box>
-                      <Typography variant="overline" sx={{ color: "rgba(15, 23, 42, 0.6)" }}>
-                        Antes
-                      </Typography>
-                      <Typography variant="body1">Atendimento manual, leads esquecidos, retrabalho</Typography>
-                    </Box>
-                    <Divider />
-                    <Box>
-                      <Typography variant="overline" sx={{ color: "rgba(15, 23, 42, 0.6)" }}>
-                        Depois
-                      </Typography>
-                      <Typography variant="body1">Fluxo automatizado, priorização, rotina organizada</Typography>
-                    </Box>
-                  </Stack>
-                </Box>
-              </Grid>
-            </Grid>
-          </Stack>
-
-          <Stack id="solucao" spacing={3} sx={{ scrollMarginTop: 120 }}>
-            <Typography variant="h3" sx={sectionTitleSx}>
-              O problema que eu resolvo
-            </Typography>
-            <Typography variant="body1" sx={{ color: "rgba(15, 23, 42, 0.8)", maxWidth: 760 }}>
-              Muita empresa usa o WhatsApp como canal principal, mas opera no improviso: mensagens se perdem, follow-up falha, ninguém sabe a prioridade e o dono vira gargalo.
-            </Typography>
-            <Grid container spacing={2}>
-              {[
-                "Leads sem resposta ou resposta tardia",
-                "Atendimento sem processo e sem histórico",
-                "Vendas dependem de uma pessoa só",
-                "Pós-venda e cobrança esquecidos",
-                "Equipe sem padrão de atendimento",
-              ].map((item) => (
-                <Grid key={item} item xs={12} sm={6} md={4}>
-                  <Box sx={cardSx}>
-                    <Typography variant="body1" sx={{ fontWeight: 600 }}>
-                      {item}
-                    </Typography>
-                  </Box>
-                </Grid>
-              ))}
-            </Grid>
-            <Typography variant="body1" sx={{ color: "rgba(15, 23, 42, 0.9)", fontWeight: 600 }}>
-              Eu transformo esse cenário em fluxo: entrada → qualificação → próximo passo → acompanhamento.
-            </Typography>
-          </Stack>
-
-          <Stack id="como-funciona" spacing={3} sx={{ scrollMarginTop: 120 }}>
-            <Typography variant="h3" sx={sectionTitleSx}>
-              Como eu construo (na prática)
-            </Typography>
-            <Typography variant="body1" sx={{ color: "rgba(15, 23, 42, 0.8)" }}>
-              Arquitetura antes de interface. Resultado antes de feature.
-            </Typography>
-            <Grid container spacing={2}>
-              {[
-                {
-                  title: "Diagnóstico rápido",
-                  text: "Entendo o funil, as dores e onde a automação gera retorno imediato.",
-                },
-                {
-                  title: "Desenho do fluxo",
-                  text: "Mapeio etapas e gatilhos: entrada, qualificação, follow-up e handoff humano.",
-                },
-                {
-                  title: "Implementação",
-                  text: "Integrações, automações, Webhooks/WebSocket, banco e IA aplicada com contexto.",
-                },
-                {
-                  title: "Entrega e evolução",
-                  text: "Métricas, ajustes finos e expansão do fluxo conforme o negócio cresce.",
-                },
-              ].map((item, index) => (
-                <Grid key={item.title} item xs={12} md={6}>
-                  <Box sx={cardSx}>
-                    <Typography variant="overline" sx={{ color: "rgba(15, 23, 42, 0.6)" }}>
-                      {String(index + 1).padStart(2, "0")}
-                    </Typography>
-                    <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
-                      {item.title}
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: "rgba(15, 23, 42, 0.75)" }}>
-                      {item.text}
-                    </Typography>
-                  </Box>
-                </Grid>
-              ))}
-            </Grid>
-            <Box sx={cardSx}>
-              <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2 }}>
-                O que você recebe
-              </Typography>
-              <Stack spacing={1}>
-                {[
-                  "Um sistema que reduz trabalho manual e organiza o WhatsApp",
-                  "Dashboards/visão de tickets e próximos passos",
-                  "Base pronta para crescer com novos módulos",
-                ].map((item) => (
-                  <Typography key={item} variant="body2" sx={{ color: "rgba(15, 23, 42, 0.8)" }}>
-                    • {item}
-                  </Typography>
-                ))}
+                <IconButton
+                  aria-label="Fechar painel"
+                  onClick={() => setSelectedIndex(null)}
+                  sx={{
+                    bgcolor: "rgba(28,181,224,0.12)",
+                    border: "1px solid rgba(12,74,110,0.14)",
+                    color: "#0b1f42",
+                    "&:hover": {
+                      bgcolor: "rgba(28,181,224,0.2)",
+                    },
+                  }}
+                >
+                  <CloseIcon />
+                </IconButton>
               </Stack>
+
+              {selectedPosition && (
+                <Typography
+                  variant="caption"
+                  sx={{
+                    letterSpacing: "0.32em",
+                    color: "rgba(15,23,42,0.55)",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {String(selectedPosition).padStart(2, "0")} /{" "}
+                  {String(totalSections).padStart(2, "0")}
+                </Typography>
+              )}
+
+              <Box
+                sx={{
+                  flex: 1,
+                  overflowY: "auto",
+                  pr: { xs: 0.5, md: 1.5 },
+                  color: "rgba(15,23,42,0.9)",
+                  mt: { xs: 1, md: 1.5 },
+                  scrollbarWidth: "thin",
+                  scrollbarColor: "rgba(28,181,224,0.5) transparent",
+                  "&::-webkit-scrollbar": {
+                    width: 6,
+                  },
+                  "&::-webkit-scrollbar-thumb": {
+                    backgroundColor: "rgba(28,181,224,0.5)",
+                    borderRadius: 999,
+                  },
+                  "&::-webkit-scrollbar-track": {
+                    background: "transparent",
+                  },
+                }}
+              >
+                {selectedSection.body}
+              </Box>
             </Box>
-          </Stack>
-
-          <Stack id="provas" spacing={3} sx={{ scrollMarginTop: 120 }}>
-            <Typography variant="h3" sx={sectionTitleSx}>
-              Por que isso funciona (sem mágica)
-            </Typography>
-            <Grid container spacing={2}>
-              {[
-                {
-                  title: "IA como bastidor",
-                  text: "IA não é enfeite: ela classifica, prioriza, sugere ações e cria rotinas.",
-                },
-                {
-                  title: "Sistemas orientados a eventos",
-                  text: "Webhooks, filas e mensagens: menos acoplamento, mais confiabilidade.",
-                },
-                {
-                  title: "Escala e custo",
-                  text: "Desenho pensando em latência, resiliência e custo por usuário.",
-                },
-                {
-                  title: "Simplicidade para o usuário",
-                  text: "O cliente não precisa entender a arquitetura. Ele só vê o resultado.",
-                },
-              ].map((item) => (
-                <Grid key={item.title} item xs={12} md={6}>
-                  <Box sx={cardSx}>
-                    <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
-                      {item.title}
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: "rgba(15, 23, 42, 0.75)" }}>
-                      {item.text}
-                    </Typography>
-                  </Box>
-                </Grid>
-              ))}
-            </Grid>
-            <Typography variant="body1" sx={{ fontWeight: 600, color: "rgba(15, 23, 42, 0.9)" }}>
-              Se o usuário precisa entender sua automação para usar, você já perdeu.
-            </Typography>
-          </Stack>
-
-          <Stack id="projetos" spacing={3} sx={{ scrollMarginTop: 120 }}>
-            <Typography variant="h3" sx={sectionTitleSx}>
-              Projetos (com contexto e objetivo)
-            </Typography>
-            <Grid container spacing={2}>
-              {[
-                {
-                  name: "uaiStack",
-                  problem:
-                    "WhatsApp virava bagunça: leads esquecidos, follow-up falho e operação manual.",
-                  solution:
-                    "Plataforma com automações, funis e IA aplicada para organizar conversas e transformar atendimento em processo.",
-                  stack:
-                    "Node.js, Postgres, Webhooks/WebSocket, IA (classificação/embeddings), React",
-                  detailsLink: "https://falauai.com.br",
-                  repoLink: "https://github.com/renatoolegario",
-                },
-                {
-                  name: "FacilitAgro",
-                  problem:
-                    "Equipe comercial sem padrão de follow-up e dificuldade para priorizar oportunidades.",
-                  solution:
-                    "Fluxo automatizado com qualificação, histórico e próximos passos centralizados no WhatsApp.",
-                  stack:
-                    "Node.js, Postgres, Webhooks, React, Automação",
-                  detailsLink: "https://facilitagro.com.br",
-                },
-                {
-                  name: "Mestre Starlink",
-                  problem:
-                    "Atendimento espalhado entre canais e pouca visibilidade do funil.",
-                  solution:
-                    "Centralização do atendimento e automações para reduzir retrabalho e acelerar resposta.",
-                  stack:
-                    "Node.js, WhatsApp API, Webhooks, React",
-                  detailsLink: "https://mestrestarlink.com.br",
-                },
-              ].map((project) => (
-                <Grid key={project.name} item xs={12} md={4}>
-                  <Box sx={cardSx}>
-                    <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
-                      {project.name}
-                    </Typography>
-                    <Typography variant="body2" sx={{ mb: 1.2, color: "rgba(15, 23, 42, 0.75)" }}>
-                      <strong>Problema:</strong> {project.problem}
-                    </Typography>
-                    <Typography variant="body2" sx={{ mb: 1.2, color: "rgba(15, 23, 42, 0.75)" }}>
-                      <strong>Solução:</strong> {project.solution}
-                    </Typography>
-                    <Typography variant="caption" sx={{ display: "block", color: "rgba(15, 23, 42, 0.7)", mb: 2 }}>
-                      <strong>Stack:</strong> {project.stack}
-                    </Typography>
-                    <Stack direction="row" spacing={1} flexWrap="wrap">
-                      <Button
-                        size="small"
-                        variant="outlined"
-                        href={project.detailsLink}
-                        target="_blank"
-                        rel="noreferrer"
-                        sx={{ textTransform: "none", borderColor: "#0f172a", color: "#0f172a" }}
-                      >
-                        Ver detalhes
-                      </Button>
-                      {project.repoLink && (
-                        <Button
-                          size="small"
-                          variant="text"
-                          href={project.repoLink}
-                          target="_blank"
-                          rel="noreferrer"
-                          sx={{ textTransform: "none", color: "#0f172a" }}
-                        >
-                          Código/Repo
-                        </Button>
-                      )}
-                    </Stack>
-                  </Box>
-                </Grid>
-              ))}
-            </Grid>
-          </Stack>
-
-          <Stack id="conteudo" spacing={3} sx={{ scrollMarginTop: 120 }}>
-            <Typography variant="h3" sx={sectionTitleSx}>
-              O que eu publico e penso
-            </Typography>
-            <Typography variant="body1" sx={{ color: "rgba(15, 23, 42, 0.8)", maxWidth: 760 }}>
-              Eu escrevo sobre automação, IA aplicada e construção de sistemas que precisam funcionar em produção — sem hype.
-            </Typography>
-            <Grid container spacing={2}>
-              {[
-                "WhatsApp como sistema operacional de vendas",
-                "IA aplicada: menos resposta automática, mais decisão e fluxo",
-                "Arquitetura pragmática: escala, custo e confiabilidade",
-              ].map((item) => (
-                <Grid key={item} item xs={12} md={4}>
-                  <Box sx={cardSx}>
-                    <Typography variant="body1" sx={{ fontWeight: 600 }}>
-                      {item}
-                    </Typography>
-                  </Box>
-                </Grid>
-              ))}
-            </Grid>
-            <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-              <Button
-                variant="outlined"
-                href={xLink}
-                target="_blank"
-                rel="noreferrer"
-                sx={{ textTransform: "none", borderColor: "#0f172a", color: "#0f172a" }}
-              >
-                Me acompanhe no X
-              </Button>
-              <Button
-                variant="outlined"
-                href={linkedInLink}
-                target="_blank"
-                rel="noreferrer"
-                sx={{ textTransform: "none", borderColor: "#0f172a", color: "#0f172a" }}
-              >
-                Conectar no LinkedIn
-              </Button>
-            </Stack>
-          </Stack>
-
-          <Stack id="contato" spacing={3} sx={{ scrollMarginTop: 120 }}>
-            <Typography variant="h3" sx={sectionTitleSx}>
-              Vamos transformar seu WhatsApp em processo?
-            </Typography>
-            <Typography variant="body1" sx={{ color: "rgba(15, 23, 42, 0.8)", maxWidth: 760 }}>
-              Se você quer organizar atendimento, criar follow-up automático e reduzir trabalho manual, me chame. Eu te respondo com o caminho mais curto para gerar resultado.
-            </Typography>
-            <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-              <Button
-                variant="contained"
-                size="large"
-                startIcon={<WhatsAppIcon />}
-                href={whatsappLink}
-                target="_blank"
-                rel="noreferrer"
-                sx={{ textTransform: "none", fontWeight: 600, bgcolor: "#0f172a", "&:hover": { bgcolor: "#111827" } }}
-              >
-                Falar no WhatsApp
-              </Button>
-              <Button
-                variant="outlined"
-                size="large"
-                startIcon={<MailOutlineIcon />}
-                href={emailLink}
-                sx={{ textTransform: "none", borderColor: "#0f172a", color: "#0f172a" }}
-              >
-                Enviar e-mail
-              </Button>
-              <Button
-                variant="text"
-                size="large"
-                startIcon={<CalendarTodayIcon />}
-                href={callLink}
-                target="_blank"
-                rel="noreferrer"
-                sx={{ textTransform: "none", color: "#0f172a" }}
-              >
-                Agendar call
-              </Button>
-            </Stack>
-            <Box sx={cardSx}>
-              <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2 }}>
-                Enviar rápido
-              </Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={4}>
-                  <TextField fullWidth label="Nome" variant="outlined" />
-                </Grid>
-                <Grid item xs={12} md={4}>
-                  <TextField fullWidth label="Empresa" variant="outlined" />
-                </Grid>
-                <Grid item xs={12} md={4}>
-                  <TextField fullWidth select label="Objetivo" variant="outlined" defaultValue="">
-                    {[
-                      "Vender mais",
-                      "Organizar atendimento",
-                      "Cobrança",
-                      "Suporte",
-                      "Outro",
-                    ].map((option) => (
-                      <MenuItem key={option} value={option}>
-                        {option}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                </Grid>
-                <Grid item xs={12}>
-                  <Button
-                    variant="contained"
-                    sx={{ textTransform: "none", fontWeight: 600, bgcolor: "#0f172a", "&:hover": { bgcolor: "#111827" } }}
-                  >
-                    Enviar
-                  </Button>
-                </Grid>
-              </Grid>
-            </Box>
-          </Stack>
-        </Stack>
-      </Container>
-
-      <Box component="footer" sx={{ borderTop: "1px solid rgba(15, 23, 42, 0.08)", py: 4, bgcolor: "#f6f9ff" }}>
-        <Container maxWidth="lg">
-          <Stack direction={{ xs: "column", md: "row" }} spacing={2} alignItems={{ xs: "flex-start", md: "center" }} justifyContent="space-between">
-            <Typography variant="body2" sx={{ color: "rgba(15, 23, 42, 0.7)" }}>
-              Construído com foco em performance, clareza e resultado.
-            </Typography>
-            <Stack direction="row" spacing={2}>
-              <IconButton aria-label="X" href={xLink} target="_blank" rel="noreferrer">
-                <TwitterIcon />
-              </IconButton>
-              <IconButton aria-label="LinkedIn" href={linkedInLink} target="_blank" rel="noreferrer">
-                <LinkedInIcon />
-              </IconButton>
-              <IconButton aria-label="GitHub" href={githubLink} target="_blank" rel="noreferrer">
-                <GitHubIcon />
-              </IconButton>
-            </Stack>
-          </Stack>
-        </Container>
-      </Box>
-
-      <IconButton
-        aria-label="Falar no WhatsApp"
-        href={whatsappLink}
-        target="_blank"
-        rel="noreferrer"
-        sx={{
-          position: "fixed",
-          bottom: 24,
-          right: 24,
-          bgcolor: "#25D366",
-          color: "#fff",
-          boxShadow: "0 16px 32px rgba(37, 211, 102, 0.35)",
-          display: { xs: "flex", md: "none" },
-          "&:hover": { bgcolor: "#1ebe5d" },
-        }}
-      >
-        <WhatsAppIcon />
-      </IconButton>
-    </Box>
+          </Slide>
+        )
+      }
+    </Box >
   );
 }
