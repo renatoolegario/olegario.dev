@@ -55,76 +55,50 @@ function getCloudTime() {
     );
 }
 
+/**
+ * Resposta EXATA exigida pelo servidor EVO.
+ * - Sem campos extras
+ * - JSON puro
+ * - HTTP 200
+ */
+function evoExactResponse() {
+    return {
+        ret: "reg",
+        result: 1,
+        cloudtime: getCloudTime(),
+    };
+}
+
 export default async function handler(req, res) {
-    // Healthcheck simples
+    // Healthcheck simples (não interfere no POST)
     if (req.method === "GET") {
         return res.status(200).json({ ok: true });
     }
 
+    // Para qualquer método diferente de POST, devolve 200 com a resposta exata
+    // (alguns devices/servidores são chatos com status != 200)
     if (req.method !== "POST") {
-        return res.status(405).end();
+        const payload = evoExactResponse();
+        console.log("[EVO] NON-POST -> returning exact payload", payload);
+        return res.status(200).json(payload);
     }
 
     try {
         console.log("[EVO] HEADERS", req.headers);
         logBodyFully("BODY", req.body);
 
-        const body = req.body || {};
-        const cmd = body.cmd;
-        const sn = body.sn;
+        // Independente do conteúdo (cmd/sn/etc), responder SEMPRE igual
+        const payload = evoExactResponse();
+        console.log("[EVO] RETURNING EXACT PAYLOAD", payload);
 
-        let responsePayload;
-
-        /**
-         * =========================================================
-         * PROTOCOLO EVO — RESPOSTAS EXATAS
-         * =========================================================
-         */
-
-        // 1️⃣ Handshake obrigatório
-        if (cmd === "reg") {
-            responsePayload = {
-                ret: "reg",
-                result: true,
-                cloudtime: getCloudTime(),
-            };
-
-            console.log("[EVO] REG OK", responsePayload);
-        }
-
-        // 2️⃣ ACK mínimo para qualquer outro comando
-        else if (cmd) {
-            responsePayload = {
-                ret: cmd,
-                result: true,
-            };
-
-            // alguns firmwares aceitam sn, outros ignoram — seguro omitir
-            console.log("[EVO] ACK CMD", responsePayload);
-        }
-
-        // 3️⃣ Fallback defensivo
-        else {
-            responsePayload = {
-                ret: "unknown",
-                result: true,
-            };
-
-            console.log("[EVO] ACK UNKNOWN", responsePayload);
-        }
-
-        // ⚠️ IMPORTANTE:
-        // - status 200
-        // - JSON puro
-        // - sem campos extras
-        return res.status(200).json(responsePayload);
+        return res.status(200).json(payload);
     } catch (err) {
         console.error("[EVO] Erro no webhook", err);
 
-        // Mesmo em erro, muitos devices preferem 200
-        return res.status(200).json({
-            ret: "error",
-            result: false,
-        });
+        // Mesmo em erro, ainda responde 200 e no formato exato
+        const payload = evoExactResponse();
+        console.log("[EVO] ERROR -> returning exact payload", payload);
+
+        return res.status(200).json(payload);
     }
 }
