@@ -56,58 +56,32 @@ function getCloudTime() {
 }
 
 export default async function handler(req, res) {
-    const startedAt = Date.now();
-
-    // Healthcheck
+    // Healthcheck simples
     if (req.method === "GET") {
-        console.log("[EVO] GET /api/evo (healthcheck)", {
-            at: new Date().toISOString(),
-            ip: req.headers["x-forwarded-for"] || req.socket?.remoteAddress || "unknown",
-            userAgent: req.headers["user-agent"],
-        });
-
-        return res.status(200).json({ ok: true, message: "EVO endpoint up" });
+        return res.status(200).json({ ok: true });
     }
 
     if (req.method !== "POST") {
-        return res.status(405).json({ ok: false, error: "Method not allowed" });
+        return res.status(405).end();
     }
 
     try {
-        const ip =
-            req.headers["x-forwarded-for"] ||
-            req.socket?.remoteAddress ||
-            "unknown";
-
-        console.log("[EVO] Webhook recebido", {
-            at: new Date().toISOString(),
-            method: req.method,
-            path: req.url,
-            ip,
-            contentType: req.headers["content-type"],
-            userAgent: req.headers["user-agent"],
-        });
-
         console.log("[EVO] HEADERS", req.headers);
-
         logBodyFully("BODY", req.body);
 
         const body = req.body || {};
         const cmd = body.cmd;
         const sn = body.sn;
 
-        let responsePayload = {
-            ret: cmd || "unknown",
-            result: true,
-        };
+        let responsePayload;
 
         /**
          * =========================================================
-         * PROTOCOLO EVO — TRATAMENTO OBRIGATÓRIO
+         * PROTOCOLO EVO — RESPOSTAS EXATAS
          * =========================================================
          */
 
-        // REGISTRO DO EQUIPAMENTO (OBRIGATÓRIO)
+        // 1️⃣ Handshake obrigatório
         if (cmd === "reg") {
             responsePayload = {
                 ret: "reg",
@@ -115,28 +89,42 @@ export default async function handler(req, res) {
                 cloudtime: getCloudTime(),
             };
 
-            console.log("[EVO] Respondendo REG com cloudtime", responsePayload);
+            console.log("[EVO] REG OK", responsePayload);
         }
 
-        // ACK GENÉRICO PARA OUTROS COMANDOS (log, rtlog, newlog, etc)
-        else {
+        // 2️⃣ ACK mínimo para qualquer outro comando
+        else if (cmd) {
             responsePayload = {
                 ret: cmd,
-                sn,
                 result: true,
             };
 
-            console.log("[EVO] Respondendo ACK genérico", responsePayload);
+            // alguns firmwares aceitam sn, outros ignoram — seguro omitir
+            console.log("[EVO] ACK CMD", responsePayload);
         }
 
-        const elapsedMs = Date.now() - startedAt;
+        // 3️⃣ Fallback defensivo
+        else {
+            responsePayload = {
+                ret: "unknown",
+                result: true,
+            };
 
-        return res.status(200).json({
-            ...responsePayload,
-            elapsed_ms: elapsedMs,
-        });
+            console.log("[EVO] ACK UNKNOWN", responsePayload);
+        }
+
+        // ⚠️ IMPORTANTE:
+        // - status 200
+        // - JSON puro
+        // - sem campos extras
+        return res.status(200).json(responsePayload);
     } catch (err) {
         console.error("[EVO] Erro no webhook", err);
-        return res.status(500).json({ ok: false, error: "Internal error" });
+
+        // Mesmo em erro, muitos devices preferem 200
+        return res.status(200).json({
+            ret: "error",
+            result: false,
+        });
     }
 }
