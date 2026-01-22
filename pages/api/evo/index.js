@@ -5,7 +5,8 @@
  *
  * Objetivo
  * - Receber requisições REST (webhook) do EVO Facial 50 (ou similar)
- * - Logar tudo no console para depuração (Vercel Logs)
+ * - Printar o corpo COMPLETO do payload (em JSON stringify) para depuração nos Vercel Logs
+ * - Retornar 200 rápido para evitar retries do equipamento
  *
  * Como configurar no equipamento
  * - URL: https://SEU-DOMINIO.vercel.app/api/evo
@@ -20,7 +21,9 @@
  *     -d '{"teste": true, "evento": "ping"}'
  *
  * Observações importantes
- * - Este endpoint apenas loga e retorna 200 OK rapidamente.
+ * - Em Vercel, logs muito grandes podem ser truncados. Por isso:
+ *   - imprimimos JSON completo (stringify),
+ *   - imprimimos também tamanho e preview (primeiros chars) para garantir visibilidade.
  * - Se o equipamento enviar payload grande (ex: imagem/base64),
  *   ajuste o `sizeLimit` em `config` abaixo.
  * - Em produção, você pode adicionar autenticação via token (header)
@@ -30,45 +33,73 @@
 export const config = {
     api: {
         bodyParser: {
-            sizeLimit: "5mb", // aumente se o EVO enviar base64/imagens
+            sizeLimit: "10mb", // ajuste se necessário
         },
     },
 };
 
+const MAX_LOG_CHARS = 12000; // evita estourar log (Vercel pode truncar mesmo assim)
+const PREVIEW_CHARS = 800;
+
+function safeJsonStringify(value) {
+    try {
+        return JSON.stringify(value, null, 2);
+    } catch (e) {
+        // fallback pra casos raros (circular)
+        return `<<JSON.stringify falhou: ${e?.message || "erro desconhecido"}>>`;
+    }
+}
+
+function logBodyFully(tag, body) {
+    const bodyStr = typeof body === "string" ? body : safeJsonStringify(body);
+
+    console.log(`[EVO] ${tag} typeof`, typeof body);
+    console.log(`[EVO] ${tag} keys`, body && typeof body === "object" ? Object.keys(body) : "not-an-object");
+
+    // Tamanho + preview garantem depuração mesmo se truncar
+    console.log(`[EVO] ${tag} length`, bodyStr.length);
+    console.log(`[EVO] ${tag} preview`, bodyStr.slice(0, PREVIEW_CHARS));
+
+    // Log “quase completo” (limitado por segurança)
+    if (bodyStr.length <= MAX_LOG_CHARS) {
+        console.log(`[EVO] ${tag} FULL`, bodyStr);
+    } else {
+        console.log(
+            `[EVO] ${tag} FULL (TRUNCATED to ${MAX_LOG_CHARS} chars)`,
+            bodyStr.slice(0, MAX_LOG_CHARS)
+        );
+    }
+}
+
 export default async function handler(req, res) {
     const startedAt = Date.now();
 
-    // Permite bater no endpoint via navegador sem erro
+    // Healthcheck simples
     if (req.method === "GET") {
         console.log("[EVO] GET /api/evo (healthcheck)", {
             at: new Date().toISOString(),
-            ip:
-                req.headers["x-forwarded-for"] ||
-                req.socket?.remoteAddress ||
-                "unknown",
+            ip: req.headers["x-forwarded-for"] || req.socket?.remoteAddress || "unknown",
             userAgent: req.headers["user-agent"],
         });
 
         return res.status(200).json({ ok: true, message: "EVO endpoint up" });
     }
 
-    // Apenas POST (webhook)
+    // Apenas POST
     if (req.method !== "POST") {
         return res.status(405).json({ ok: false, error: "Method not allowed" });
     }
 
     try {
-        // Se quiser proteger com token:
+        // Proteção opcional por token:
         // const token = req.headers["x-evo-token"];
         // if (process.env.EVO_TOKEN && token !== process.env.EVO_TOKEN) {
         //   console.log("[EVO] Unauthorized attempt", { token });
         //   return res.status(401).json({ ok: false });
         // }
 
-        const ip =
-            req.headers["x-forwarded-for"] || req.socket?.remoteAddress || "unknown";
+        const ip = req.headers["x-forwarded-for"] || req.socket?.remoteAddress || "unknown";
 
-        // Logs úteis (sem vazar tudo se for enorme)
         console.log("[EVO] Webhook recebido", {
             at: new Date().toISOString(),
             method: req.method,
@@ -78,20 +109,17 @@ export default async function handler(req, res) {
             userAgent: req.headers["user-agent"],
         });
 
-        // Corpo (JSON)
-        // Importante: em Next.js, req.body já vem parseado (se JSON)
-        console.log("[EVO] BODY (raw)", req.body);
-
-        // Caso o equipamento mande algo diferente de JSON
-        // (ex: string), loga também o tipo
-        console.log("[EVO] BODY (typeof)", typeof req.body);
-
-        // Headers completos (às vezes vem device-id, evento, etc.)
+        // HEADERS (completo)
         console.log("[EVO] HEADERS", req.headers);
+
+        // BODY (completo, serializado)
+        // Em Next.js, req.body já vem parseado quando Content-Type é application/json
+        logBodyFully("BODY", req.body);
 
         const elapsedMs = Date.now() - startedAt;
 
-        // Responda rápido pra evitar reenvio/retry do equipamento
+        // Responda rápido pra evitar retries do equipamento
+        // Alguns equipamentos gostam de { ret: 0 } / { result: "ok" } — mas 200 + ok=true geralmente basta.
         return res.status(200).json({
             ok: true,
             received: true,
