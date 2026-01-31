@@ -56,17 +56,67 @@ function getCloudTime() {
 }
 
 /**
- * Resposta EXATA exigida pelo servidor EVO.
- * - Sem campos extras
- * - JSON puro
+ * Gera a resposta no formato esperado de acordo com o cmd recebido.
+ * Regras do protocolo:
+ * - JSON com chaves minúsculas
  * - HTTP 200
  */
-function evoExactResponse() {
+function evoResponseForCmd(cmdRaw, body) {
+    const cmd = String(cmdRaw || "").toLowerCase();
+
+    // cmd: reg  -> ret: reg, result: true, cloudtime, nosenduser (opcional)
+    if (cmd === "reg") {
+        return {
+            ret: "reg",
+            result: true,
+            cloudtime: getCloudTime(),
+            nosenduser: true,
+        };
+    }
+
+    // cmd: sendlog -> ret: sendlog, result: true, count, logindex, cloudtime (access/message opcionais)
+    if (cmd === "sendlog") {
+        const count =
+            typeof body?.count === "number"
+                ? body.count
+                : Array.isArray(body?.record)
+                    ? body.record.length
+                    : 0;
+
+        const logindex = typeof body?.logindex === "number" ? body.logindex : 0;
+
+        return {
+            ret: "sendlog",
+            result: true,
+            count,
+            logindex,
+            cloudtime: getCloudTime(),
+            // opcionais para modo "server_verify" / online:
+            access: 1,
+            message: "message",
+        };
+    }
+
+    // fallback genérico (caso você receba outros cmd do protocolo)
+    // Mantém o padrão de sempre retornar 200 e JSON com ret/result.
     return {
-        ret: "reg",
-        result: 1,
+        ret: cmd || "unknown",
+        result: true,
         cloudtime: getCloudTime(),
     };
+}
+
+function safeParseBody(body) {
+    // Next.js geralmente já entrega objeto em req.body,
+    // mas em alguns cenários pode vir string.
+    if (typeof body === "string") {
+        try {
+            return JSON.parse(body);
+        } catch {
+            return body; // mantém string
+        }
+    }
+    return body;
 }
 
 export default async function handler(req, res) {
@@ -75,29 +125,32 @@ export default async function handler(req, res) {
         return res.status(200).json({ ok: true });
     }
 
-    // Para qualquer método diferente de POST, devolve 200 com a resposta exata
-    // (alguns devices/servidores são chatos com status != 200)
+    // Para qualquer método diferente de POST, devolve 200 com payload “safe”
     if (req.method !== "POST") {
-        const payload = evoExactResponse();
-        console.log("[EVO] NON-POST -> returning exact payload", payload);
+        const payload = evoResponseForCmd("reg", {}); // responde algo válido e aceito
+        console.log("[EVO] NON-POST -> returning payload", payload);
         return res.status(200).json(payload);
     }
 
     try {
         console.log("[EVO] HEADERS", req.headers);
-        logBodyFully("BODY", req.body);
 
-        // Independente do conteúdo (cmd/sn/etc), responder SEMPRE igual
-        const payload = evoExactResponse();
-        console.log("[EVO] RETURNING EXACT PAYLOAD", payload);
+        const parsedBody = safeParseBody(req.body);
+        logBodyFully("BODY", parsedBody);
+
+        const cmd = parsedBody && typeof parsedBody === "object" ? parsedBody.cmd : undefined;
+
+        // Responde conforme o cmd recebido (reg, sendlog, etc)
+        const payload = evoResponseForCmd(cmd, parsedBody);
+        console.log("[EVO] RETURNING PAYLOAD", payload);
 
         return res.status(200).json(payload);
     } catch (err) {
         console.error("[EVO] Erro no webhook", err);
 
-        // Mesmo em erro, ainda responde 200 e no formato exato
-        const payload = evoExactResponse();
-        console.log("[EVO] ERROR -> returning exact payload", payload);
+        // Mesmo em erro, ainda responde 200 e com formato válido
+        const payload = evoResponseForCmd("reg", {});
+        console.log("[EVO] ERROR -> returning payload", payload);
 
         return res.status(200).json(payload);
     }
