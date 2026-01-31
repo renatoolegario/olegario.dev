@@ -24,6 +24,13 @@ function getCloudTime() {
     );
 }
 
+function getCloudTimeMinus3() {
+    const date = new Date();
+    date.setHours(date.getHours() - 3);
+    return date;
+}
+
+
 function evoResponseForCmd(cmdRaw, body) {
     const cmd = String(cmdRaw || "").toLowerCase();
 
@@ -51,10 +58,11 @@ function evoResponseForCmd(cmdRaw, body) {
             result: true,
             count,
             logindex,
-            cloudtime: getCloudTime(),
+            cloudtime: getCloudTimeMinus3(),
             access: 1,
             message: "Ponto Registrado",
         };
+
     }
 
     return {
