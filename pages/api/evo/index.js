@@ -1,13 +1,13 @@
 /**
  * EVO Webhook Receiver (Next.js / Vercel)
  * ------------------------------------------------------------
- * Arquivo: /pages/api/evo/index.js
+ * Arquivo: /pages/api/v1/evo/index.js
  */
 
 export const config = {
     api: {
         bodyParser: {
-            sizeLimit: "10mb",
+            sizeLimit: "25mb",
         },
     },
 };
@@ -15,56 +15,19 @@ export const config = {
 const MAX_LOG_CHARS = 12000;
 const PREVIEW_CHARS = 800;
 
-function safeJsonStringify(value) {
-    try {
-        return JSON.stringify(value, null, 2);
-    } catch (e) {
-        return `<<JSON.stringify falhou: ${e?.message || "erro desconhecido"}>>`;
-    }
-}
-
-function logBodyFully(tag, body) {
-    const bodyStr = typeof body === "string" ? body : safeJsonStringify(body);
-
-    console.log(`[EVO] ${tag} typeof`, typeof body);
-    console.log(
-        `[EVO] ${tag} keys`,
-        body && typeof body === "object" ? Object.keys(body) : "not-an-object"
-    );
-
-    console.log(`[EVO] ${tag} length`, bodyStr.length);
-    console.log(`[EVO] ${tag} preview`, bodyStr.slice(0, PREVIEW_CHARS));
-
-    if (bodyStr.length <= MAX_LOG_CHARS) {
-        console.log(`[EVO] ${tag} FULL`, bodyStr);
-    } else {
-        console.log(
-            `[EVO] ${tag} FULL (TRUNCATED to ${MAX_LOG_CHARS} chars)`,
-            bodyStr.slice(0, MAX_LOG_CHARS)
-        );
-    }
-}
-
 function getCloudTime() {
     const now = new Date();
     const pad = (n) => String(n).padStart(2, "0");
-
     return (
         `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ` +
         `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`
     );
 }
 
-/**
- * Gera a resposta no formato esperado de acordo com o cmd recebido.
- * Regras do protocolo:
- * - JSON com chaves minúsculas
- * - HTTP 200
- */
 function evoResponseForCmd(cmdRaw, body) {
     const cmd = String(cmdRaw || "").toLowerCase();
 
-    // cmd: reg  -> ret: reg, result: true, cloudtime, nosenduser (opcional)
+    // cmd: reg
     if (cmd === "reg") {
         return {
             ret: "reg",
@@ -74,7 +37,7 @@ function evoResponseForCmd(cmdRaw, body) {
         };
     }
 
-    // cmd: sendlog -> ret: sendlog, result: true, count, logindex, cloudtime (access/message opcionais)
+    // cmd: sendlog
     if (cmd === "sendlog") {
         const count =
             typeof body?.count === "number"
@@ -91,14 +54,12 @@ function evoResponseForCmd(cmdRaw, body) {
             count,
             logindex,
             cloudtime: getCloudTime(),
-            // opcionais para modo "server_verify" / online:
             access: 1,
             message: "message",
         };
     }
 
-    // fallback genérico (caso você receba outros cmd do protocolo)
-    // Mantém o padrão de sempre retornar 200 e JSON com ret/result.
+    // fallback
     return {
         ret: cmd || "unknown",
         result: true,
@@ -106,52 +67,75 @@ function evoResponseForCmd(cmdRaw, body) {
     };
 }
 
-function safeParseBody(body) {
-    // Next.js geralmente já entrega objeto em req.body,
-    // mas em alguns cenários pode vir string.
-    if (typeof body === "string") {
-        try {
-            return JSON.parse(body);
-        } catch {
-            return body; // mantém string
-        }
+/**
+ * ✅ Seu log RAW (do jeito que você mandou)
+ * - imprime no console exatamente o que chega no body
+ */
+function logEvoBodyRaw(req) {
+    console.log("========== EVO BODY RAW ==========");
+    console.log("typeof req.body:", typeof req.body);
+
+    try {
+        console.log("req.body (raw):", req.body);
+    } catch (e) {
+        console.log("req.body (raw) FAILED:", e);
     }
-    return body;
+
+    let bodyString = "";
+
+    try {
+        bodyString =
+            typeof req.body === "string"
+                ? req.body
+                : JSON.stringify(req.body, null, 2);
+    } catch (e) {
+        bodyString = "<<JSON.stringify falhou>>";
+    }
+
+    console.log("BODY length:", bodyString.length);
+    console.log("BODY preview (800 chars):", bodyString.slice(0, PREVIEW_CHARS));
+
+    if (bodyString.length <= MAX_LOG_CHARS) {
+        console.log("BODY FULL:", bodyString);
+    } else {
+        console.log("BODY FULL (TRUNCATED):", bodyString.slice(0, MAX_LOG_CHARS));
+    }
+
+    console.log("========== END EVO BODY ==========");
 }
 
 export default async function handler(req, res) {
-    // Healthcheck simples (não interfere no POST)
+    // Health simples
     if (req.method === "GET") {
         return res.status(200).json({ ok: true });
     }
 
-    // Para qualquer método diferente de POST, devolve 200 com payload “safe”
+    // Se não for POST, responde 200 pra não dar problema com device
     if (req.method !== "POST") {
-        const payload = evoResponseForCmd("reg", {}); // responde algo válido e aceito
+        const payload = evoResponseForCmd("reg", {});
         console.log("[EVO] NON-POST -> returning payload", payload);
         return res.status(200).json(payload);
     }
 
     try {
+        // ✅ headers (opcional, ajuda debug)
         console.log("[EVO] HEADERS", req.headers);
 
-        const parsedBody = safeParseBody(req.body);
-        logBodyFully("BODY", parsedBody);
+        // ✅ log do body (seu snippet)
+        logEvoBodyRaw(req);
 
-        const cmd = parsedBody && typeof parsedBody === "object" ? parsedBody.cmd : undefined;
+        // ✅ responde conforme o cmd
+        const cmd = req.body && typeof req.body === "object" ? req.body.cmd : undefined;
+        const payload = evoResponseForCmd(cmd, req.body);
 
-        // Responde conforme o cmd recebido (reg, sendlog, etc)
-        const payload = evoResponseForCmd(cmd, parsedBody);
         console.log("[EVO] RETURNING PAYLOAD", payload);
-
         return res.status(200).json(payload);
     } catch (err) {
         console.error("[EVO] Erro no webhook", err);
 
-        // Mesmo em erro, ainda responde 200 e com formato válido
+        // Mesmo em erro, responder 200 e formato válido
         const payload = evoResponseForCmd("reg", {});
         console.log("[EVO] ERROR -> returning payload", payload);
-
         return res.status(200).json(payload);
     }
 }
