@@ -27,7 +27,6 @@ function getCloudTime() {
 function evoResponseForCmd(cmdRaw, body) {
     const cmd = String(cmdRaw || "").toLowerCase();
 
-    // cmd: reg
     if (cmd === "reg") {
         return {
             ret: "reg",
@@ -37,7 +36,6 @@ function evoResponseForCmd(cmdRaw, body) {
         };
     }
 
-    // cmd: sendlog
     if (cmd === "sendlog") {
         const count =
             typeof body?.count === "number"
@@ -59,7 +57,6 @@ function evoResponseForCmd(cmdRaw, body) {
         };
     }
 
-    // fallback
     return {
         ret: cmd || "unknown",
         result: true,
@@ -68,8 +65,7 @@ function evoResponseForCmd(cmdRaw, body) {
 }
 
 /**
- * ✅ Seu log RAW (do jeito que você mandou)
- * - imprime no console exatamente o que chega no body
+ * ✅ Log RAW (EXATO do seu snippet)
  */
 function logEvoBodyRaw(req) {
     console.log("========== EVO BODY RAW ==========");
@@ -105,26 +101,26 @@ function logEvoBodyRaw(req) {
 }
 
 export default async function handler(req, res) {
-    // Health simples
-    if (req.method === "GET") {
-        return res.status(200).json({ ok: true });
-    }
-
-    // Se não for POST, responde 200 pra não dar problema com device
+    // ✅ Só POST. (Webhook EVO é POST.)
     if (req.method !== "POST") {
-        const payload = evoResponseForCmd("reg", {});
-        console.log("[EVO] NON-POST -> returning payload", payload);
-        return res.status(200).json(payload);
+        console.log("[EVO] METHOD NOT ALLOWED", req.method);
+
+        // Se você quer 100% “não quebrar device”, pode devolver 200 aqui.
+        // Mas o certo REST seria 405.
+        return res.status(200).json(evoResponseForCmd("reg", {}));
     }
 
     try {
-        // ✅ headers (opcional, ajuda debug)
+        // Debug forte: confirma que entrou no handler
+        console.log("🔥 EVO HIT", req.method, req.url);
+
+        // headers
         console.log("[EVO] HEADERS", req.headers);
 
-        // ✅ log do body (seu snippet)
+        // body completo (snippet)
         logEvoBodyRaw(req);
 
-        // ✅ responde conforme o cmd
+        // resposta conforme cmd
         const cmd = req.body && typeof req.body === "object" ? req.body.cmd : undefined;
         const payload = evoResponseForCmd(cmd, req.body);
 
