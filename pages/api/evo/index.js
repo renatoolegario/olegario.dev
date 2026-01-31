@@ -38,7 +38,7 @@ function evoResponseForCmd(cmdRaw, body) {
         return {
             ret: "reg",
             result: true,
-            cloudtime: getCloudTime(),
+            cloudtime: getCloudTimeMinus3(),
             nosenduser: true,
         };
     }
@@ -68,7 +68,7 @@ function evoResponseForCmd(cmdRaw, body) {
     return {
         ret: cmd || "unknown",
         result: true,
-        cloudtime: getCloudTime(),
+        cloudtime: getCloudTimeMinus3(),
     };
 }
 
