@@ -53,7 +53,7 @@ function evoResponseForCmd(cmdRaw, body) {
             logindex,
             cloudtime: getCloudTime(),
             access: 1,
-            message: "message",
+            message: "Ponto Registrado",
         };
     }
 
