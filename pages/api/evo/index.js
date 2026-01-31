@@ -12,9 +12,108 @@ export const config = {
     },
 };
 
+// =====================
+// Buffers (memória) - igual Express
+// ⚠️ Em Vercel pode resetar a qualquer momento.
+// =====================
+const LOG_MAX = 2000;
+const INGEST_MAX = 2000;
+
+const logBuffer = [];
+const ingestBuffer = [];
+
+// =====================
+// Body log (FULL + preview)
+// =====================
 const MAX_LOG_CHARS = 12000;
 const PREVIEW_CHARS = 800;
 
+function safeJsonStringify(value) {
+    try {
+        return JSON.stringify(value, null, 2);
+    } catch (e) {
+        return `<<JSON.stringify falhou: ${e?.message || "erro desconhecido"}>>`;
+    }
+}
+
+function pushLog(level, msg, extra = null) {
+    const item = { ts: new Date().toISOString(), level, msg, extra };
+    logBuffer.push(item);
+    if (logBuffer.length > LOG_MAX) logBuffer.shift();
+
+    // ✅ imprime no console
+    if (extra !== null) console.log(`[${item.ts}] [${level}] ${msg}`, extra);
+    else console.log(`[${item.ts}] [${level}] ${msg}`);
+}
+
+function pushIngest(payload, meta) {
+    const item = {
+        ts: new Date().toISOString(),
+        meta,
+        payload,
+    };
+    ingestBuffer.push(item);
+    if (ingestBuffer.length > INGEST_MAX) ingestBuffer.shift();
+
+    // ✅ imprime no console
+    console.log(`[${item.ts}] [INGEST]`, { meta, payload });
+}
+
+function logBodyFully(tag, body, pushLogFn) {
+    const bodyStr = typeof body === "string" ? body : safeJsonStringify(body);
+
+    const info = {
+        typeof: typeof body,
+        keys: body && typeof body === "object" ? Object.keys(body) : "not-an-object",
+        length: bodyStr.length,
+        preview: bodyStr.slice(0, PREVIEW_CHARS),
+        fullTruncated:
+            bodyStr.length <= MAX_LOG_CHARS ? bodyStr : bodyStr.slice(0, MAX_LOG_CHARS),
+        truncated: bodyStr.length > MAX_LOG_CHARS,
+    };
+
+    // ✅ console
+    console.log(`[BODY] ${tag} typeof:`, info.typeof);
+    console.log(`[BODY] ${tag} keys:`, info.keys);
+    console.log(`[BODY] ${tag} length:`, info.length);
+    console.log(`[BODY] ${tag} preview:`, info.preview);
+    console.log(
+        `[BODY] ${tag} FULL${info.truncated ? " (TRUNCATED)" : ""}:`,
+        info.fullTruncated
+    );
+
+    // ✅ guarda no buffer de logs também
+    pushLogFn("info", `BODY ${tag}`, {
+        typeof: info.typeof,
+        keys: info.keys,
+        length: info.length,
+        preview: info.preview,
+        truncated: info.truncated,
+    });
+
+    return info;
+}
+
+// =====================
+// Helper: meta do request - igual Express (adaptado Next)
+// =====================
+function getReqMeta(req) {
+    const xf = req.headers["x-forwarded-for"]?.toString();
+    const ip = (xf ? xf.split(",")[0].trim() : null) || req.socket?.remoteAddress || "unknown";
+
+    return {
+        ip,
+        ua: req.headers["user-agent"] || null,
+        contentType: req.headers["content-type"] || null,
+        path: req.url || null,
+        method: req.method,
+        host: req.headers["host"] || null,
+    };
+}
+
+// =====================
+// EVO helpers (resposta por cmd)
+// =====================
 function getCloudTime() {
     const now = new Date();
     const pad = (n) => String(n).padStart(2, "0");
@@ -64,74 +163,47 @@ function evoResponseForCmd(cmdRaw, body) {
     };
 }
 
-/**
- * ✅ Log RAW (EXATO do seu snippet)
- */
-function logEvoBodyRaw(req) {
-    console.log("========== EVO BODY RAW ==========");
-    console.log("typeof req.body:", typeof req.body);
-
-    try {
-        console.log("req.body (raw):", req.body);
-    } catch (e) {
-        console.log("req.body (raw) FAILED:", e);
-    }
-
-    let bodyString = "";
-
-    try {
-        bodyString =
-            typeof req.body === "string"
-                ? req.body
-                : JSON.stringify(req.body, null, 2);
-    } catch (e) {
-        bodyString = "<<JSON.stringify falhou>>";
-    }
-
-    console.log("BODY length:", bodyString.length);
-    console.log("BODY preview (800 chars):", bodyString.slice(0, PREVIEW_CHARS));
-
-    if (bodyString.length <= MAX_LOG_CHARS) {
-        console.log("BODY FULL:", bodyString);
-    } else {
-        console.log("BODY FULL (TRUNCATED):", bodyString.slice(0, MAX_LOG_CHARS));
-    }
-
-    console.log("========== END EVO BODY ==========");
-}
-
+// =====================
+// ✅ Handler Next.js - igual Express em comportamento
+// =====================
 export default async function handler(req, res) {
-    // ✅ Só POST. (Webhook EVO é POST.)
+    // ✅ Só POST (webhook)
     if (req.method !== "POST") {
-        console.log("[EVO] METHOD NOT ALLOWED", req.method);
+        pushLog("warn", "METHOD NOT ALLOWED (expected POST)", {
+            method: req.method,
+            url: req.url,
+        });
 
-        // Se você quer 100% “não quebrar device”, pode devolver 200 aqui.
-        // Mas o certo REST seria 405.
+        // manter 200 “amigável”
         return res.status(200).json(evoResponseForCmd("reg", {}));
     }
 
     try {
-        // Debug forte: confirma que entrou no handler
-        console.log("🔥 EVO HIT", req.method, req.url);
+        const meta = getReqMeta(req);
+        const payload = req.body;
 
-        // headers
-        console.log("[EVO] HEADERS", req.headers);
+        // log geral igual Express
+        pushLog("info", "POST /api/v1/evo recebido", { meta });
 
-        // body completo (snippet)
-        logEvoBodyRaw(req);
+        // body log igual Express
+        logBodyFully("EVO", payload, pushLog);
 
-        // resposta conforme cmd
-        const cmd = req.body && typeof req.body === "object" ? req.body.cmd : undefined;
-        const payload = evoResponseForCmd(cmd, req.body);
+        // guarda ingest igual Express
+        pushIngest(payload, { ...meta, source: "evo" });
 
-        console.log("[EVO] RETURNING PAYLOAD", payload);
-        return res.status(200).json(payload);
+        // responde conforme cmd
+        const cmd = payload && typeof payload === "object" ? payload.cmd : undefined;
+        const response = evoResponseForCmd(cmd, payload);
+
+        pushLog("info", "Respondendo EVO", { cmd, response });
+        return res.status(200).json(response);
     } catch (err) {
-        console.error("[EVO] Erro no webhook", err);
+        pushLog("error", "Erro no webhook EVO", { message: err?.message, stack: err?.stack });
 
-        // Mesmo em erro, responder 200 e formato válido
-        const payload = evoResponseForCmd("reg", {});
-        console.log("[EVO] ERROR -> returning payload", payload);
-        return res.status(200).json(payload);
+        // mesmo em erro, responder 200
+        const response = evoResponseForCmd("reg", {});
+        pushLog("info", "ERROR -> Respondendo EVO", { response });
+
+        return res.status(200).json(response);
     }
 }
