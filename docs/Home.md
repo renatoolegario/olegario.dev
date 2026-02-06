@@ -1,23 +1,19 @@
 # Home (Landing Page)
 
 ## Descrição
-Página principal em formato de landing page para apresentação profissional do Olegário, com navegação por blocos e abertura de modais para leitura detalhada de cada tema (stack, posicionamento, projetos, IA, contatos e diferenciais).
+Página principal em formato de landing page completa, com todo o conteúdo renderizado em seções contínuas na mesma página (sem modal), focada em apresentar posicionamento, stack, projetos, IA, automação/trading e canais de contato.
 
 ## Props utilizadas
 - `LandingPageTemplate`
-  - `sections`: array de seções renderizadas na grade.
-  - `onSelectSection`: callback para abrir modal com a seção selecionada.
-- `SectionModal`
-  - `open`: estado de abertura do modal.
-  - `onClose`: callback de fechamento.
-  - `section`: dados da seção ativa (título, subtítulo e conteúdos).
+  - `sections`: array de seções com `id`, `title`, `emoji`, `paragraphs`, `bullets`, `badges`, `groups` e `contacts`.
+- `LandingSection`
+  - `section`: objeto da seção que será renderizada em bloco.
 
 ## Funções internas
-- `useMemo` para manter estrutura de seções estável.
-- `useState` para controlar `selectedIndex` e abertura do modal.
+- `useMemo` em `HomePage` para manter estável a estrutura de dados das seções.
 
 ## Resultado esperado
-- Hero claro com logotipo e foto pessoal.
-- Layout organizado no padrão Atomic Design (`atomic`, `molecules`, `organisms`, `template`).
-- Modais com conteúdo completo do briefing, sem reaproveitamento de textos antigos.
-- Lista de contatos na ordem de portfólio técnico definida no briefing.
+- Hero com `H1`, logotipo e imagem pessoal.
+- Conteúdo integral do briefing na ordem correta.
+- Layout claro e organizado no padrão Atomic Design.
+- Sem modais suspensos: tudo acontece na mesma página.

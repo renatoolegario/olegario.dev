@@ -1,32 +1,22 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import LandingPageTemplate from "components/template/LandingPageTemplate";
-import SectionModal from "components/organisms/SectionModal";
 
 export default function HomePage() {
-  const [selectedIndex, setSelectedIndex] = useState(null);
-
   const sections = useMemo(
     () => [
       {
+        id: "quem-sou",
+        emoji: "👨‍💻",
         title: "Quem sou eu",
-        subtitle: "Arquitetura sólida e execução ponta a ponta",
         paragraphs: [
           "Sou arquiteto de software e fundador técnico com 12 anos de mercado, especializado em tirar MVPs do papel e colocá-los no mercado com o menor custo possível, sem abrir mão de arquitetura sólida e infraestrutura bem planejada.",
           "Atuo desde a ideia até a execução completa do sistema, incluindo arquitetura, backend, frontend, infraestrutura e automações.",
         ],
       },
       {
-        title: "Posicionamento & forma de trabalho",
-        subtitle: "Mais velocidade, menos desperdício técnico",
-        paragraphs: [
-          "Atuo há 12 anos no mercado desenvolvendo sistemas, produtos digitais e plataformas SaaS, com foco em tirar ideias do papel e colocá-las no mercado da forma mais rápida e econômica possível.",
-          "Sou especialista em criação de MVPs priorizando tempo de lançamento, custo operacional mínimo e arquitetura sólida desde o primeiro dia.",
-          "Meu objetivo não é apenas fazer funcionar, mas entregar um produto com infraestrutura eficiente, escalável e financeiramente sustentável, evitando desperdícios técnicos e custos desnecessários.",
-        ],
-      },
-      {
-        title: "Áreas de atuação",
-        subtitle: "Especialidades que geram resultado",
+        id: "areas-atuacao",
+        emoji: "🎯",
+        title: "Áreas de Atuação",
         bullets: [
           "Desenvolvimento de sistemas web e plataformas SaaS",
           "Automação de processos e integrações",
@@ -37,20 +27,23 @@ export default function HomePage() {
         ],
       },
       {
-        title: "Linguagens, plataformas e stack",
-        subtitle: "Tecnologia usada em produção",
+        id: "linguagens-plataformas",
+        emoji: "🧠",
+        title: "Linguagens & Plataformas",
+        badges: ["PHP", "JavaScript", "Node.js", "React", "Next.js"],
+      },
+      {
+        id: "frameworks-bibliotecas",
+        emoji: "🧩",
+        title: "Frameworks & Bibliotecas (Open Source)",
         groups: [
           {
-            title: "Linguagens & Plataformas",
-            badges: ["PHP", "JavaScript", "Node.js", "React", "Next.js"],
-          },
-          {
-            title: "Frameworks & Bibliotecas (Frontend)",
-            badges: ["MUI", "Zustand", "ESLint", "Prettier"],
+            title: "Frontend",
+            badges: ["MUI (Material UI)", "Zustand", "ESLint", "Prettier"],
           },
           {
             title: "Backend & Automação",
-            badges: ["wa-js", "Baileys", "ticketz", "node-pg-migrate", "Crypto", "Codex"],
+            badges: ["wa-js", "Baileys (WhatsApp Web API)", "ticketz", "node-pg-migrate", "Crypto", "Codex"],
           },
           {
             title: "Mapas & Geoprocessamento",
@@ -60,37 +53,61 @@ export default function HomePage() {
             title: "Comunicação & Serviços",
             badges: ["Resend"],
           },
+        ],
+      },
+      {
+        id: "bancos-dados",
+        emoji: "🗄️",
+        title: "Bancos de Dados & Armazenamento",
+        badges: ["PostgreSQL (Neon – serverless)", "MySQL", "Blob Storage"],
+      },
+      {
+        id: "apis-integracoes",
+        emoji: "🔗",
+        title: "APIs & Integrações",
+        bullets: [
+          "REST APIs",
+          "WhatsApp Oficial (Meta API)",
+          "Checkouts e sistemas de pagamento",
+          "Integração com IA (LLMs, embeddings, automações)",
+        ],
+      },
+      {
+        id: "infra-devops",
+        emoji: "☁️",
+        title: "Infraestrutura & DevOps",
+        groups: [
           {
-            title: "Bancos de Dados & Armazenamento",
-            badges: ["PostgreSQL (Neon)", "MySQL", "Blob Storage"],
-          },
-          {
-            title: "APIs & Integrações",
-            badges: [
-              "REST APIs",
-              "WhatsApp Oficial (Meta API)",
-              "Checkouts e sistemas de pagamento",
-              "Integração com IA (LLMs, embeddings, automações)",
+            title: "Cloud & Serverless",
+            bullets: [
+              "Vercel (deploy, backend serverless, cron jobs)",
+              "Neon (PostgreSQL serverless)",
             ],
           },
           {
-            title: "Infraestrutura & DevOps",
-            badges: [
-              "Vercel",
-              "Neon",
-              "Contabo",
+            title: "VPS & Orquestração",
+            bullets: [
+              "Contabo (VPS para WebSocket, automações e serviços persistentes)",
               "Docker",
-              "Cloudflare",
-              "GitHub",
-              "CI/CD",
+            ],
+          },
+          {
+            title: "Rede & Segurança",
+            bullets: ["Cloudflare (CDN, DNS, proteção e cache)"],
+          },
+          {
+            title: "Versionamento & Entrega",
+            bullets: [
+              "GitHub (versionamento e pipelines CI/CD)",
               "Migrations de banco de dados",
             ],
           },
         ],
       },
       {
+        id: "inteligencia-artificial",
+        emoji: "🤖",
         title: "Inteligência Artificial",
-        subtitle: "IA aplicada a operação e crescimento",
         bullets: [
           "Classificação e análise de mensagens",
           "Geração de respostas automáticas",
@@ -99,115 +116,146 @@ export default function HomePage() {
         ],
       },
       {
-        title: "Automação & Trading Algorítmico",
-        subtitle: "Projetos complementares no mercado financeiro",
+        id: "projetos-arquiteturas",
+        emoji: "🏗️",
+        title: "Projetos & Arquiteturas Desenvolvidas",
         paragraphs: [
-          "Atuação em projetos de automação para mercado financeiro, com desenvolvimento de robôs e estratégias automatizadas para plataformas de trading.",
-          "Projetos recorrentes focados em lógica de negociação, automação de estratégias e execução de ordens.",
-        ],
-        badges: ["MQL4", "MQL5", "cBot (cTrader)", "Pepperstone e outras corretoras"],
-      },
-      {
-        title: "MVPs, negócio & sociedade",
-        subtitle: "Modelo de parceria técnica",
-        paragraphs: [
-          "Quando identifico uma ideia com potencial real de mercado, posso atuar também como sócio técnico do projeto.",
-          "Nesse modelo, abro mão do custo inicial de desenvolvimento, participo da definição do produto e arquitetura, e assumo toda a execução da infraestrutura e do sistema.",
-          "Todos os meus negócios próprios começaram exatamente dessa forma.",
-        ],
-      },
-      {
-        title: "Arquitetura como diferencial",
-        subtitle: "Decisões técnicas orientadas a negócio",
-        paragraphs: [
-          "Em todos os projetos, toda a arquitetura do sistema é desenhada por mim. Planejamento, execução e entrega da infraestrutura cloud ficam sob minha responsabilidade.",
-          "A stack é escolhida com foco em melhor custo-benefício, escalabilidade real e manutenibilidade a longo prazo.",
-          "Meta: arquitetura impecável, custo enxuto e produto pronto para crescer.",
-        ],
-      },
-      {
-        title: "Projetos e arquiteturas desenvolvidas",
-        subtitle: "Portfólio com execução completa",
-        paragraphs: [
-          "Em todos os projetos abaixo eu executei arquitetura completa do sistema (planejamento, desenho e execução), infraestrutura cloud e deploy, uso de migrations, Atomic Design, Serverless Functions, além de integrações via REST API e Webhooks.",
+          "Em todos os projetos abaixo: arquitetura completa do sistema (planejamento, desenho e execução), infraestrutura cloud e deploy definidos e implementados por mim, uso de migrations, Atomic Design, Serverless Functions, integrações via REST API e Webhooks.",
         ],
         groups: [
           {
             title: "FalaUai",
             paragraphs: [
               "Extensão web que atua como ponte entre empresas e clientes, facilitando a comunicação via WhatsApp de forma automatizada.",
-              "Modelo: negócio próprio (4 anos de mercado).",
+              "Modelo: Negócio próprio (4 anos de mercado)",
+              "Destaques técnicos:",
             ],
             bullets: [
               "Arquitetura serverless escalável",
               "Integração com WhatsApp e automações",
               "Sistema de assinaturas e pagamentos recorrentes",
-              "Tecnologias: React, JavaScript, Next.js, REST API, Webhooks, Mercado Pago (Assinatura e PIX), Vercel, PostgreSQL (Neon), extensão web",
+              "Tecnologias: React, JavaScript, Next.js, REST API e Webhooks, Checkout (Assinatura e PIX – Mercado Pago), Backend Serverless (Vercel), PostgreSQL (Neon), Extensão Web",
             ],
           },
           {
             title: "FutPlayBr",
             paragraphs: [
               "Plataforma de streaming Pay Per View com distribuição de conteúdo em larga escala.",
-              "Modelo: negócio próprio + sócio.",
+              "Modelo: Negócio próprio + sócio",
+              "Destaques técnicos:",
             ],
             bullets: [
               "Infraestrutura híbrida (Serverless + VPS)",
               "Alta disponibilidade com CDN",
               "Notificações e experiência mobile (PWA)",
-              "Tecnologias: React, JavaScript, Next.js, extensão web, Docker em VPS, Vercel, PostgreSQL (Neon), REST API, Webhooks, PIX (Mercado Pago), PWA, Push, Cloudflare CDN",
+              "Tecnologias: React, JavaScript, Next.js, Extensão Web, Servidor em Docker (VPS), Monolito Serverless (Vercel), PostgreSQL (Neon), REST API e Webhooks, Checkout (PIX – Mercado Pago), PWA e Notificações Push, Cloudflare CDN",
             ],
           },
           {
             title: "NaBrasa Hamburgueria",
-            paragraphs: ["Site institucional para apresentação da marca e presença digital."],
+            paragraphs: [
+              "Site institucional para apresentação da marca e presença digital.",
+              "Modelo: Projeto para terceiros",
+              "Destaques técnicos:",
+            ],
             bullets: [
-              "Modelo: projeto para terceiros",
-              "Destaques: performance e SEO; estrutura simples e objetiva",
-              "Tecnologias: React, JavaScript, Next.js, Vercel, Google Tag Manager e Meta Pixel",
+              "Performance e SEO",
+              "Estrutura simples e objetiva",
+              "Tecnologias: React, JavaScript, Next.js, Monolito Serverless (Vercel), Google Tag Manager, Meta (Facebook) Pixel",
             ],
           },
           {
             title: "Mestre Starlink",
             paragraphs: [
               "Landing page de vendas focada em educação para economia na compra e instalação da Starlink.",
+              "Modelo: Negócio próprio",
+              "Destaques técnicos:",
             ],
             bullets: [
-              "Modelo: negócio próprio",
-              "Destaques: conversão e rastreamento avançado; checkout integrado",
-              "Tecnologias: React, JavaScript, Next.js, Vercel, PostgreSQL (Neon), checkout, GTM e Meta Pixel",
+              "Conversão e rastreamento avançado",
+              "Checkout integrado",
+              "Tecnologias: React, JavaScript, Next.js, Monolito Serverless (Vercel), PostgreSQL (Neon), Checkout, Google Tag Manager, Meta (Facebook) Pixel",
             ],
           },
           {
             title: "Facilita Agro",
             paragraphs: [
               "Startup voltada à agricultura de precisão com uso de dados, mapas e inteligência artificial.",
+              "Modelo: Projeto para terceiros",
+              "Destaques técnicos:",
             ],
             bullets: [
-              "Modelo: projeto para terceiros",
-              "Destaques: microserviços em VPS, agente de IA para automação e análise, escalabilidade e processamento de dados",
-              "Tecnologias: React, JavaScript, Next.js, Zustand, Vercel, PostgreSQL (Neon), microserviços em VPS, agente IA (ChatGPT), Resend, Google Tag Manager",
+              "Microserviços em VPS",
+              "Agente de IA para automação e análise",
+              "Escalabilidade e processamento de dados",
+              "Tecnologias: React, JavaScript, Next.js, Zustand, Serverless (Vercel), PostgreSQL (Neon), Microserviços em VPS, Agente IA (ChatGPT), Resend, Google Tag Manager",
             ],
           },
         ],
       },
       {
+        id: "automacao-trading",
+        emoji: "📈",
+        title: "Automação & Trading Algorítmico (Projetos Complementares)",
+        paragraphs: [
+          "Atuação em projetos de automação para mercado financeiro, com desenvolvimento de robôs e estratégias automatizadas para plataformas de trading.",
+          "Projetos recorrentes, focados em lógica de negociação, automação de estratégias e execução de ordens.",
+        ],
+        badges: ["MQL4", "MQL5", "cBot (cTrader)", "Integração com corretoras (ex: Pepperstone)"],
+      },
+      {
+        id: "posicionamento",
+        emoji: "🧭",
+        title: "Posicionamento & Forma de Trabalho",
+        paragraphs: [
+          "Atuo há 12 anos no mercado desenvolvendo sistemas, produtos digitais e plataformas SaaS, com foco em tirar ideias do papel e colocá-las no mercado da forma mais rápida e econômica possível.",
+          "Sou especialista em criação de MVPs, priorizando tempo de lançamento, custo operacional mínimo e arquitetura sólida desde o primeiro dia.",
+          "Meu objetivo não é apenas “fazer funcionar”, mas entregar um produto com infraestrutura eficiente, escalável e financeiramente sustentável, evitando desperdícios técnicos e custos desnecessários.",
+        ],
+      },
+      {
+        id: "mvps-negocio-sociedade",
+        emoji: "🤝",
+        title: "MVPs, Negócio & Sociedade",
+        paragraphs: [
+          "Quando identifico uma ideia com potencial real de mercado, posso atuar também como sócio técnico do projeto.",
+          "Nesse modelo: abro mão do custo inicial de desenvolvimento; participo da definição do produto, arquitetura e estratégia técnica; assumo toda a execução da infraestrutura e do sistema.",
+          "Todos os meus negócios próprios começaram exatamente dessa forma.",
+        ],
+      },
+      {
+        id: "arquitetura-diferencial",
+        emoji: "⚙️",
+        title: "Arquitetura como Diferencial",
+        paragraphs: [
+          "Em todos os projetos, toda a arquitetura do sistema é desenhada por mim.",
+          "Planejamento, execução e entrega da infraestrutura cloud ficam sob minha responsabilidade.",
+          "A stack é escolhida sempre com foco em melhor custo-benefício, escalabilidade real (não teórica) e manutenibilidade a longo prazo.",
+          "A meta é simples: arquitetura impecável, custo enxuto e produto pronto para crescer.",
+        ],
+      },
+      {
+        id: "conecte-se",
+        emoji: "📬",
         title: "Conecte-se comigo",
-        subtitle: "Contato direto e portfólio técnico",
+        paragraphs: [
+          "Entre em contato ou acompanhe meu trabalho pelas plataformas abaixo.",
+          "Ordem do portfólio técnico: GitHub, LinkedIn, WhatsApp, Email, YouTube, Instagram, Udemy.",
+        ],
         contacts: [
           {
             label: "1. GitHub",
-            description: "Código, projetos e experimentos",
+            description: "Código, projetos e experimentos — https://github.com/renatoolegario",
             href: "https://github.com/renatoolegario",
           },
           {
             label: "2. LinkedIn",
-            description: "Networking profissional e experiências",
+            description: "Networking profissional e experiências — https://www.linkedin.com/in/olegariodev/",
             href: "https://www.linkedin.com/in/olegariodev/",
           },
           {
             label: "3. WhatsApp",
-            description: "Atendimento direto e rápido",
+            description: "Atendimento direto e rápido — https://api.whatsapp.com/send/?phone=5534992399036",
             href: "https://api.whatsapp.com/send/?phone=5534992399036",
           },
           {
@@ -217,17 +265,17 @@ export default function HomePage() {
           },
           {
             label: "5. YouTube",
-            description: "Conteúdo técnico e educacional",
+            description: "Conteúdo técnico e educacional — https://www.youtube.com/@olegario-dev",
             href: "https://www.youtube.com/@olegario-dev",
           },
           {
             label: "6. Instagram",
-            description: "Conteúdo técnico, bastidores e projetos",
+            description: "Conteúdo técnico, bastidores e projetos — https://www.instagram.com/olegario.dev/",
             href: "https://www.instagram.com/olegario.dev/",
           },
           {
             label: "7. Udemy",
-            description: "Cursos e materiais educacionais",
+            description: "Cursos e materiais educacionais — https://www.udemy.com/user/renato-olegario-alves-ferreira/",
             href: "https://www.udemy.com/user/renato-olegario-alves-ferreira/",
           },
         ],
@@ -236,14 +284,5 @@ export default function HomePage() {
     []
   );
 
-  return (
-    <>
-      <LandingPageTemplate sections={sections} onSelectSection={setSelectedIndex} />
-      <SectionModal
-        open={selectedIndex !== null}
-        onClose={() => setSelectedIndex(null)}
-        section={selectedIndex !== null ? sections[selectedIndex] : null}
-      />
-    </>
-  );
+  return <LandingPageTemplate sections={sections} />;
 }

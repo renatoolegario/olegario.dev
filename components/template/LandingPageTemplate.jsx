@@ -1,70 +1,54 @@
-import { Box, Container, Grid, Stack, Typography } from "@mui/material";
+import { Box, Container, Stack, Typography } from "@mui/material";
 import Image from "next/image";
-import SectionCard from "components/molecules/SectionCard";
+import LandingSection from "components/organisms/LandingSection";
 
-export default function LandingPageTemplate({ sections, onSelectSection }) {
+export default function LandingPageTemplate({ sections }) {
   return (
     <Box
       sx={{
         minHeight: "100vh",
-        background:
-          "linear-gradient(180deg, #f8fafc 0%, #f1f5f9 36%, #eff6ff 100%)",
-        py: { xs: 4, md: 8 },
+        background: "linear-gradient(180deg, #f8fafc 0%, #eff6ff 100%)",
+        py: { xs: 3, md: 6 },
       }}
     >
       <Container maxWidth="lg">
-        <Stack spacing={4}>
-          <Stack
-            direction={{ xs: "column", md: "row" }}
-            spacing={3}
-            alignItems="center"
-            justifyContent="space-between"
+        <Stack spacing={2.5}>
+          <Box
             sx={{
+              bgcolor: "#ffffff",
               border: "1px solid #dbeafe",
-              backgroundColor: "#ffffff",
               borderRadius: 4,
               p: { xs: 2, md: 3 },
             }}
           >
-            <Stack spacing={1.2}>
-              <Image src="/logotipo.png" alt="Logotipo Olegario Dev" width={180} height={180} priority />
-              <Typography variant="h4" sx={{ color: "#0f172a", fontWeight: 800 }}>
-                Olegário Dev
-              </Typography>
-              <Typography sx={{ color: "#334155", maxWidth: 620 }}>
-                Arquiteto de software e fundador técnico, especializado em MVPs,
-                automações e plataformas SaaS com foco em custo enxuto e arquitetura escalável.
-              </Typography>
-            </Stack>
-            <Box
-              sx={{
-                borderRadius: 3,
-                overflow: "hidden",
-                border: "1px solid #dbeafe",
-                lineHeight: 0,
-              }}
+            <Stack
+              direction={{ xs: "column", md: "row" }}
+              spacing={3}
+              alignItems={{ xs: "flex-start", md: "center" }}
+              justifyContent="space-between"
             >
-              <Image src="/olegario.jpeg" alt="Foto de Olegário" width={270} height={320} />
-            </Box>
-          </Stack>
+              <Stack spacing={1.2}>
+                <Image src="/logotipo.png" alt="Logotipo Olegário Dev" width={140} height={140} priority />
+                <Typography component="h1" variant="h3" sx={{ fontWeight: 900, color: "#0f172a" }}>
+                  Olegário Dev
+                </Typography>
+                <Typography sx={{ color: "#334155", maxWidth: 760, lineHeight: 1.7 }}>
+                  Sou arquiteto de software e fundador técnico com 12 anos de mercado, especializado em tirar MVPs do papel e colocá-los no mercado com o menor custo possível, sem abrir mão de arquitetura sólida e infraestrutura bem planejada.
+                </Typography>
+                <Typography sx={{ color: "#334155", maxWidth: 760, lineHeight: 1.7 }}>
+                  Atuo desde a ideia até a execução completa do sistema, incluindo arquitetura, backend, frontend, infraestrutura e automações.
+                </Typography>
+              </Stack>
 
-          <Typography sx={{ color: "#334155" }}>
-            Clique em cada bloco para abrir os modais com detalhes completos do meu posicionamento técnico,
-            stack, projetos e formas de contato.
-          </Typography>
+              <Box sx={{ borderRadius: 3, overflow: "hidden", border: "1px solid #bfdbfe", lineHeight: 0 }}>
+                <Image src="/olegario.jpeg" alt="Foto de Olegário" width={260} height={320} />
+              </Box>
+            </Stack>
+          </Box>
 
-          <Grid container spacing={1.5}>
-            {sections.map((section, index) => (
-              <Grid item xs={12} sm={6} md={4} key={section.title}>
-                <SectionCard
-                  index={index}
-                  title={section.title}
-                  subtitle={section.subtitle}
-                  onClick={() => onSelectSection(index)}
-                />
-              </Grid>
-            ))}
-          </Grid>
+          {sections.map((section) => (
+            <LandingSection key={section.id} section={section} />
+          ))}
         </Stack>
       </Container>
     </Box>
