@@ -2,6 +2,7 @@ import { Box, Button, Chip, Container, Grid, Stack, Typography } from '@mui/mate
 import Image from 'next/image';
 import LandingSection from 'components/organisms/LandingSection';
 
+import GithubBreakoutShowcase from 'components/molecules/GithubContribCalendar';
 export default function LandingPageTemplate({ sections }) {
   return (
     <Box
@@ -33,7 +34,10 @@ export default function LandingPageTemplate({ sections }) {
                   <Button variant="outlined" href="https://github.com/renatoolegario" target="_blank">
                     Ver GitHub
                   </Button>
+
+
                 </Stack>
+                <GithubBreakoutShowcase />
               </Stack>
             </Grid>
             <Grid size={{ xs: 12, md: 5 }}>

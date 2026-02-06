@@ -1,6 +1,6 @@
 import { Box, Divider, Grid, Link as MuiLink, Stack, Typography } from '@mui/material';
 import SectionBadge from 'components/atomic/SectionBadge';
-import GithubBreakoutShowcase from 'components/molecules/GithubBreakoutShowcase';
+import GithubBreakoutShowcase from 'components/molecules/GithubContribCalendar';
 
 function BulletList({ items }) {
   return (
@@ -32,13 +32,9 @@ export default function LandingSection({ section }) {
           {section.title}
         </Typography>
 
-        {section.paragraphs?.map((text) => (
-          <Typography key={text} sx={{ color: 'text.secondary', lineHeight: 1.8 }}>
-            {text}
-          </Typography>
-        ))}
 
-        {section.showGithubBreakout ? <GithubBreakoutShowcase /> : null}
+
+
 
         {section.highlights?.length ? (
           <Stack direction="row" flexWrap="wrap" gap={1}>
