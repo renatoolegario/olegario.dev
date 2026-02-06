@@ -117,8 +117,10 @@ export default function HomePage() {
           'Criei a sessão reutilizável em utils/githubBreakoutSession.js com createGithubBreakoutSession usando process.env.GITHUB_TOKEN, usuário padrão renatoolegario e exigência de enableGhostBricks boolean.',
           'A sessão executa generateSVG com paddleColor, ballColor e bricksColors, garantindo customização do SVG de saída.',
           'Adicionei o endpoint POST /api/github-breakout/session em pages/api/github-breakout/session.js para receber parâmetros no body, chamar a utilitária e retornar o SVG em JSON.',
+          'Abaixo você vê a integração funcionando com renderização do SVG gerado pela lib e um mapa de contribuições do GitHub.',
           'Também adicionei testes unitários cobrindo ausência de GITHUB_TOKEN e enableGhostBricks inválido. Commit de referência: 046af88, com PR registrado: “feat: criar sessão de github-breakout com endpoint API”.',
         ],
+        showGithubBreakout: true,
       },
       {
         id: 'modelo-sociedade',
