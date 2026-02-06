@@ -5,43 +5,36 @@ const theme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#1cb5e0', // azul inspirado na logo
+      main: '#3366ff',
+      light: '#7ea1ff',
+      dark: '#1f3fb3',
     },
     secondary: {
-      main: '#7c3aed', // roxo inspirado na logo
+      main: '#6c63ff',
     },
     error: {
       main: red.A400,
     },
     background: {
-      default: '#f6f9ff',
+      default: '#f5f8ff',
       paper: '#ffffff',
     },
     text: {
-      primary: '#0f172a',
-      secondary: '#334155',
+      primary: '#1a223f',
+      secondary: '#5f6b8a',
     },
-    grey: {
-      800: '#1f2937',
+    divider: '#e7ecf7',
+  },
+  shape: {
+    borderRadius: 14,
+  },
+  typography: {
+    fontFamily: 'Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif',
+    h2: {
+      fontSize: 'clamp(2.2rem, 4vw, 3.2rem)',
     },
-    green: {
-      500: '#22c55e',
-      600: '#16a34a',
-    },
-    orange: {
-      main: '#fb923c',
-    },
-    blue: {
-      main: '#1cb5e0',
-    },
-    yellow: {
-      main: '#facc15',
-    },
-    indigo: {
-      main: '#818cf8',
-    },
-    teal: {
-      main: '#14b8a6',
+    h4: {
+      fontSize: 'clamp(1.5rem, 2vw, 2rem)',
     },
   },
 });

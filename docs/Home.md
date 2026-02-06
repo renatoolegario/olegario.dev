@@ -1,19 +1,27 @@
 # Home (Landing Page)
 
 ## Descrição
-Página principal em formato de landing page completa, com todo o conteúdo renderizado em seções contínuas na mesma página (sem modal), focada em apresentar posicionamento, stack, projetos, IA, automação/trading e canais de contato.
+Landing page em estilo Expert/Infoproduto inspirada na linha visual do template SaaSable (MUI), com hero forte, CTAs, blocos de autoridade técnica, stack, projetos, atualização técnica recente e seção de contatos priorizados para portfólio.
 
 ## Props utilizadas
 - `LandingPageTemplate`
-  - `sections`: array de seções com `id`, `title`, `emoji`, `paragraphs`, `bullets`, `badges`, `groups` e `contacts`.
+  - `sections`: lista de blocos da landing com estrutura flexível.
 - `LandingSection`
-  - `section`: objeto da seção que será renderizada em bloco.
+  - `section`: objeto com os campos opcionais:
+    - `id`
+    - `label`
+    - `title`
+    - `paragraphs`
+    - `highlights`
+    - `bullets`
+    - `groups`
+    - `contacts`
 
 ## Funções internas
-- `useMemo` em `HomePage` para manter estável a estrutura de dados das seções.
+- `useMemo` em `HomePage` para manter estável a estrutura de conteúdo e evitar recriação desnecessária da árvore de dados.
 
 ## Resultado esperado
-- Hero com `H1`, logotipo e imagem pessoal.
-- Conteúdo integral do briefing na ordem correta.
-- Layout claro e organizado no padrão Atomic Design.
-- Sem modais suspensos: tudo acontece na mesma página.
+- Hero principal com posicionamento claro de especialista e botões de ação.
+- Layout card-based com visual clean inspirado em dashboards/landing da linha Berry/SaaS.
+- Conteúdo integral de perfil técnico, projetos, forma de trabalho e contatos em ordem de prioridade.
+- Inclusão explícita da atualização técnica sobre `github-breakout` com utilitária, endpoint, testes, commit e PR.
