@@ -1,0 +1,16 @@
+
+> App@1.0.0 dev
+> next dev
+
+   ▲ Next.js 15.5.11
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.0.2:3000
+
+ ✓ Starting...
+ ⚠ Mismatching @next/swc version, detected: 15.5.7 while Next.js is on 15.5.11. Please ensure these match
+ ✓ Ready in 1941ms
+ ○ Compiling / ...
+ ✓ Compiled / in 14.7s (608 modules)
+ GET / 200 in 17578ms
+ ✓ Compiled in 742ms (247 modules)
+ ✓ Compiled in 472ms (608 modules)
