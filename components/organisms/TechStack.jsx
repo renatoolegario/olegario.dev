@@ -2,10 +2,10 @@ import React from 'react';
 import {
   SiPhp, SiNodedotjs, SiNextdotjs, SiPostgresql, SiDocker, SiWhatsapp,
   SiMui, SiEslint, SiPrettier, SiMapbox, SiMysql, SiVercel, SiCloudflare, SiGithub,
-  SiReact, SiJavascript
+  SiReact
 } from 'react-icons/si';
 import {
-  Database, Server, Smartphone, Globe, Cloud, Code, Lock, Ticket, Map, Mail, HardDrive, CreditCard, Bot, Zap, GitCommit, Layers
+  Database, Server, Cloud, Code, Lock, Ticket, Map, Mail, HardDrive, CreditCard, Bot, Zap, GitCommit, Layers, MessageSquare, Brain, Search
 } from 'lucide-react';
 import TechBadge from '../molecules/TechBadge';
 
@@ -17,7 +17,7 @@ export default function TechStack() {
         { name: 'React', icon: SiReact },
         { name: 'Next.js', icon: SiNextdotjs },
         { name: 'MUI (Material UI)', icon: SiMui },
-        { name: 'Zustand', icon: Layers }, // Generic for state management
+        { name: 'Zustand', icon: Layers },
         { name: 'ESLint', icon: SiEslint },
         { name: 'Prettier', icon: SiPrettier },
       ]
@@ -32,6 +32,7 @@ export default function TechStack() {
         { name: 'ticketz', icon: Ticket },
         { name: 'node-pg-migrate', icon: Database },
         { name: 'Crypto', icon: Lock },
+        { name: 'Codex', icon: Code },
       ]
     },
     {
@@ -64,11 +65,20 @@ export default function TechStack() {
     {
       title: 'APIs & Serviços',
       items: [
-        { name: 'REST APIs', icon: Globe },
-        { name: 'WhatsApp API (Meta)', icon: SiWhatsapp },
+        { name: 'REST APIs', icon: Cloud },
+        { name: 'WhatsApp Oficial', icon: SiWhatsapp },
         { name: 'Resend', icon: Mail },
-        { name: 'Pagamentos', icon: CreditCard },
-        { name: 'IA & LLMs', icon: Bot },
+        { name: 'Checkouts', icon: CreditCard },
+        { name: 'Integração IA', icon: Bot },
+      ]
+    },
+    {
+      title: 'Inteligência Artificial',
+      items: [
+        { name: 'Classificação', icon: Search },
+        { name: 'Geração', icon: MessageSquare },
+        { name: 'Embeddings', icon: Database },
+        { name: 'Automação', icon: Zap },
       ]
     }
   ];

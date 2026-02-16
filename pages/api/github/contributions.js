@@ -8,7 +8,12 @@ export default async function handler(req, res) {
         if (!username) return res.status(400).json({ error: "username é obrigatório" });
 
         const token = process.env.GITHUB_TOKEN; // ✅ server-only
-        if (!token) return res.status(500).json({ error: "GITHUB_TOKEN não configurado" });
+
+        // Handle missing token gracefully with mock data
+        if (!token) {
+            console.warn("GITHUB_TOKEN não configurado. Retornando dados mock/vazios.");
+            return res.status(200).json(generateMockData());
+        }
 
         const query = `
       query($login: String!) {
@@ -43,10 +48,9 @@ export default async function handler(req, res) {
         const json = await r.json();
 
         if (!r.ok || json.errors?.length) {
-            return res.status(500).json({
-                error: json.errors?.[0]?.message || "Erro ao consultar GitHub GraphQL",
-                details: json.errors || null,
-            });
+             // Fallback to mock data on API error instead of crashing
+             console.error("Erro GitHub API:", json.errors?.[0]?.message);
+             return res.status(200).json(generateMockData());
         }
 
         const calendar =
@@ -57,6 +61,32 @@ export default async function handler(req, res) {
 
         return res.status(200).json(calendar);
     } catch (e) {
-        return res.status(500).json({ error: e?.message || "Erro interno" });
+        console.error("Erro interno:", e);
+        // Fallback to mock data on exception
+        return res.status(200).json(generateMockData());
     }
+}
+
+function generateMockData() {
+    // Generates a blank calendar structure
+    const weeks = [];
+    // Approximate 52 weeks
+    for (let i = 0; i < 53; i++) {
+        const days = [];
+        for (let j = 0; j < 7; j++) {
+            days.push({
+                date: "2023-01-01", // Dummy date
+                contributionCount: 0,
+                color: "#161b22", // Default dark color
+                weekday: j
+            });
+        }
+        weeks.push({ contributionDays: days });
+    }
+
+    return {
+        totalContributions: 0,
+        colors: ["#0e4429", "#006d32", "#26a641", "#39d353"], // Standard GitHub greens
+        weeks: weeks
+    };
 }

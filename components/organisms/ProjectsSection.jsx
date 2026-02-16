@@ -5,37 +5,42 @@ export default function ProjectsSection() {
   const projects = [
     {
       title: 'FalaUai',
-      description: 'Extensão web que atua como ponte entre empresas e clientes, facilitando a comunicação via WhatsApp de forma automatizada. Modelo de negócio próprio com 4 anos de mercado.',
-      techs: ['Next.js', 'React', 'PostgreSQL', 'Serverless', 'Extensão Web', 'Checkout'],
+      description: 'Extensão web que atua como ponte entre empresas e clientes, facilitando a comunicação via WhatsApp de forma automatizada. Negócio próprio (4 anos de mercado). Destaques: Arquitetura serverless escalável, Integração com WhatsApp, Sistema de assinaturas e pagamentos recorrentes.',
+      techs: ['React', 'Next.js', 'PostgreSQL', 'Serverless', 'Extensão Web', 'Checkout'],
       link: '#',
+      image: null, // Placeholder for project screenshot
       isFeatured: true,
     },
     {
       title: 'FutPlayBr',
-      description: 'Plataforma de streaming Pay Per View com distribuição de conteúdo em larga escala. Infraestrutura híbrida (Serverless + VPS) com alta disponibilidade.',
-      techs: ['Next.js', 'Docker', 'PWA', 'CDN', 'Checkout PIX', 'Serverless'],
+      description: 'Plataforma de streaming Pay Per View com distribuição de conteúdo em larga escala. Negócio próprio + sócio. Destaques: Infraestrutura híbrida (Serverless + VPS), Alta disponibilidade com CDN, PWA e Notificações Push.',
+      techs: ['Next.js', 'Docker', 'PWA', 'CDN', 'Checkout PIX', 'Serverless', 'VPS'],
       link: '#',
+      image: null, // Placeholder for project screenshot
       isFeatured: true,
     },
     {
-      title: 'Facilita Agro',
-      description: 'Startup voltada à agricultura de precisão com uso de dados, mapas e inteligência artificial. Agente de IA para automação e análise.',
-      techs: ['Next.js', 'Zustand', 'IA & Maps', 'Microserviços', 'PostgreSQL'],
+      title: 'NaBrasa Hamburgueria',
+      description: 'Site institucional para apresentação da marca e presença digital. Projeto para terceiros. Destaques: Performance e SEO, Estrutura simples e objetiva.',
+      techs: ['React', 'Next.js', 'Serverless', 'SEO', 'Analytics'],
       link: '#',
+      image: null, // Placeholder for project screenshot
       isFeatured: false,
     },
     {
       title: 'Mestre Starlink',
-      description: 'Landing page de vendas focada em educação para economia na compra e instalação da Starlink. Conversão e rastreamento avançado.',
-      techs: ['Next.js', 'Serverless', 'PostgreSQL', 'Checkout', 'Analytics'],
+      description: 'Landing page de vendas focada em educação para economia na compra e instalação da Starlink. Negócio próprio. Destaques: Conversão e rastreamento avançado, Checkout integrado.',
+      techs: ['Next.js', 'Serverless', 'PostgreSQL', 'Checkout', 'Google Tag Manager'],
       link: '#',
+      image: null, // Placeholder for project screenshot
       isFeatured: false,
     },
     {
-      title: 'NaBrasa Hamburgueria',
-      description: 'Site institucional para apresentação da marca e presença digital. Foco em performance, SEO e estrutura simples e objetiva.',
-      techs: ['Next.js', 'React', 'Serverless', 'SEO', 'Analytics'],
+      title: 'Facilita Agro',
+      description: 'Startup voltada à agricultura de precisão com uso de dados, mapas e inteligência artificial. Projeto para terceiros. Destaques: Microserviços em VPS, Agente de IA para automação e análise, Escalabilidade e processamento de dados.',
+      techs: ['Next.js', 'Zustand', 'IA & Maps', 'Microserviços', 'PostgreSQL', 'VPS'],
       link: '#',
+      image: null, // Placeholder for project screenshot
       isFeatured: false,
     },
   ];

@@ -7,19 +7,19 @@ import Button from '../atomic/Button';
 export default function DifferentialSection() {
   const cards = [
     {
-      title: 'Visão de Negócio',
-      description: 'Entendo de CAC, LTV e Churn. O código serve ao negócio, não o contrário.',
-      icon: TrendingUp,
+      title: 'Foco em MVP',
+      description: 'Priorizo tempo de lançamento e custo operacional mínimo, evitando desperdícios técnicos desde o primeiro dia.',
+      icon: Briefcase,
     },
     {
       title: 'Sócio Técnico',
-      description: 'Atuo como CTO hands-on em troca de equity para projetos com alto potencial.',
+      description: 'Para projetos com alto potencial, atuo como sócio técnico, assumindo a execução completa da infraestrutura e do sistema.',
       icon: Users,
     },
     {
-      title: 'Foco em MVP',
-      description: 'Lançamento rápido (Time-to-Market) com custo de infraestrutura otimizado.',
-      icon: Briefcase,
+      title: 'Arquitetura Sólida',
+      description: 'Stack escolhida com foco em melhor custo-benefício, escalabilidade real e manutenibilidade a longo prazo.',
+      icon: TrendingUp,
     },
   ];
 
@@ -52,7 +52,7 @@ export default function DifferentialSection() {
         </div>
 
         <div className="mt-16 text-center">
-            <Button variant="outline" className="px-8 py-4 text-lg border-emerald-500/50 hover:bg-emerald-500/10">
+            <Button variant="outline" className="px-8 py-4 text-lg border-emerald-500/50 hover:bg-emerald-500/10" onClick={() => window.location.href = 'https://api.whatsapp.com/send/?phone=5534992399036'}>
                 Vamos conversar sobre o seu negócio
             </Button>
         </div>
