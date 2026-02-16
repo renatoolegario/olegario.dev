@@ -1,13 +1,17 @@
 import React from 'react';
-import { Github, Linkedin, Mail, Phone, ExternalLink } from 'lucide-react';
+import { Github, Linkedin, Mail, Phone, Instagram, Youtube } from 'lucide-react';
+import { SiUdemy } from 'react-icons/si';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
   const contacts = [
     { label: 'GitHub', icon: Github, href: 'https://github.com/renatoolegario' },
     { label: 'LinkedIn', icon: Linkedin, href: 'https://www.linkedin.com/in/olegariodev/' },
-    { label: 'Email', icon: Mail, href: 'mailto:multiplas.fr@gmail.com' },
     { label: 'WhatsApp', icon: Phone, href: 'https://api.whatsapp.com/send/?phone=5534992399036' },
+    { label: 'Email', icon: Mail, href: 'mailto:multiplas.fr@gmail.com' },
+    { label: 'YouTube', icon: Youtube, href: 'https://www.youtube.com/@olegario-dev' },
+    { label: 'Instagram', icon: Instagram, href: 'https://www.instagram.com/olegario.dev/' },
+    { label: 'Udemy', icon: SiUdemy, href: 'https://www.udemy.com/user/renato-olegario-alves-ferreira/' },
   ];
 
   return (
@@ -19,7 +23,7 @@ export default function Footer() {
             <p className="text-slate-400 mb-8 max-w-md">
               Estou sempre em busca de desafios técnicos e parcerias estratégicas. Se você tem uma ideia validada ou um problema complexo, entre em contato.
             </p>
-            <div className="flex space-x-4">
+            <div className="flex flex-wrap gap-4">
               {contacts.map((contact, index) => (
                 <a
                   key={index}
