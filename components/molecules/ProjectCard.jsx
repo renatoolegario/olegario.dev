@@ -6,6 +6,7 @@ export default function ProjectCard({
   description,
   techs = [],
   link,
+  image,
   isFeatured = false
 }) {
   return (
@@ -18,7 +19,19 @@ export default function ProjectCard({
     `}>
       <div className="absolute inset-0 bg-grid-slate-800/[0.1] pointer-events-none" />
 
-      <div className="relative p-6 sm:p-8 flex flex-col h-full">
+      {image && (
+        <div className="w-full h-48 overflow-hidden border-b border-slate-800 relative z-10">
+            <img
+                src={image}
+                alt={title}
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-80 group-hover:opacity-100"
+            />
+             {/* Gradient overlay for text readability if needed, or just style */}
+             <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent opacity-60" />
+        </div>
+      )}
+
+      <div className="relative p-6 sm:p-8 flex flex-col h-full z-10">
         <div className="flex items-start justify-between mb-4">
           <div className="bg-slate-950/50 p-3 rounded-xl border border-slate-800 group-hover:border-emerald-500/30 transition-colors">
              {/* Icon placeholder or Project Initial */}
@@ -58,6 +71,8 @@ export default function ProjectCard({
 
           <a
             href={link || '#'}
+            target={link && link !== '#' ? "_blank" : "_self"}
+             rel={link && link !== '#' ? "noopener noreferrer" : ""}
             className="inline-flex items-center text-sm font-semibold text-emerald-500 hover:text-emerald-400 transition-colors group/link"
           >
             Ver Projeto
