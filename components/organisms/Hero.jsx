@@ -32,7 +32,7 @@ export default function Hero() {
             </h1>
 
             <p className="text-lg md:text-xl text-slate-400 mb-8 leading-relaxed animate-fade-in-up" style={{ animationDelay: '200ms' }}>
-              Sou arquiteto de software e fundador técnico com 12 anos de mercado, especializado em tirar MVPs do papel e colocá-los no mercado com o menor custo possível, sem abrir mão de arquitetura sólida e infraestrutura bem planejada.
+              Sou arquiteto de software e fundador técnico com 12 anos de mercado, especializado em tirar MVPs do papel e colocá-los no mercado com o menor custo possível, sem abrir mão de arquitetura sólida e infraestrutura bem planejada. Atuo desde a ideia até a execução completa do sistema, incluindo arquitetura, backend, frontend, infraestrutura e automações.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 mb-12 animate-fade-in-up" style={{ animationDelay: '300ms' }}>
@@ -45,43 +45,43 @@ export default function Hero() {
               </Button>
             </div>
 
-            <div className="flex items-center space-x-8 text-slate-500 animate-fade-in-up" style={{ animationDelay: '400ms' }}>
+            <div className="flex flex-wrap items-center gap-8 text-slate-500 animate-fade-in-up" style={{ animationDelay: '400ms' }}>
               <div>
                 <span className="block text-3xl font-bold text-white">12+</span>
                 <span className="text-sm font-medium">Anos de XP</span>
               </div>
-              <div className="h-8 w-px bg-slate-800" />
+              <div className="h-8 w-px bg-slate-800 hidden sm:block" />
               <div>
                 <span className="block text-3xl font-bold text-white">3+</span>
                 <span className="text-sm font-medium">Startups</span>
               </div>
-              <div className="h-8 w-px bg-slate-800" />
+              <div className="h-8 w-px bg-slate-800 hidden sm:block" />
               <div>
-                <span className="block text-3xl font-bold text-white">MVP</span>
-                <span className="text-sm font-medium">Specialist</span>
+                <span className="block text-3xl font-bold text-emerald-400">6.945+</span>
+                <span className="text-sm font-medium">Contribuições</span>
               </div>
             </div>
           </div>
 
           {/* Right Column: Image */}
           <div className="relative animate-fade-in-up" style={{ animationDelay: '500ms' }}>
-             <div className="relative w-72 h-72 md:w-96 md:h-96 mx-auto lg:ml-auto rounded-full p-2 bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 border border-slate-800 backdrop-blur-sm">
-                <img
-                  src="/olegario.jpeg"
-                  alt="Renato Olegário"
-                  className="w-full h-full object-cover rounded-full border-4 border-slate-950 shadow-2xl"
-                />
-                 {/* Decorative elements */}
-                <div className="absolute -top-4 -right-4 w-24 h-24 bg-emerald-500/20 blur-2xl rounded-full mix-blend-screen animate-pulse" />
-                <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-cyan-500/20 blur-2xl rounded-full mix-blend-screen animate-pulse" style={{ animationDelay: '1s' }} />
-             </div>
+            <div className="relative w-72 h-72 md:w-96 md:h-96 mx-auto lg:ml-auto rounded-full p-2 bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 border border-slate-800 backdrop-blur-sm">
+              <img
+                src="/olegario.jpeg"
+                alt="Renato Olegário"
+                className="w-full h-full object-cover rounded-full border-4 border-slate-950 shadow-2xl"
+              />
+              {/* Decorative elements */}
+              <div className="absolute -top-4 -right-4 w-24 h-24 bg-emerald-500/20 blur-2xl rounded-full mix-blend-screen animate-pulse" />
+              <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-cyan-500/20 blur-2xl rounded-full mix-blend-screen animate-pulse" style={{ animationDelay: '1s' }} />
+            </div>
           </div>
         </div>
 
         {/* GitHub Calendar Section */}
         <div className="mt-16 animate-fade-in-up" style={{ animationDelay: '600ms' }}>
           <div className="flex items-center justify-center mb-6">
-             <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-widest">Atividade no GitHub</h3>
+            <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-widest">Atividade no GitHub</h3>
           </div>
           <div className="flex justify-center overflow-x-auto pb-4">
             <GithubContribCalendar username="renatoolegario" />

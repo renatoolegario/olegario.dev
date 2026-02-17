@@ -1,13 +1,10 @@
 import React from 'react';
 import Head from 'next/head';
-import { ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import theme from 'theme/theme';
+import '../styles/globals.css';
 
 function MyApp({ Component, pageProps }) {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
+    <>
       <Head>
         <title>Olegário.Dev</title>
         <link rel="icon" href="/favicon/favicon.ico" type="image/x-icon" />
@@ -18,19 +15,8 @@ function MyApp({ Component, pageProps }) {
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
         <link rel="manifest" href="/favicon/site.webmanifest" />
       </Head>
-      <style jsx global>{`
-        html, body, #__next {
-          height: 100%;
-        }
-        body {
-          margin: 0;
-          overflow-x: hidden;
-          overflow-y: auto;
-          background-color: #f6f9ff;
-        }
-      `}</style>
       <Component {...pageProps} />
-    </ThemeProvider>
+    </>
   );
 }
 

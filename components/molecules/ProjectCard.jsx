@@ -11,7 +11,7 @@ export default function ProjectCard({
 }) {
   return (
     <div className={`
-      relative group overflow-hidden rounded-2xl border transition-all duration-500
+      relative group overflow-hidden rounded-2xl border transition-all duration-500 backdrop-blur-md
       ${isFeatured
         ? 'border-emerald-500/30 bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-900/10'
         : 'border-slate-800 bg-slate-900/40 hover:border-emerald-500/30 hover:bg-slate-800/60'
@@ -21,21 +21,21 @@ export default function ProjectCard({
 
       {image && (
         <div className="w-full h-48 overflow-hidden border-b border-slate-800 relative z-10">
-            <img
-                src={image}
-                alt={title}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-80 group-hover:opacity-100"
-            />
-             {/* Gradient overlay for text readability if needed, or just style */}
-             <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent opacity-60" />
+          <img
+            src={image}
+            alt={title}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-80 group-hover:opacity-100"
+          />
+          {/* Gradient overlay for text readability if needed, or just style */}
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent opacity-60" />
         </div>
       )}
 
       <div className="relative p-6 sm:p-8 flex flex-col h-full z-10">
         <div className="flex items-start justify-between mb-4">
           <div className="bg-slate-950/50 p-3 rounded-xl border border-slate-800 group-hover:border-emerald-500/30 transition-colors">
-             {/* Icon placeholder or Project Initial */}
-             <span className="text-xl font-bold text-emerald-500">{title.charAt(0)}</span>
+            {/* Icon placeholder or Project Initial */}
+            <span className="text-xl font-bold text-emerald-500">{title.charAt(0)}</span>
           </div>
           {link && (
             <a
@@ -72,7 +72,7 @@ export default function ProjectCard({
           <a
             href={link || '#'}
             target={link && link !== '#' ? "_blank" : "_self"}
-             rel={link && link !== '#' ? "noopener noreferrer" : ""}
+            rel={link && link !== '#' ? "noopener noreferrer" : ""}
             className="inline-flex items-center text-sm font-semibold text-emerald-500 hover:text-emerald-400 transition-colors group/link"
           >
             Ver Projeto

@@ -14,25 +14,25 @@ export default function TechStack() {
     {
       title: 'Frontend',
       items: [
-        { name: 'React', icon: SiReact },
-        { name: 'Next.js', icon: SiNextdotjs },
         { name: 'MUI (Material UI)', icon: SiMui },
         { name: 'Zustand', icon: Layers },
         { name: 'ESLint', icon: SiEslint },
         { name: 'Prettier', icon: SiPrettier },
+        { name: 'React', icon: SiReact },
+        { name: 'Next.js', icon: SiNextdotjs },
       ]
     },
     {
       title: 'Backend & Automação',
       items: [
-        { name: 'Node.js', icon: SiNodedotjs },
-        { name: 'PHP', icon: SiPhp },
         { name: 'wa-js', icon: SiWhatsapp },
         { name: 'Baileys', icon: SiWhatsapp },
         { name: 'ticketz', icon: Ticket },
         { name: 'node-pg-migrate', icon: Database },
         { name: 'Crypto', icon: Lock },
         { name: 'Codex', icon: Code },
+        { name: 'Node.js', icon: SiNodedotjs },
+        { name: 'PHP', icon: SiPhp },
       ]
     },
     {
@@ -43,11 +43,26 @@ export default function TechStack() {
       ]
     },
     {
+      title: 'Comunicação & Serviços',
+      items: [
+        { name: 'Resend', icon: Mail },
+      ]
+    },
+    {
       title: 'Bancos de Dados & Armazenamento',
       items: [
         { name: 'PostgreSQL (Neon)', icon: SiPostgresql },
         { name: 'MySQL', icon: SiMysql },
         { name: 'Blob Storage', icon: HardDrive },
+      ]
+    },
+    {
+      title: 'APIs & Integrações',
+      items: [
+        { name: 'REST APIs', icon: Cloud },
+        { name: 'WhatsApp Oficial', icon: SiWhatsapp },
+        { name: 'Checkouts', icon: CreditCard },
+        { name: 'Integração IA', icon: Bot },
       ]
     },
     {
@@ -60,16 +75,6 @@ export default function TechStack() {
         { name: 'Cloudflare', icon: SiCloudflare },
         { name: 'GitHub', icon: SiGithub },
         { name: 'Migrations', icon: GitCommit },
-      ]
-    },
-    {
-      title: 'APIs & Serviços',
-      items: [
-        { name: 'REST APIs', icon: Cloud },
-        { name: 'WhatsApp Oficial', icon: SiWhatsapp },
-        { name: 'Resend', icon: Mail },
-        { name: 'Checkouts', icon: CreditCard },
-        { name: 'Integração IA', icon: Bot },
       ]
     },
     {

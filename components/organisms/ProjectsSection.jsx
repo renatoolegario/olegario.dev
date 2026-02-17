@@ -5,42 +5,42 @@ export default function ProjectsSection() {
   const projects = [
     {
       title: 'FalaUai',
-      description: 'Extensão web que atua como ponte entre empresas e clientes, facilitando a comunicação via WhatsApp de forma automatizada. Negócio próprio (4 anos de mercado). Destaques: Arquitetura serverless escalável, Integração com WhatsApp, Sistema de assinaturas e pagamentos recorrentes.',
-      techs: ['React', 'Next.js', 'PostgreSQL', 'Serverless', 'Extensão Web', 'Checkout'],
+      description: 'Extensão web que atua como ponte entre empresas e clientes, facilitando a comunicação via WhatsApp de forma automatizada. Modelo: Negócio próprio (4 anos de mercado). Destaques técnicos: Arquitetura serverless escalável, Integração com WhatsApp e automações, Sistema de assinaturas e pagamentos recorrentes.',
+      techs: ['React', 'Next.js', 'PostgreSQL', 'Serverless', 'Extensão Web', 'Checkout (Mercado Pago)', 'Neon', 'Vercel', 'REST API'],
       link: '#',
-      image: null, // Placeholder for project screenshot
+      image: null,
       isFeatured: true,
     },
     {
       title: 'FutPlayBr',
-      description: 'Plataforma de streaming Pay Per View com distribuição de conteúdo em larga escala. Negócio próprio + sócio. Destaques: Infraestrutura híbrida (Serverless + VPS), Alta disponibilidade com CDN, PWA e Notificações Push.',
-      techs: ['Next.js', 'Docker', 'PWA', 'CDN', 'Checkout PIX', 'Serverless', 'VPS'],
+      description: 'Plataforma de streaming Pay Per View com distribuição de conteúdo em larga escala. Modelo: Negócio próprio + sócio. Destaques técnicos: Infraestrutura híbrida (Serverless + VPS), Alta disponibilidade com CDN, Notificações e experiência mobile (PWA).',
+      techs: ['Next.js', 'Docker', 'PWA', 'CDN (Cloudflare)', 'Checkout PIX', 'Serverless', 'VPS', 'PostgreSQL'],
       link: '#',
-      image: null, // Placeholder for project screenshot
+      image: null,
       isFeatured: true,
     },
     {
       title: 'NaBrasa Hamburgueria',
-      description: 'Site institucional para apresentação da marca e presença digital. Projeto para terceiros. Destaques: Performance e SEO, Estrutura simples e objetiva.',
-      techs: ['React', 'Next.js', 'Serverless', 'SEO', 'Analytics'],
+      description: 'Site institucional para apresentação da marca e presença digital. Modelo: Projeto para terceiros. Destaques técnicos: Performance e SEO, Estrutura simples e objetiva.',
+      techs: ['React', 'Next.js', 'Monolito Serverless', 'SEO', 'Google Tag Manager', 'Meta Pixel'],
       link: '#',
-      image: null, // Placeholder for project screenshot
+      image: null,
       isFeatured: false,
     },
     {
       title: 'Mestre Starlink',
-      description: 'Landing page de vendas focada em educação para economia na compra e instalação da Starlink. Negócio próprio. Destaques: Conversão e rastreamento avançado, Checkout integrado.',
-      techs: ['Next.js', 'Serverless', 'PostgreSQL', 'Checkout', 'Google Tag Manager'],
+      description: 'Landing page de vendas focada em educação para economia na compra e instalação da Starlink. Modelo: Negócio próprio. Destaques técnicos: Conversão e rastreamento avançado, Checkout integrado.',
+      techs: ['Next.js', 'Monolito Serverless', 'PostgreSQL', 'Checkout', 'Google Tag Manager', 'Meta Pixel'],
       link: '#',
-      image: null, // Placeholder for project screenshot
+      image: null,
       isFeatured: false,
     },
     {
       title: 'Facilita Agro',
-      description: 'Startup voltada à agricultura de precisão com uso de dados, mapas e inteligência artificial. Projeto para terceiros. Destaques: Microserviços em VPS, Agente de IA para automação e análise, Escalabilidade e processamento de dados.',
-      techs: ['Next.js', 'Zustand', 'IA & Maps', 'Microserviços', 'PostgreSQL', 'VPS'],
+      description: 'Startup voltada à agricultura de precisão com uso de dados, mapas e inteligência artificial. Modelo: Projeto para terceiros. Destaques técnicos: Microserviços em VPS, Agente de IA para automação e análise, Escalabilidade e processamento de dados.',
+      techs: ['React', 'Next.js', 'Zustand', 'IA (ChatGPT)', 'Microserviços', 'PostgreSQL', 'VPS', 'Resend', 'Google Tag Manager'],
       link: '#',
-      image: null, // Placeholder for project screenshot
+      image: null,
       isFeatured: false,
     },
   ];
