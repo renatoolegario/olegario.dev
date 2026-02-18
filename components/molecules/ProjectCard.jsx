@@ -6,6 +6,7 @@ export default function ProjectCard({
   description,
   techs = [],
   link,
+  links,
   image,
   isFeatured = false
 }) {
@@ -37,9 +38,9 @@ export default function ProjectCard({
             {/* Icon placeholder or Project Initial */}
             <span className="text-xl font-bold text-emerald-500">{title.charAt(0)}</span>
           </div>
-          {link && (
+          {(link || (links && links.length > 0)) && (
             <a
-              href={link}
+              href={link || links[0].url}
               target="_blank"
               rel="noopener noreferrer"
               className="p-2 text-slate-500 hover:text-emerald-400 transition-colors"
@@ -69,15 +70,32 @@ export default function ProjectCard({
             ))}
           </div>
 
-          <a
-            href={link || '#'}
-            target={link && link !== '#' ? "_blank" : "_self"}
-            rel={link && link !== '#' ? "noopener noreferrer" : ""}
-            className="inline-flex items-center text-sm font-semibold text-emerald-500 hover:text-emerald-400 transition-colors group/link"
-          >
-            Ver Projeto
-            <ArrowRight size={16} className="ml-2 transform group-hover/link:translate-x-1 transition-transform" />
-          </a>
+          <div className="flex flex-wrap gap-4">
+            {links && links.length > 0 ? (
+              links.map((l, index) => (
+                <a
+                  key={index}
+                  href={l.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center text-sm font-semibold text-emerald-500 hover:text-emerald-400 transition-colors group/link"
+                >
+                  {l.label}
+                  <ArrowRight size={16} className="ml-2 transform group-hover/link:translate-x-1 transition-transform" />
+                </a>
+              ))
+            ) : (
+              <a
+                href={link || '#'}
+                target={link && link !== '#' ? "_blank" : "_self"}
+                rel={link && link !== '#' ? "noopener noreferrer" : ""}
+                className="inline-flex items-center text-sm font-semibold text-emerald-500 hover:text-emerald-400 transition-colors group/link"
+              >
+                Ver Projeto
+                <ArrowRight size={16} className="ml-2 transform group-hover/link:translate-x-1 transition-transform" />
+              </a>
+            )}
+          </div>
         </div>
       </div>
     </div>
