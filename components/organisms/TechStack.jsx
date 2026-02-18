@@ -5,7 +5,7 @@ import {
   SiReact, SiGooglechrome
 } from 'react-icons/si';
 import {
-  Database, Server, Cloud, Lock, Ticket, Map, Mail, HardDrive, CreditCard, Bot, Zap, GitCommit, Layers, MessageSquare, Brain, Search, Webhook
+  Database, Server, Cloud, Lock, Ticket, Map, Mail, HardDrive, CreditCard, Bot, Zap, GitCommit, Layers, MessageSquare, Workflow, Search, Webhook
 } from 'lucide-react';
 import TechBadge from '../molecules/TechBadge';
 
@@ -65,7 +65,6 @@ export default function TechStack() {
         { name: 'REST APIs', icon: Cloud },
         { name: 'WhatsApp Oficial', icon: SiWhatsapp },
         { name: 'Checkouts', icon: CreditCard },
-        { name: 'Agentes de IA', icon: Bot },
         { name: 'Webhooks', icon: Webhook },
       ]
     },
@@ -87,10 +86,8 @@ export default function TechStack() {
     {
       title: 'Inteligência Artificial',
       items: [
-        { name: 'Classificação', icon: Search },
-        { name: 'Geração', icon: MessageSquare },
-        { name: 'Embeddings', icon: Database },
-        { name: 'Automação', icon: Zap },
+        { name: 'Agentes de IA', icon: Bot },
+        { name: 'Flow IA', icon: Workflow },
       ]
     }
   ];
