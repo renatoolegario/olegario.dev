@@ -2,7 +2,7 @@ import React from 'react';
 import {
   SiPhp, SiNodedotjs, SiNextdotjs, SiPostgresql, SiDocker, SiWhatsapp,
   SiMui, SiEslint, SiPrettier, SiMapbox, SiMysql, SiVercel, SiCloudflare, SiGithub,
-  SiReact
+  SiReact, SiGooglechrome
 } from 'react-icons/si';
 import {
   Database, Server, Cloud, Code, Lock, Ticket, Map, Mail, HardDrive, CreditCard, Bot, Zap, GitCommit, Layers, MessageSquare, Brain, Search
@@ -16,8 +16,6 @@ export default function TechStack() {
       items: [
         { name: 'MUI (Material UI)', icon: SiMui },
         { name: 'Zustand', icon: Layers },
-        { name: 'ESLint', icon: SiEslint },
-        { name: 'Prettier', icon: SiPrettier },
         { name: 'React', icon: SiReact },
         { name: 'Next.js', icon: SiNextdotjs },
       ]
@@ -25,14 +23,18 @@ export default function TechStack() {
     {
       title: 'Backend & Automação',
       items: [
+        { name: 'Extensão Web', icon: SiGooglechrome },
+        { name: 'node-pg-migrate', icon: Database },
+        { name: 'Node.js', icon: SiNodedotjs },
+        { name: 'PHP', icon: SiPhp },
+      ]
+    },
+    {
+      title: 'Projetos Open Source',
+      items: [
         { name: 'wa-js', icon: SiWhatsapp },
         { name: 'Baileys', icon: SiWhatsapp },
         { name: 'ticketz', icon: Ticket },
-        { name: 'node-pg-migrate', icon: Database },
-        { name: 'Crypto', icon: Lock },
-        { name: 'Codex', icon: Code },
-        { name: 'Node.js', icon: SiNodedotjs },
-        { name: 'PHP', icon: SiPhp },
       ]
     },
     {
@@ -68,6 +70,9 @@ export default function TechStack() {
     {
       title: 'Infraestrutura & DevOps',
       items: [
+        { name: 'ESLint', icon: SiEslint },
+        { name: 'Prettier', icon: SiPrettier },
+        { name: 'Codex', icon: Code },
         { name: 'Vercel', icon: SiVercel },
         { name: 'Neon Serverless', icon: Zap },
         { name: 'Contabo VPS', icon: Server },
