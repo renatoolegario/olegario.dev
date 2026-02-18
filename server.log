@@ -1,0 +1,24 @@
+
+> App@1.0.0 dev
+> next dev
+
+   ▲ Next.js 15.5.12
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.0.2:3000
+
+ ✓ Starting...
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+ ✓ Ready in 1526ms
+ ○ Compiling / ...
+ ✓ Compiled / in 11.1s (374 modules)
+ ✓ Compiled in 316ms (374 modules)
+ GET / 200 in 13091ms
+ ○ Compiling /middleware ...
+ ✓ Compiled /middleware in 552ms (111 modules)
+ ✓ Compiled /api/github/contributions in 411ms (160 modules)
+GITHUB_TOKEN não configurado. Retornando dados mock/vazios.
+ GET /api/github/contributions?username=renatoolegario 200 in 525ms
