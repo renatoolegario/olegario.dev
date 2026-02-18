@@ -57,6 +57,7 @@ export default function TechStack() {
         { name: 'PostgreSQL (Neon)', icon: SiPostgresql },
         { name: 'MySQL', icon: SiMysql },
         { name: 'Blob Storage', icon: HardDrive },
+        { name: 'Postgres R2-Vault Pipeline', icon: Lock },
       ]
     },
     {
