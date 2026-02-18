@@ -35,15 +35,15 @@ export default function Hero() {
               Sou arquiteto de software e fundador técnico com 12 anos de mercado, especializado em tirar MVPs do papel e colocá-los no mercado com o menor custo possível, sem abrir mão de arquitetura sólida e infraestrutura bem planejada. Atuo desde a ideia até a execução completa do sistema, incluindo arquitetura, backend, frontend, infraestrutura e automações.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 mb-12 animate-fade-in-up" style={{ animationDelay: '300ms' }}>
-              <Button variant="primary" onClick={() => window.location.href = '#contact'}>
-                Validar seu MVP
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-              <Button variant="secondary" onClick={() => window.location.href = '#differential'}>
-                Sociedade Técnica
-              </Button>
+            {/* GitHub Calendar Section */}
+            <div className=" animate-fade-in-up" style={{ animationDelay: '600ms' }}>
+
+              <div className="flex justify-center overflow-x-auto pb-4">
+                <GithubContribCalendar username="renatoolegario" />
+              </div>
             </div>
+
+
 
             <div className="flex flex-wrap items-center gap-8 text-slate-500 animate-fade-in-up" style={{ animationDelay: '400ms' }}>
               <div>
@@ -75,16 +75,6 @@ export default function Hero() {
               <div className="absolute -top-4 -right-4 w-24 h-24 bg-emerald-500/20 blur-2xl rounded-full mix-blend-screen animate-pulse" />
               <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-cyan-500/20 blur-2xl rounded-full mix-blend-screen animate-pulse" style={{ animationDelay: '1s' }} />
             </div>
-          </div>
-        </div>
-
-        {/* GitHub Calendar Section */}
-        <div className="mt-16 animate-fade-in-up" style={{ animationDelay: '600ms' }}>
-          <div className="flex items-center justify-center mb-6">
-            <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-widest">Atividade no GitHub</h3>
-          </div>
-          <div className="flex justify-center overflow-x-auto pb-4">
-            <GithubContribCalendar username="renatoolegario" />
           </div>
         </div>
 
