@@ -5,7 +5,7 @@ import {
   SiReact, SiGooglechrome
 } from 'react-icons/si';
 import {
-  Database, Server, Cloud, Code, Lock, Ticket, Map, Mail, HardDrive, CreditCard, Bot, Zap, GitCommit, Layers, MessageSquare, Brain, Search
+  Database, Server, Cloud, Lock, Ticket, Map, Mail, HardDrive, CreditCard, Bot, Zap, GitCommit, Layers, MessageSquare, Brain, Search, Webhook
 } from 'lucide-react';
 import TechBadge from '../molecules/TechBadge';
 
@@ -21,12 +21,13 @@ export default function TechStack() {
       ]
     },
     {
-      title: 'Backend & Automação',
+      title: 'Backend',
       items: [
         { name: 'Extensão Web', icon: SiGooglechrome },
         { name: 'node-pg-migrate', icon: Database },
         { name: 'Node.js', icon: SiNodedotjs },
         { name: 'PHP', icon: SiPhp },
+        { name: 'Serverless', icon: Zap },
       ]
     },
     {
@@ -64,7 +65,8 @@ export default function TechStack() {
         { name: 'REST APIs', icon: Cloud },
         { name: 'WhatsApp Oficial', icon: SiWhatsapp },
         { name: 'Checkouts', icon: CreditCard },
-        { name: 'Integração IA', icon: Bot },
+        { name: 'Agentes de IA', icon: Bot },
+        { name: 'Webhooks', icon: Webhook },
       ]
     },
     {
@@ -72,7 +74,6 @@ export default function TechStack() {
       items: [
         { name: 'ESLint', icon: SiEslint },
         { name: 'Prettier', icon: SiPrettier },
-        { name: 'Codex', icon: Code },
         { name: 'Vercel', icon: SiVercel },
         { name: 'Neon Serverless', icon: Zap },
         { name: 'Contabo VPS', icon: Server },
