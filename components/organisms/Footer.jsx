@@ -61,9 +61,6 @@ export default function Footer() {
 
         <div className="pt-8 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center text-sm text-slate-500">
           <p>© {currentYear} Olegário Dev. Todos os direitos reservados.</p>
-          <p className="mt-2 md:mt-0 flex items-center">
-            Feito com <span className="text-emerald-500 mx-1">Next.js</span> e <span className="text-cyan-500 mx-1">Tailwind</span>
-          </p>
         </div>
       </div>
     </footer>
