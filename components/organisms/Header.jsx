@@ -23,7 +23,7 @@ export default function Header() {
 
           <div className="hidden md:flex">
             <Button variant="primary" className="text-sm px-4 py-2" onClick={() => window.location.href = 'https://api.whatsapp.com/send/?phone=5534992399036'}>
-              Validar MVP
+              Agendar Reunião
             </Button>
           </div>
 
