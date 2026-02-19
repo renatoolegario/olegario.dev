@@ -41,17 +41,22 @@ export default function GithubContribCalendar({ username = "renatoolegario" }) {
       borderRadius: 12,
       background: "#0b1220",
       border: "1px solid #1e293b",
-      overflowX: "auto",
+      overflowX: "hidden",
       color: "#e2e8f0",
       fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial",
-      width: "fit-content" // Garante que o container siga o tamanho do SVG
+      width: "100%"
     }}>
       <div style={{ marginBottom: 8, opacity: 0.9, fontSize: "0.85rem" }}>
         <strong>{data.totalContributions.toLocaleString("pt-BR")}</strong> contributions in the last year
       </div>
 
       {/* Removido o Math.max(width, 640) para o SVG não ocupar espaço vazio desnecessário */}
-      <svg width={width} height={height} role="img" aria-label="GitHub contribution calendar">
+      <svg
+        viewBox={`0 0 ${width} ${height}`}
+        style={{ width: "100%", height: "auto", display: "block" }}
+        role="img"
+        aria-label="GitHub contribution calendar"
+      >
         {weeks.map((w, wi) =>
           w.contributionDays.map((d, di) => {
             const x = wi * (CELL + GAP);

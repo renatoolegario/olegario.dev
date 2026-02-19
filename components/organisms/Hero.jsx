@@ -49,7 +49,7 @@ export default function Hero() {
             {/* GitHub Calendar Section */}
             <div className=" animate-fade-in-up" style={{ animationDelay: '600ms' }}>
 
-              <div className="flex justify-center overflow-x-auto pb-4">
+              <div className="w-full pb-4">
                 <GithubContribCalendar username="renatoolegario" />
               </div>
             </div>
