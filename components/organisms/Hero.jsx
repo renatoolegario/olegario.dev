@@ -32,7 +32,7 @@ export default function Hero() {
             </h1>
 
             <p className="text-lg md:text-xl text-slate-400 mb-8 leading-relaxed animate-fade-in-up" style={{ animationDelay: '200ms' }}>
-              Sou arquiteto de software e fundador técnico com 12 anos de mercado, especializado em tirar MVPs do papel e colocá-los no mercado com o menor custo possível, sem abrir mão de arquitetura sólida e infraestrutura bem planejada. Atuo desde a ideia até a execução completa do sistema, incluindo arquitetura, backend, frontend, infraestrutura e automações.
+              Sou especializado em tirar MVPs do papel e colocá-los no mercado com o menor custo possível, sem abrir mão de arquitetura sólida e infraestrutura bem planejada. Atuo desde a ideia até a execução completa do sistema, incluindo arquitetura, backend, frontend e infraestrutura.
             </p>
 
             {/* GitHub Calendar Section */}
