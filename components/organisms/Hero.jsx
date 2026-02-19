@@ -1,11 +1,22 @@
 'use client';
 
 import React from 'react';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Github, Linkedin, Phone, Mail, Youtube, Instagram } from 'lucide-react';
+import { SiUdemy } from 'react-icons/si';
 import Button from '../atomic/Button';
 import GithubContribCalendar from '../molecules/GithubContribCalendar';
 
 export default function Hero() {
+  const contacts = [
+    { label: 'GitHub', icon: Github, href: 'https://github.com/renatoolegario' },
+    { label: 'LinkedIn', icon: Linkedin, href: 'https://www.linkedin.com/in/olegariodev/' },
+    { label: 'WhatsApp', icon: Phone, href: 'https://api.whatsapp.com/send/?phone=5534992399036' },
+    { label: 'Email', icon: Mail, href: 'mailto:multiplas.fr@gmail.com' },
+    { label: 'YouTube', icon: Youtube, href: 'https://www.youtube.com/@olegario-dev' },
+    { label: 'Instagram', icon: Instagram, href: 'https://www.instagram.com/olegario.dev/' },
+    { label: 'Udemy', icon: SiUdemy, href: 'https://www.udemy.com/user/renato-olegario-alves-ferreira/' },
+  ];
+
   return (
     <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
       {/* Background Elements */}
@@ -74,6 +85,21 @@ export default function Hero() {
               {/* Decorative elements */}
               <div className="absolute -top-4 -right-4 w-24 h-24 bg-emerald-500/20 blur-2xl rounded-full mix-blend-screen animate-pulse" />
               <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-cyan-500/20 blur-2xl rounded-full mix-blend-screen animate-pulse" style={{ animationDelay: '1s' }} />
+            </div>
+
+            <div className="flex justify-center flex-wrap gap-4 mt-8 w-full md:w-96 mx-auto lg:ml-auto">
+              {contacts.map((contact, index) => (
+                <a
+                  key={index}
+                  href={contact.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 bg-slate-900/50 rounded-full border border-slate-800 text-slate-400 hover:text-white hover:bg-emerald-500 hover:border-emerald-500 transition-all duration-300 group"
+                  aria-label={contact.label}
+                >
+                  <contact.icon size={20} className="transform group-hover:scale-110 transition-transform" />
+                </a>
+              ))}
             </div>
           </div>
         </div>
