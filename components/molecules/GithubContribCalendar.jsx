@@ -17,7 +17,7 @@ export default function GithubContribCalendar({ username = "renatoolegario" }) {
         if (!r.ok) throw new Error(json?.error || "Falha ao buscar contribuições");
         if (alive) setData(json);
       } catch (e) {
-        if (alive) setErr(e?.message || "Erro");
+        if (alive) setErr(e?.message || "Erro ao carregar calendário");
       }
     })();
 
@@ -26,8 +26,21 @@ export default function GithubContribCalendar({ username = "renatoolegario" }) {
 
   const weeks = useMemo(() => data?.weeks || [], [data]);
 
-  if (err) return <div style={{ color: "#fca5a5" }}>{err}</div>;
-  if (!data) return <div style={{ color: "#cbd5e1" }}>Carregando contribuições…</div>;
+  if (err) {
+    return (
+      <div className="w-full max-w-3xl rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
+        Nao foi possivel carregar as contribuicoes do GitHub agora. Tente novamente em alguns minutos.
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div className="w-full max-w-3xl rounded-xl border border-slate-700 bg-slate-900/60 px-4 py-3 text-sm text-slate-200">
+        Carregando contribuicoes reais do GitHub...
+      </div>
+    );
+  }
 
   // --- AJUSTE DE ESCALA ---
   const CELL = 8;     // Era 11, agora 8 (tamanho do quadrado)
@@ -43,15 +56,15 @@ export default function GithubContribCalendar({ username = "renatoolegario" }) {
       border: "1px solid #1e293b",
       overflowX: "auto",
       color: "#e2e8f0",
-      fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial",
+      fontFamily: "var(--font-body)",
       width: "fit-content" // Garante que o container siga o tamanho do SVG
     }}>
       <div style={{ marginBottom: 8, opacity: 0.9, fontSize: "0.85rem" }}>
-        <strong>{data.totalContributions.toLocaleString("pt-BR")}</strong> contributions in the last year
+        <strong>{data.totalContributions.toLocaleString("pt-BR")}</strong> contribuicoes nos ultimos 12 meses
       </div>
 
       {/* Removido o Math.max(width, 640) para o SVG não ocupar espaço vazio desnecessário */}
-      <svg width={width} height={height} role="img" aria-label="GitHub contribution calendar">
+      <svg width={width} height={height} role="img" aria-label="Calendario de contribuicoes do GitHub">
         {weeks.map((w, wi) =>
           w.contributionDays.map((d, di) => {
             const x = wi * (CELL + GAP);
@@ -68,7 +81,7 @@ export default function GithubContribCalendar({ username = "renatoolegario" }) {
                 ry={1.5}
                 fill={d.color}
               >
-                <title>{`${d.date}: ${d.contributionCount} contributions`}</title>
+                <title>{`${d.date}: ${d.contributionCount} contribuicoes`}</title>
               </rect>
             );
           })

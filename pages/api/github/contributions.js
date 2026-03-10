@@ -1,21 +1,20 @@
 export default async function handler(req, res) {
-    try {
-        if (req.method !== "GET") {
-            return res.status(405).json({ error: "Method not allowed" });
-        }
+  try {
+    if (req.method !== 'GET') {
+      return res.status(405).json({ error: 'Method not allowed' });
+    }
 
-        const username = req.query.username;
-        if (!username) return res.status(400).json({ error: "username é obrigatório" });
+    const username = req.query.username;
+    if (!username) {
+      return res.status(400).json({ error: 'username e obrigatorio' });
+    }
 
-        const token = process.env.GITHUB_TOKEN; // ✅ server-only
+    const token = process.env.GITHUB_TOKEN;
+    if (!token) {
+      return res.status(503).json({ error: 'Integracao GitHub indisponivel no momento.' });
+    }
 
-        // Handle missing token gracefully with mock data
-        if (!token) {
-            console.warn("GITHUB_TOKEN não configurado. Retornando dados mock/vazios.");
-            return res.status(200).json(generateMockData());
-        }
-
-        const query = `
+    const query = `
       query($login: String!) {
         user(login: $login) {
           contributionsCollection {
@@ -36,57 +35,28 @@ export default async function handler(req, res) {
       }
     `;
 
-        const r = await fetch("https://api.github.com/graphql", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ query, variables: { login: username } }),
-        });
+    const response = await fetch('https://api.github.com/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ query, variables: { login: username } }),
+    });
 
-        const json = await r.json();
-
-        if (!r.ok || json.errors?.length) {
-             // Fallback to mock data on API error instead of crashing
-             console.error("Erro GitHub API:", json.errors?.[0]?.message);
-             return res.status(200).json(generateMockData());
-        }
-
-        const calendar =
-            json?.data?.user?.contributionsCollection?.contributionCalendar;
-
-        // Cache no CDN (Vercel) por 6h (ajuste como quiser)
-        res.setHeader("Cache-Control", "s-maxage=21600, stale-while-revalidate=86400");
-
-        return res.status(200).json(calendar);
-    } catch (e) {
-        console.error("Erro interno:", e);
-        // Fallback to mock data on exception
-        return res.status(200).json(generateMockData());
-    }
-}
-
-function generateMockData() {
-    // Generates a blank calendar structure
-    const weeks = [];
-    // Approximate 52 weeks
-    for (let i = 0; i < 53; i++) {
-        const days = [];
-        for (let j = 0; j < 7; j++) {
-            days.push({
-                date: "2023-01-01", // Dummy date
-                contributionCount: 0,
-                color: "#161b22", // Default dark color
-                weekday: j
-            });
-        }
-        weeks.push({ contributionDays: days });
+    const json = await response.json();
+    if (!response.ok || json?.errors?.length) {
+      return res.status(502).json({ error: 'Nao foi possivel buscar dados reais do GitHub agora.' });
     }
 
-    return {
-        totalContributions: 0,
-        colors: ["#0e4429", "#006d32", "#26a641", "#39d353"], // Standard GitHub greens
-        weeks: weeks
-    };
+    const calendar = json?.data?.user?.contributionsCollection?.contributionCalendar;
+    if (!calendar) {
+      return res.status(404).json({ error: 'Calendario de contribuicoes nao encontrado.' });
+    }
+
+    res.setHeader('Cache-Control', 's-maxage=21600, stale-while-revalidate=86400');
+    return res.status(200).json(calendar);
+  } catch (error) {
+    return res.status(500).json({ error: 'Erro interno ao consultar contribuicoes do GitHub.' });
+  }
 }

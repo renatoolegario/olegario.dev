@@ -8,7 +8,7 @@ import Footer from '../components/organisms/Footer';
 
 export default function Home() {
     return (
-        <main className="min-h-screen bg-slate-950 text-slate-400 selection:bg-emerald-500/30 selection:text-emerald-400">
+        <main className="min-h-screen text-slate-300 selection:bg-emerald-500/30 selection:text-emerald-100 antialiased">
             <Header />
             <Hero />
             <DifferentialSection />

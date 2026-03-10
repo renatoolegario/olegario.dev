@@ -5,9 +5,10 @@ import {
   SiReact
 } from 'react-icons/si';
 import {
-  Database, Server, Cloud, Code, Lock, Ticket, Map, Mail, HardDrive, CreditCard, Bot, Zap, GitCommit, Layers, MessageSquare, Brain, Search
+  Database, Server, Cloud, Code, Lock, Ticket, Map, Mail, HardDrive, CreditCard, Bot, Zap, GitCommit, Layers, MessageSquare, Search
 } from 'lucide-react';
 import TechBadge from '../molecules/TechBadge';
+import Reveal from '../molecules/Reveal';
 
 export default function TechStack() {
   const categories = [
@@ -91,27 +92,31 @@ export default function TechStack() {
   return (
     <section id="stack" className="py-24 bg-slate-950 border-t border-slate-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
-            Stack <span className="text-emerald-500">Técnica</span>
-          </h2>
-          <p className="text-slate-400 max-w-2xl mx-auto">
-            Ferramentas e tecnologias que utilizo para construir soluções escaláveis e eficientes.
-          </p>
-        </div>
+        <Reveal variant="rise">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
+              Stack <span className="text-emerald-400">tecnica</span>
+            </h2>
+            <p className="text-slate-300 max-w-2xl mx-auto">
+              Ferramentas e tecnologias usadas para construir produtos com desempenho, seguranca e previsibilidade operacional.
+            </p>
+          </div>
+        </Reveal>
 
         <div className="space-y-16">
           {categories.map((category, index) => (
-            <div key={index} className="animate-fade-in-up" style={{ animationDelay: `${index * 100}ms` }}>
-              <h3 className="text-2xl font-bold text-white mb-8 border-l-4 border-emerald-500 pl-4">
-                {category.title}
-              </h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-                {category.items.map((item, idx) => (
-                  <TechBadge key={idx} icon={item.icon} label={item.name} />
-                ))}
+            <Reveal key={category.title} variant={index % 2 === 0 ? 'lift' : 'fade'} delay={index * 90}>
+              <div>
+                <h3 className="text-2xl font-bold text-white mb-8 border-l-4 border-emerald-500 pl-4">
+                  {category.title}
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+                  {category.items.map((item, idx) => (
+                    <TechBadge key={idx} icon={item.icon} label={item.name} />
+                  ))}
+                </div>
               </div>
-            </div>
+            </Reveal>
           ))}
         </div>
       </div>
