@@ -74,10 +74,10 @@ export default function DifferentialSection() {
               Entrega inicial entre 1 e 7 dias
             </div>
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-              Como transformo sua <span className="text-emerald-400">ideia em MVP</span>
+              Transformo sua ideia em uma <span className="text-emerald-400">solução real</span>
             </h2>
             <p className="text-lg text-slate-300">
-              Um processo simples para sair da ideia e chegar a uma primeira versão funcional, com rapidez, custo controlado e melhoria contínua.
+              Com um processo enxuto, entrego a primeira versão entre 1 e 7 dias e estruturo a evolução de forma escalável, sem perder qualidade nem desempenho.
             </p>
           </div>
         </Reveal>
