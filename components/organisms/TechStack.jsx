@@ -95,10 +95,10 @@ export default function TechStack() {
         <Reveal variant="rise">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
-              Stack <span className="text-emerald-400">tecnica</span>
+              Stack <span className="text-emerald-400">técnica</span>
             </h2>
             <p className="text-slate-300 max-w-2xl mx-auto">
-              Ferramentas e tecnologias usadas para construir produtos com desempenho, seguranca e previsibilidade operacional.
+              Ferramentas e tecnologias usadas para construir produtos com desempenho, segurança e previsibilidade operacional.
             </p>
           </div>
         </Reveal>

@@ -103,6 +103,7 @@ Diretórios principais
 
 /infra/database/
 /infra/database/migrations/ <-- versionamento do bd
+/infra/services/ <-- serviços 
 /infra/tests/ <-- Testes automatizados via JEST 
 /public <-- Arquivos publicos e Favicons
 /theme <-- arquivo CSS Glboal
@@ -117,6 +118,17 @@ Utilizar utils apenas para funções puras e reutilizáveis.
 Separar claramente a entrypoint pública (/pages/api/webhook) do processamento real (/api/v*/index).
 Controlar evolução do banco com migrations (não alterar schema manualmente).
 Criar testes automatizados com Jest, cobrindo unidades críticas e integrações de API.
+
+Toda exportação de PDF deve-se utilizar um microserviço externo em infra/services processar sem travar a tela do usuário gerar um popup falando seu relatório esta sendo processado e quando ficar pronto aparece a janela para ele baixar e um popup sonoro falando que esta pronto.
+---
+Todo sistema deve ser PT-br com caligrafia impecavel sem erros de português.
+---
+
+Todo Botõa deve-se ter um icone que faz sentido.
+
+---
+
+Toda sessão deve ser alinhada, os componentes de dentro da sessão sempre buscar ter a mesma altura.
 
 ---
 

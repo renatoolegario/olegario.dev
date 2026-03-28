@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import { ArrowRight, ExternalLink } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import useTilt from '../../hooks/useTilt';
 
 export default function ProjectCard({
@@ -11,7 +11,6 @@ export default function ProjectCard({
   link,
   image,
   isFeatured = false,
-  onOpenDetails,
 }) {
   const { cardRef, handlers } = useTilt({ maxTilt: 7 });
 
@@ -19,7 +18,7 @@ export default function ProjectCard({
     <article
       ref={cardRef}
       {...handlers}
-      className={`premium-card tilt-card relative group rounded-2xl ${
+      className={`premium-card tilt-card relative group rounded-2xl h-full flex flex-col ${
         isFeatured ? 'ring-1 ring-emerald-500/30' : ''
       }`}
     >
@@ -75,7 +74,7 @@ export default function ProjectCard({
             ))}
           </div>
 
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
             {link && link !== '#' ? (
               <a
                 href={link}
@@ -89,18 +88,9 @@ export default function ProjectCard({
               </a>
             ) : (
               <span className="inline-flex items-center rounded-md border border-slate-800 px-3 py-2 text-sm font-semibold text-slate-500">
-                Site indisponivel
+                Site indisponível
               </span>
             )}
-
-            <button
-              type="button"
-              onClick={onOpenDetails}
-              className="inline-flex items-center text-sm font-semibold text-emerald-300 hover:text-emerald-200 transition-colors group/link"
-            >
-              Ver detalhes
-              <ArrowRight size={16} className="ml-2 transform group-hover/link:translate-x-1 transition-transform" />
-            </button>
           </div>
         </div>
       </div>

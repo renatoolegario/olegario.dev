@@ -17,7 +17,7 @@ export default function Header() {
 
           <nav className="hidden md:flex space-x-8">
             <a href="#projects" className="text-sm font-medium text-slate-400 hover:text-emerald-400 transition-colors">Projetos</a>
-            <a href="#differential" className="text-sm font-medium text-slate-400 hover:text-emerald-400 transition-colors">Diferencial</a>
+            <a href="#differential" className="text-sm font-medium text-slate-400 hover:text-emerald-400 transition-colors">Processo</a>
             <a href="#stack" className="text-sm font-medium text-slate-400 hover:text-emerald-400 transition-colors">Stack</a>
           </nav>
 
@@ -35,7 +35,7 @@ export default function Header() {
             <button
               type="button"
               className="text-slate-400 hover:text-white"
-              aria-label="Abrir menu de navegacao"
+              aria-label="Abrir menu de navegação"
             >
               <Menu size={24} />
             </button>

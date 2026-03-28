@@ -1,18 +1,8 @@
 import React from 'react';
-import { Github, Linkedin, Mail, Phone, Instagram, Youtube } from 'lucide-react';
-import { SiUdemy } from 'react-icons/si';
+import SocialLinks from '../molecules/SocialLinks';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-  const contacts = [
-    { label: 'GitHub', icon: Github, href: 'https://github.com/renatoolegario' },
-    { label: 'LinkedIn', icon: Linkedin, href: 'https://www.linkedin.com/in/olegariodev/' },
-    { label: 'WhatsApp', icon: Phone, href: 'https://api.whatsapp.com/send/?phone=5534992399036' },
-    { label: 'Email', icon: Mail, href: 'mailto:multiplas.fr@gmail.com' },
-    { label: 'YouTube', icon: Youtube, href: 'https://www.youtube.com/@olegario-dev' },
-    { label: 'Instagram', icon: Instagram, href: 'https://www.instagram.com/olegario.dev/' },
-    { label: 'Udemy', icon: SiUdemy, href: 'https://www.udemy.com/user/renato-olegario-alves-ferreira/' },
-  ];
 
   return (
     <footer id="contact" className="bg-slate-950 border-t border-slate-900 py-12 md:py-16">
@@ -23,20 +13,7 @@ export default function Footer() {
             <p className="text-slate-400 mb-8 max-w-md">
               Estou sempre em busca de desafios técnicos e parcerias estratégicas. Se você tem uma ideia validada ou um problema complexo, entre em contato.
             </p>
-            <div className="flex flex-wrap gap-4">
-              {contacts.map((contact, index) => (
-                <a
-                  key={index}
-                  href={contact.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-3 bg-slate-900/50 rounded-full border border-slate-800 text-slate-400 hover:text-white hover:bg-emerald-500 hover:border-emerald-500 transition-all duration-300 group"
-                  aria-label={contact.label}
-                >
-                  <contact.icon size={20} className="transform group-hover:scale-110 transition-transform" />
-                </a>
-              ))}
-            </div>
+            <SocialLinks />
           </div>
 
           <div className="grid grid-cols-2 gap-8 text-sm">
@@ -45,7 +22,7 @@ export default function Footer() {
               <ul className="space-y-3">
                 <li><a href="#" className="text-slate-400 hover:text-emerald-400 transition-colors">Início</a></li>
                 <li><a href="#projects" className="text-slate-400 hover:text-emerald-400 transition-colors">Projetos</a></li>
-                <li><a href="#differential" className="text-slate-400 hover:text-emerald-400 transition-colors">Diferencial</a></li>
+                <li><a href="#differential" className="text-slate-400 hover:text-emerald-400 transition-colors">Processo</a></li>
                 <li><a href="#stack" className="text-slate-400 hover:text-emerald-400 transition-colors">Stack</a></li>
               </ul>
             </div>
