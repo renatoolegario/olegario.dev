@@ -38,42 +38,6 @@ export const projects = [
     isFeatured: true,
   },
   {
-    id: 'nabrasa',
-    title: 'NaBrasa Hamburgueria',
-    description:
-      'Site institucional para apresentação da marca com foco em SEO, performance e presença digital.',
-    details:
-      'Projeto para terceiros com entrega enxuta, com estrutura orientada à conversão local e rastreio essencial.',
-    highlights: [
-      'Arquitetura simples para publicação rápida.',
-      'Melhorias de SEO técnico e performance.',
-      'Estrutura pronta para campanhas regionais.',
-    ],
-    model: 'terceiros',
-    techs: ['React', 'Next.js', 'Monolito Serverless', 'SEO', 'Google Tag Manager', 'Meta Pixel'],
-    link: 'https://nabrasahamburgueria.com.br/',
-    image: null,
-    isFeatured: false,
-  },
-  {
-    id: 'mestrestarlink',
-    title: 'Mestre Starlink',
-    description:
-      'Landing page de vendas focada em educação para economia na compra e instalação da Starlink.',
-    details:
-      'Negócio próprio com foco em conversão comercial, checkout integrado e rastreio de funil de ponta a ponta.',
-    highlights: [
-      'Fluxo de venda orientado por dados de conversão.',
-      'Checkout conectado para reduzir fricção.',
-      'Rastreamento com GTM e Meta Pixel.',
-    ],
-    model: 'negocio_proprio',
-    techs: ['Next.js', 'Monolito Serverless', 'PostgreSQL', 'Checkout', 'Google Tag Manager', 'Meta Pixel'],
-    link: 'https://mestrestarlink.com.br/',
-    image: null,
-    isFeatured: false,
-  },
-  {
     id: 'facilita-agro',
     title: 'Facilita Agro',
     description:

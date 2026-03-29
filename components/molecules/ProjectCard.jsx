@@ -7,7 +7,6 @@ export default function ProjectCard({
   title,
   description,
   details,
-  techs = [],
   link,
   image,
   isFeatured = false,
@@ -39,17 +38,6 @@ export default function ProjectCard({
       )}
 
       <div className="relative p-6 sm:p-8 flex flex-col h-full">
-        <div className="flex items-start justify-between mb-5">
-          <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-700/80 group-hover:border-emerald-500/40 transition-colors">
-            <span className="text-xl font-bold text-emerald-500">{title.charAt(0)}</span>
-          </div>
-          {isFeatured ? (
-            <span className="rounded-full border border-emerald-500/35 bg-emerald-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-emerald-300">
-              Destaque
-            </span>
-          ) : null}
-        </div>
-
         <h3 className="text-xl font-bold text-slate-100 mb-3 group-hover:text-emerald-300 transition-colors">
           {title}
         </h3>
@@ -63,17 +51,6 @@ export default function ProjectCard({
         </p>
 
         <div className="mt-auto">
-          <div className="flex flex-wrap gap-2 mb-6">
-            {techs.map((tech, index) => (
-              <span
-                key={index}
-                className="px-2.5 py-1 text-xs font-medium rounded-md bg-slate-950/55 text-slate-300 border border-slate-700/70 group-hover:border-emerald-500/25 transition-colors"
-              >
-                {tech}
-              </span>
-            ))}
-          </div>
-
           <div className="flex items-center gap-3">
             {link && link !== '#' ? (
               <a
