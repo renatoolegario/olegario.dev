@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { ArrowLeft, Home, ListTodo, Target } from 'lucide-react';
+import { ArrowLeft, Home, ListTodo } from 'lucide-react';
+import AnimatedTaskIcon from '../atomic/AnimatedTaskIcon';
 import AppShell from './AppShell';
 
 export default function AppTaskDetail({ task }) {
@@ -31,7 +32,7 @@ export default function AppTaskDetail({ task }) {
       <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
         <section className="premium-card rounded-[2rem] p-6 sm:p-8">
           <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl border border-emerald-400/20 bg-emerald-400/10 text-emerald-200">
-            <Target className="h-6 w-6" />
+            <AnimatedTaskIcon slug={task.slug} className="h-8 w-8" />
           </div>
 
           <div className="mt-6 space-y-4">

@@ -1,30 +1,15 @@
 import Link from 'next/link';
-import {
-  ArrowRight,
-  Instagram,
-  Layers3,
-  Lightbulb,
-  Target,
-  Youtube,
-} from 'lucide-react';
-
-const iconMap = {
-  youtube: Youtube,
-  instagram: Instagram,
-  uaistack: Layers3,
-  estrategias: Lightbulb,
-};
+import { ArrowRight } from 'lucide-react';
+import AnimatedTaskIcon from '../atomic/AnimatedTaskIcon';
 
 export default function AppTaskCard({ task }) {
-  const Icon = iconMap[task.slug] || Target;
-
   return (
     <Link
       href={task.href}
       className="premium-card group flex h-full flex-col rounded-3xl p-6 transition duration-300 hover:-translate-y-1"
     >
       <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-emerald-400/20 bg-emerald-400/10 text-emerald-200">
-        <Icon className="h-5 w-5" />
+        <AnimatedTaskIcon slug={task.slug} className="h-7 w-7" />
       </div>
 
       <div className="flex flex-1 flex-col gap-4">

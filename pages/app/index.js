@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import { ArrowRight, FolderKanban, LockKeyhole, PanelTop } from 'lucide-react';
+import AnimatedTaskIcon from '../../components/atomic/AnimatedTaskIcon';
 import AppTaskCard from '../../components/molecules/AppTaskCard';
 import AppLoginForm from '../../components/organisms/AppLoginForm';
 import AppShell from '../../components/organisms/AppShell';
@@ -45,13 +46,13 @@ export default function AppHomePage({ isAuthenticated, nextPath }) {
               </div>
 
               <div className="mt-8 space-y-3">
-                {appTasks.map((task, index) => (
+                {appTasks.map((task) => (
                   <div
                     key={task.slug}
                     className="flex items-start gap-3 rounded-2xl border border-slate-800/80 bg-slate-950/60 px-4 py-3"
                   >
-                    <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-700/80 bg-slate-900/80 text-sm font-semibold text-slate-200">
-                      {index + 1}
+                    <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-emerald-400/20 bg-emerald-400/10 text-emerald-200">
+                      <AnimatedTaskIcon slug={task.slug} className="h-5 w-5" />
                     </span>
                     <div>
                       <p className="font-semibold text-white">{task.title}</p>

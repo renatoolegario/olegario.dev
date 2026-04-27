@@ -136,6 +136,89 @@ h6 {
   z-index: 1;
 }
 
+.animated-task-icon {
+  display: block;
+  overflow: visible;
+  color: currentColor;
+  filter: drop-shadow(0 8px 16px rgba(16, 185, 129, 0.16));
+}
+
+.animated-task-icon * {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.animated-task-icon .ati-stroke {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.animated-task-icon .ati-fill {
+  fill: currentColor;
+}
+
+.animated-task-icon .ati-line {
+  stroke-dasharray: 170;
+  stroke-dashoffset: 170;
+  animation: ati-line-draw 4.8s var(--spring-ease) infinite;
+}
+
+.animated-task-icon--youtube .ati-youtube-play,
+.animated-task-icon--instagram .ati-instagram-dot,
+.animated-task-icon--uaistack .ati-stack-node,
+.animated-task-icon--estrategias .ati-bulb-core {
+  animation: ati-soft-pop 4.8s ease-in-out infinite;
+}
+
+.animated-task-icon--youtube .ati-youtube-signal,
+.animated-task-icon--instagram .ati-instagram-spark,
+.animated-task-icon--estrategias .ati-bulb-ray {
+  stroke-dasharray: 28;
+  stroke-dashoffset: 28;
+  animation: ati-spark-draw 4.8s ease-in-out infinite;
+}
+
+.animated-task-icon--youtube .ati-youtube-dot {
+  animation: ati-dot-slide 4.8s ease-in-out infinite;
+}
+
+.animated-task-icon--instagram .ati-instagram-lens {
+  animation: ati-lens-pulse 4.8s ease-in-out infinite;
+}
+
+.animated-task-icon--uaistack .ati-stack-back {
+  opacity: 0.5;
+  animation: ati-stack-float-back 4.8s ease-in-out infinite;
+}
+
+.animated-task-icon--uaistack .ati-stack-mid {
+  opacity: 0.78;
+  animation: ati-stack-float-mid 4.8s ease-in-out infinite;
+}
+
+.animated-task-icon--uaistack .ati-stack-front {
+  opacity: 0.9;
+  animation: ati-stack-float-front 4.8s ease-in-out infinite;
+}
+
+.animated-task-icon--uaistack .ati-stack-wire {
+  stroke-dasharray: 54;
+  stroke-dashoffset: 54;
+  animation: ati-wire-draw 4.8s var(--spring-ease) infinite;
+}
+
+.animated-task-icon--estrategias .ati-bulb-base {
+  animation: ati-base-shift 4.8s ease-in-out infinite;
+}
+
+.group:hover .animated-task-icon,
+.premium-card:focus-within .animated-task-icon {
+  filter: drop-shadow(0 10px 22px rgba(16, 185, 129, 0.28));
+}
+
 .tilt-card {
   transform: perspective(1100px) rotateX(var(--card-rotate-x, 0deg)) rotateY(var(--card-rotate-y, 0deg)) translateY(0);
   transform-style: preserve-3d;
@@ -229,6 +312,138 @@ h6 {
   }
 }
 
+@keyframes ati-line-draw {
+  0% {
+    opacity: 0.38;
+    stroke-dashoffset: 170;
+  }
+  34%,
+  72% {
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+  100% {
+    opacity: 0.42;
+    stroke-dashoffset: -170;
+  }
+}
+
+@keyframes ati-spark-draw {
+  0%,
+  24% {
+    opacity: 0;
+    stroke-dashoffset: 28;
+  }
+  42%,
+  70% {
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+  100% {
+    opacity: 0;
+    stroke-dashoffset: -28;
+  }
+}
+
+@keyframes ati-soft-pop {
+  0%,
+  100% {
+    opacity: 0.78;
+    transform: scale(0.96);
+  }
+  40%,
+  70% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes ati-dot-slide {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: translateX(-3px) scale(0.82);
+  }
+  42%,
+  68% {
+    opacity: 1;
+    transform: translateX(2px) scale(1);
+  }
+}
+
+@keyframes ati-lens-pulse {
+  0%,
+  100% {
+    opacity: 0.65;
+    transform: scale(0.92);
+  }
+  44%,
+  72% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+}
+
+@keyframes ati-stack-float-back {
+  0%,
+  100% {
+    transform: translateY(3px);
+  }
+  48% {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes ati-stack-float-mid {
+  0%,
+  100% {
+    transform: translateY(1px);
+  }
+  48% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes ati-stack-float-front {
+  0%,
+  100% {
+    transform: translateY(-1px);
+  }
+  48% {
+    transform: translateY(2px);
+  }
+}
+
+@keyframes ati-wire-draw {
+  0%,
+  30% {
+    opacity: 0.2;
+    stroke-dashoffset: 54;
+  }
+  48%,
+  76% {
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+  100% {
+    opacity: 0.35;
+    stroke-dashoffset: -54;
+  }
+}
+
+@keyframes ati-base-shift {
+  0%,
+  100% {
+    opacity: 0.72;
+    transform: translateY(0);
+  }
+  46%,
+  74% {
+    opacity: 1;
+    transform: translateY(1px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -250,6 +465,19 @@ h6 {
 
   .premium-card::after {
     transition: none;
+  }
+
+  .animated-task-icon,
+  .animated-task-icon * {
+    animation: none !important;
+  }
+
+  .animated-task-icon .ati-line,
+  .animated-task-icon--youtube .ati-youtube-signal,
+  .animated-task-icon--instagram .ati-instagram-spark,
+  .animated-task-icon--uaistack .ati-stack-wire,
+  .animated-task-icon--estrategias .ati-bulb-ray {
+    stroke-dashoffset: 0;
   }
 
   .modal-backdrop,
